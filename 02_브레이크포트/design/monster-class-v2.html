@@ -1,0 +1,538 @@
+<title>몬스터 클래스 아트북</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gaegu:wght@700&family=Gowun+Dodum&family=Gowun+Batang:wght@700&family=Cinzel+Decorative:wght@700&display=swap">
+<style>
+/* Layout: night magic-academy art book. Hero = moonlit castle with fanned legendary cards; sections sit on a deep-ink wall, cards on velvet. Single dark world by choice. */
+:root {
+  color-scheme: dark;
+  --bg: #141129; --bg-2: #1d1838; --bg-3: #262050; --line: #362f63;
+  --text: #f1ecff; --dim: #b5acd9; --muted: #8a82b5;
+  --parch: #f4e9d2; --parch-d: #e2d1ad; --ink: #2a2350;
+  --gold: #f2c14e; --moon: #4f8bff; --ember: #ff6b4a; --mana: #7b4be0;
+  --f-title: 'Gowun Batang', 'Gowun Dodum', serif;
+  --f-num: 'Jua', 'Gowun Dodum', sans-serif;
+  --f-hand: 'Gaegu', 'Jua', cursive;
+  --f-body: 'Gowun Dodum', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+  --f-deco: 'Cinzel Decorative', 'Gowun Batang', serif;
+  --f-mono: ui-monospace, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--text); font-family: var(--f-body); font-size: 16px; line-height: 1.65; }
+h1, h2, h3 { margin: 0; text-wrap: balance; font-weight: 700; }
+p { margin: 0; }
+code { font-family: var(--f-mono); font-size: .88em; color: #d6ccff; }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1160px; margin: 0 auto; }
+main { display: grid; gap: 96px; padding-block: 64px 96px; }
+.eyebrow { font-family: var(--f-deco); font-size: 13px; letter-spacing: .14em; color: var(--gold); text-transform: uppercase; }
+.lead { color: var(--dim); max-width: 64ch; }
+section > header { display: grid; gap: 10px; margin-bottom: 30px; }
+section > header h2 { font-family: var(--f-title); font-size: clamp(28px, 4vw, 40px); line-height: 1.25; }
+
+/* ---------- HERO ---------- */
+.hero { position: relative; overflow: hidden; background: #0d0b24; }
+.hero > svg.bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-in { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 520px); gap: 32px; align-items: center; padding-block: 72px 88px; }
+.hero-copy { display: grid; gap: 20px; min-width: 0; }
+.logo { font-family: var(--f-title); font-size: clamp(54px, 9vw, 108px); line-height: 1; color: #fff6dc;
+  text-shadow: 0 4px 0 #3a2a6a, 0 0 32px rgba(255, 214, 120, .45); }
+.logo small { display: block; font-family: var(--f-deco); font-size: .2em; letter-spacing: .3em; color: var(--gold); text-shadow: none; margin-bottom: 14px; }
+.hero .lead { color: #d8d0f5; font-size: 17px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-size: 13px; padding: 5px 12px; border-radius: 999px; background: rgba(20, 17, 41, .6); border: 1px solid #4a4180; color: #d8d0f5; backdrop-filter: blur(4px); }
+.fan { position: relative; height: 420px; }
+.fan .card { position: absolute; width: 210px; top: 30px; left: 50%; }
+.fan .card:nth-child(1) { transform: translateX(-120%) rotate(-12deg) translateY(30px); }
+.fan .card:nth-child(2) { transform: translateX(-50%); z-index: 2; }
+.fan .card:nth-child(3) { transform: translateX(20%) rotate(12deg) translateY(30px); }
+.candle { position: absolute; width: 10px; height: 26px; border-radius: 3px; background: #fff4dc; animation: float 5s ease-in-out infinite; }
+.candle::before { content: ''; position: absolute; left: 50%; top: -14px; width: 10px; height: 14px; transform: translateX(-50%); border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%; background: radial-gradient(circle at 50% 70%, #fff6c0, #ffb03a 60%, #ff5a3c); box-shadow: 0 0 18px 6px rgba(255, 196, 90, .45); }
+@keyframes float { 50% { transform: translateY(-14px); } }
+@media (prefers-reduced-motion: reduce) { .candle { animation: none; } }
+
+/* ---------- CHANGELOG ---------- */
+.changes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.change { background: var(--bg-2); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; gap: 8px; align-content: start; }
+.change b { font-family: var(--f-title); font-size: 19px; }
+.change span { color: var(--dim); font-size: 15px; }
+.change .tag { font-family: var(--f-num); font-size: 13px; color: var(--ink); background: var(--gold); border-radius: 6px; padding: 1px 8px; justify-self: start; }
+
+/* ---------- CARD COMPONENT ---------- */
+.card { all: unset; box-sizing: border-box; display: block; cursor: pointer; container-type: inline-size; border-radius: 16px; padding: 5px;
+  background: var(--f); box-shadow: 0 12px 26px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(255, 255, 255, .4); transition: transform .18s ease; }
+.card:hover { transform: translateY(-4px); }
+.card:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+.cin { position: relative; display: grid; grid-template-rows: 1fr auto auto; gap: 3cqi; aspect-ratio: 5 / 7; border-radius: 12px; padding: 5cqi 5cqi 4cqi;
+  background: radial-gradient(#ffffff1a 1px, transparent 1.5px) 0 0 / 12px 12px, linear-gradient(#2c2656, #16122f); border: 1px solid rgba(0, 0, 0, .55); }
+.art { position: relative; display: block; overflow: hidden; border-radius: 50% 50% 8px 8px / 34% 34% 8px 8px; border: 2px solid var(--fr);
+  background: radial-gradient(circle at 50% 40%, #fffaf0 0%, color-mix(in srgb, var(--ac) 38%, #fff6e6) 50%, color-mix(in srgb, var(--ac) 78%, #2a2350) 100%);
+  box-shadow: inset 0 -14px 26px rgba(42, 35, 80, .28); }
+.art svg { position: absolute; inset: 3% 3% 0; width: 94%; height: 97%; }
+.art::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 18% 22%, #fff 0 1.2px, transparent 2px), radial-gradient(circle at 82% 16%, #fff 0 1px, transparent 2px), radial-gradient(circle at 74% 70%, #fff 0 1px, transparent 2px); opacity: .8; pointer-events: none; }
+.cost { position: absolute; top: -1cqi; left: -1cqi; width: 22cqi; aspect-ratio: 40 / 48; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .4)); z-index: 2; }
+.cost svg { width: 100%; height: 100%; display: block; }
+.cost b { position: absolute; inset: 16% 0 0; display: grid; place-items: center; font: 400 11.5cqi/1 var(--f-num); color: #fff; text-shadow: 0 1px 0 #2a2350; }
+.gem { position: absolute; top: 4cqi; right: 4.5cqi; width: 7cqi; aspect-ratio: 1; transform: rotate(45deg); background: var(--gem); border: 1.5px solid #2a2350; box-shadow: 0 0 10px var(--gem); z-index: 2; }
+.cnt { position: absolute; right: 3cqi; bottom: 3cqi; font: 400 7.5cqi/1.4 var(--f-num); color: #fff; background: rgba(42, 35, 80, .85); padding: 0 2.5cqi; border-radius: 99px; }
+.ribbon { display: block; margin: 0 -3cqi; padding: 1.8cqi 7cqi; text-align: center; font: 700 9cqi/1.35 var(--f-title); color: #3a2a14;
+  background: linear-gradient(#fbf1d8, #e2cc9c); clip-path: polygon(0 0, 100% 0, 95% 50%, 100% 100%, 0 100%, 5% 50%); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.meta { display: flex; justify-content: center; gap: 2cqi; font: 400 6.4cqi/1.2 var(--f-body); color: var(--fr); }
+.r-c { --f: linear-gradient(150deg, #f0dcb0, #a8814a 45%, #ecd29c 70%, #86663a); --fr: #e2c58c; --gem: #d6b27a; }
+.r-r { --f: linear-gradient(150deg, #ffffff, #93a2bd 40%, #f1f5fb 65%, #77849e); --fr: #d4def0; --gem: #7fd0ff; }
+.r-e { --f: linear-gradient(150deg, #fff3b8, #d39a22 40%, #ffe58a 65%, #a3700c); --fr: #f6cf5e; --gem: #ffcf4a; }
+.r-l { --f: linear-gradient(135deg, #ff9ad5, #ffe08a, #9affc9, #9ad0ff, #c9a0ff, #ff9ad5); --fr: #ead2ff; --gem: #ff9ad5; background-size: 300% 300%; animation: holo 6s linear infinite; }
+@keyframes holo { to { background-position: 300% 0; } }
+@media (prefers-reduced-motion: reduce) { .r-l { animation: none; } }
+
+/* ---------- GALLERY ---------- */
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-bottom: 22px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg button { all: unset; cursor: pointer; font-family: var(--f-num); font-size: 15px; padding: 6px 14px; border-radius: 999px; border: 1.5px solid var(--line); color: var(--dim); }
+.seg button[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+.seg button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.count { margin-left: auto; color: var(--muted); font-size: 14px; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 22px 18px; }
+.stats-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.stats-row span { font-size: 13px; color: var(--dim); background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px; padding: 3px 10px; }
+
+/* modal */
+.modal { position: fixed; inset: 0; z-index: 50; background: rgba(8, 6, 20, .78); display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); overflow-y: auto; }
+.sheet { position: relative; width: min(760px, 100%); background: linear-gradient(#fbf1d8, #ead8b0); color: #2e2414; border-radius: 22px; border: 3px solid #2a2350; padding: 28px; display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 28px; box-shadow: 0 30px 80px rgba(0, 0, 0, .6); }
+.sheet .card { width: 100%; cursor: default; }
+.sheet .card:hover { transform: none; }
+.sheet h3 { font-family: var(--f-title); font-size: 30px; line-height: 1.2; }
+.sheet .kicker { font-family: var(--f-deco); font-size: 12px; letter-spacing: .14em; color: #8a6a2a; }
+.sheet .facts { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
+.sheet .facts span { font-size: 13px; background: #2a2350; color: #f4e9d2; border-radius: 7px; padding: 2px 9px; }
+.sheet .ab { font-size: 16px; }
+.sheet .q { font-family: var(--f-hand); font-size: 22px; color: #5a3f8a; margin: 12px 0 16px; }
+.tiers { display: grid; gap: 6px; }
+.tiers div { display: grid; grid-template-columns: 3.5em 1fr; align-items: center; gap: 10px; font-size: 14px; }
+.pips { display: flex; gap: 4px; }
+.pips i { width: 18px; height: 8px; border-radius: 4px; background: #d9c69c; }
+.pips i.on { background: #7b4be0; }
+.close { all: unset; cursor: pointer; position: absolute; top: 10px; right: 12px; font-family: var(--f-num); font-size: 15px; padding: 6px 12px; border-radius: 10px; background: #2a2350; color: #f4e9d2; }
+.close:focus-visible { outline: 3px solid var(--gold); }
+
+/* ---------- SPRITES ---------- */
+.sprites { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+.sprite { background: var(--bg-2); border: 1px solid var(--line); border-radius: 18px; padding: 16px; display: grid; gap: 10px; }
+.sprite .stage { display: flex; align-items: flex-end; justify-content: center; gap: 18px; min-height: 150px; border-radius: 12px; padding: 10px;
+  background: repeating-conic-gradient(#7cc35c 0 25%, #74b955 0 50%) 0 0 / 24px 24px; }
+.sprite .stage svg { display: block; }
+.sprite h3 { font-family: var(--f-title); font-size: 18px; }
+.sprite p { font-size: 13px; color: var(--dim); font-family: var(--f-mono); }
+
+/* ---------- ARENA ---------- */
+.battle { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 48px; align-items: start; }
+.phone { position: relative; width: min(340px, 100%); aspect-ratio: 720 / 1560; border: 10px solid #0b0920; border-radius: 42px; overflow: hidden; display: grid; grid-template-rows: 1280fr 280fr; background: #1d1838; box-shadow: 0 30px 60px rgba(0, 0, 0, .5), 0 0 0 2px var(--line); }
+.phone > svg { width: 100%; height: 100%; display: block; }
+.hud-top { position: absolute; top: 8px; left: 8px; right: 8px; display: flex; justify-content: space-between; align-items: flex-start; }
+.tag { background: rgba(29, 24, 56, .88); border: 2px solid var(--ember); border-radius: 10px; padding: 3px 8px; font-family: var(--f-num); font-size: 11px; line-height: 1.3; }
+.tag.me { position: absolute; left: 8px; bottom: calc(280 / 1560 * 100% + 8px); border-color: var(--moon); }
+.timer { background: linear-gradient(#fbf1d8, #e2cc9c); color: #3a2a14; font-family: var(--f-num); font-size: 15px; padding: 2px 10px; border-radius: 6px; transform: rotate(3deg); box-shadow: 0 3px 0 #2a2350; text-align: center; line-height: 1.2; }
+.timer small { display: block; font-size: 9px; color: #7a6040; }
+.panel { background: linear-gradient(#2c2656, #16122f); border-top: 4px solid var(--gold); padding: 6px 8px 7px; display: grid; grid-template-rows: 1fr auto; gap: 5px; min-height: 0; }
+.hand { display: grid; grid-template-columns: .72fr repeat(4, 1fr); gap: 5px; align-items: end; min-height: 0; }
+.hand .card { padding: 2px; border-radius: 8px; }
+.hand .cin { border-radius: 6px; }
+.hand .next { display: grid; justify-items: center; gap: 1px; font-family: var(--f-hand); font-size: 11px; color: var(--dim); align-self: center; }
+.hand .sel { transform: translateY(-5px); outline: 2px solid var(--gold); outline-offset: 1px; }
+.hand .dim { filter: saturate(.2) brightness(.65); }
+.inkbar { display: flex; align-items: center; gap: 5px; }
+.inkbar .d { position: relative; width: 20px; height: 24px; flex: none; }
+.inkbar .d b { position: absolute; inset: 5px 0 0; display: grid; place-items: center; font: 400 11px var(--f-num); color: #fff; }
+.inkbar .track { flex: 1; height: 11px; border-radius: 6px; background: #0e0b22; border: 2px solid #2a2350; position: relative; overflow: hidden; }
+.inkbar .fill { position: absolute; inset: 0 auto 0 0; width: 62%; background: linear-gradient(90deg, #6a3dd6, #b48cff); }
+.inkbar .ticks { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 calc(10% - 2px), rgba(14, 11, 34, .9) calc(10% - 2px) 10%); }
+.notes { display: grid; gap: 14px; }
+.notes > div { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 14px; align-items: center; }
+.notes .ico { width: 64px; height: 64px; border-radius: 14px; background: var(--bg-2); border: 1px solid var(--line); display: grid; place-items: center; overflow: hidden; }
+.notes .ico svg { width: 56px; height: 56px; }
+.notes b { font-family: var(--f-title); font-size: 18px; display: block; }
+.notes span { color: var(--dim); font-size: 14px; }
+
+/* ---------- UI KIT ---------- */
+.kit { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.kit > div { background: var(--bg-2); border: 1px solid var(--line); border-radius: 18px; padding: 22px; display: grid; gap: 14px; align-content: start; }
+.kit h3 { font-family: var(--f-title); font-size: 20px; }
+.kit .btn { position: relative; display: grid; place-items: center; }
+.kit .btn svg { width: 100%; height: auto; display: block; }
+.kit .btn span { position: absolute; inset: 0 0 8% 0; display: grid; place-items: center; font: 400 clamp(16px, 2vw, 21px) var(--f-num); color: #2a2350; }
+.kit .btn.light span { color: #fff; text-shadow: 0 2px 0 #2a2350; }
+.frames { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.frames svg { width: 100%; height: auto; display: block; }
+.frames figcaption { text-align: center; font-size: 13px; color: var(--dim); margin-top: 4px; }
+.frames figure { margin: 0; }
+.fxrow { display: flex; gap: 6px; flex-wrap: wrap; background: #0e0b22; border-radius: 12px; padding: 10px; }
+.fxrow svg { width: calc((100% - 30px) / 6); min-width: 40px; height: auto; }
+.icons { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
+.icons svg { display: block; border-radius: 22%; box-shadow: 0 8px 20px rgba(0, 0, 0, .4); }
+
+/* ---------- TOKENS & HANDOFF ---------- */
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+.sw { border-radius: 14px; overflow: hidden; background: var(--bg-2); border: 1px solid var(--line); }
+.sw i { display: block; height: 60px; background: var(--c); }
+.sw div { padding: 9px 12px 11px; display: grid; }
+.sw b { font-family: var(--f-num); font-weight: 400; }
+.sw code { font-size: 12px; color: var(--muted); }
+.sw span { font-size: 13px; color: var(--dim); }
+.fonts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 18px; }
+.fonts > div { background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 4px; }
+.fonts .s { font-size: 30px; line-height: 1.25; }
+.fonts small { color: var(--muted); font-size: 13px; }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 640px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid #2c2656; vertical-align: top; }
+th { background: #1f1a3e; color: var(--muted); font-weight: 400; font-size: 13px; }
+td b { font-family: var(--f-num); font-weight: 400; }
+.handoff-grid { display: grid; gap: 20px; }
+pre { margin: 0; background: #0e0b22; border: 1px solid var(--line); border-radius: 14px; padding: 18px; overflow-x: auto; font-family: var(--f-mono); font-size: 13px; line-height: 1.6; color: #d9d3f5; }
+pre .c { color: #7d76a8; } pre .n { color: var(--gold); }
+footer.end { text-align: center; color: var(--muted); font-family: var(--f-hand); font-size: 18px; padding-bottom: 40px; }
+
+@media (max-width: 860px) {
+  .hero-in, .battle { grid-template-columns: minmax(0, 1fr); }
+  .fan { height: 340px; }
+  .fan .card { width: 170px; }
+  .phone { justify-self: center; }
+  .sheet { grid-template-columns: minmax(0, 1fr); }
+  .sheet .card { max-width: 240px; justify-self: center; }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="drop" viewBox="0 0 40 48"><path d="M20 3C20 3 5 20 5 30a15 15 0 0 0 30 0C35 20 20 3 20 3z" fill="#7b4be0" stroke="#2a2350" stroke-width="3.5" stroke-linejoin="round"/><ellipse cx="13.5" cy="27" rx="3" ry="6" fill="#fff" opacity=".45"/></symbol>
+</defs></svg>
+
+<section class="hero" id="hero">
+  <svg class="bg" id="hero-bg" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+  <div class="candle" style="left:8%;top:22%;animation-delay:-1s"></div>
+  <div class="candle" style="left:22%;top:12%;animation-delay:-3s"></div>
+  <div class="candle" style="left:44%;top:30%;animation-delay:-2s"></div>
+  <div class="candle" style="left:62%;top:10%;animation-delay:-4s"></div>
+  <div class="candle" style="left:88%;top:26%;animation-delay:-.5s"></div>
+  <div class="wrap gutter">
+    <div class="hero-in">
+      <div class="hero-copy">
+        <p class="eyebrow">Break Fort · Art Direction v0.2</p>
+        <h1 class="logo"><small>Monster Academy</small>몬스터 클래스</h1>
+        <p class="lead">달이 뜨면 문을 여는 몬스터 마법학교. 로브를 입은 학생들이 성 안뜰에서 기숙사 대항전을 벌입니다. 카드는 모두 50장, 모든 그림은 게임에 바로 넣을 수 있는 PNG로도 뽑아 두었습니다.</p>
+        <div class="chips"><span class="chip">카드 50장</span><span class="chip">교복 로브 · 마법 모자</span><span class="chip">양피지 · 금박 카드</span><span class="chip">PNG 95개 (2배 해상도)</span></div>
+      </div>
+      <div class="fan" id="fan"></div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap gutter">
+
+  <section>
+    <header><p class="eyebrow">What changed</p><h2>v0.1 피드백 반영</h2></header>
+    <div class="changes">
+      <div class="change"><span class="tag">화질</span><b>3단 음영과 광택</b><span>몸통마다 밝은 면, 기본색, 그림자 3단 그라디언트를 넣고 이마에 광택 하이라이트를 올렸습니다. 외곽선은 몸 색을 어둡게 한 색이라 덜 딱딱해 보입니다.</span></div>
+      <div class="change"><span class="tag">귀여움</span><b>큰 눈, 볼터치, 짧은 팔다리</b><span>눈은 홍채 그라디언트에 하이라이트 2개를 넣었고, 모든 캐릭터에 볼터치를 더했습니다. 주문과 건물에도 얼굴이 있습니다.</span></div>
+      <div class="change"><span class="tag">마법학교</span><b>성, 촛불, 로브, 양피지</b><span>밤의 성과 떠다니는 촛불, 넥타이를 맨 교복 로브, 마법사 모자, 양피지와 금박 카드로 분위기를 잡았습니다. 특정 작품의 이름이나 문장은 쓰지 않았습니다.</span></div>
+      <div class="change"><span class="tag">카드</span><b>8장에서 50장으로</b><span>유닛 32 · 주문 10 · 건물 8. 희귀도는 일반 16 · 희귀 16 · 영웅 12 · 전설 6입니다. 기존 8장의 id는 그대로입니다.</span></div>
+      <div class="change"><span class="tag">개발 전달</span><b>요청한 규격 그대로 PNG</b><span>유닛은 요청한 크기의 2배, 파랑/빨강 두 벌, 걷기 2 + 공격 2 프레임 시트로 뽑았습니다.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <header>
+      <p class="eyebrow">Student Registry</p>
+      <h2>카드 도감 50장</h2>
+      <p class="lead">카드를 누르면 크게 보고 능력과 대사를 확인할 수 있습니다. 수치 막대는 기획 방향이고, 실제 숫자는 개발 쪽에서 <code>cards.json</code>으로 맞추면 됩니다.</p>
+    </header>
+    <div class="toolbar">
+      <div class="seg" id="f-type" role="group" aria-label="종류">
+        <button type="button" data-v="all" aria-pressed="true">전체</button><button type="button" data-v="unit" aria-pressed="false">유닛</button><button type="button" data-v="spell" aria-pressed="false">주문</button><button type="button" data-v="building" aria-pressed="false">건물</button><button type="button" data-v="ingame" aria-pressed="false">지금 게임 8장</button>
+      </div>
+      <div class="seg" id="f-rar" role="group" aria-label="희귀도">
+        <button type="button" data-v="all" aria-pressed="true">모든 등급</button><button type="button" data-v="c" aria-pressed="false">일반</button><button type="button" data-v="r" aria-pressed="false">희귀</button><button type="button" data-v="e" aria-pressed="false">영웅</button><button type="button" data-v="l" aria-pressed="false">전설</button>
+      </div>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section>
+    <header>
+      <p class="eyebrow">Sprites for the game</p>
+      <h2>전장 스프라이트</h2>
+      <p class="lead">지금 게임에 있는 8장과 타워 2종입니다. 요청받은 표시 크기의 2배로 그렸고, 팀 색은 교복 로브·목도리·리본·깃발·지붕에만 들어갑니다. 아래 미리보기는 실제 표시 크기이며, 걷기와 공격 프레임이 번갈아 재생됩니다.</p>
+    </header>
+    <div class="sprites" id="sprites"></div>
+  </section>
+
+  <section>
+    <header>
+      <p class="eyebrow">Battlefield</p>
+      <h2>성 안뜰 전장</h2>
+      <p class="lead">강은 빛나는 해자, 다리는 등불 달린 돌다리입니다. 배경은 180도 돌려도 똑같이 보이도록 장식을 점대칭으로 배치해서, 어느 쪽 자리에서 봐도 같은 전장입니다.</p>
+    </header>
+    <div class="battle">
+      <div class="phone" aria-label="전투 화면 시안">
+        <svg id="phone-arena" viewBox="0 0 360 640" preserveAspectRatio="none"></svg>
+        <div class="panel">
+          <div class="hand" id="hud-hand"></div>
+          <div class="inkbar"><span class="d"><svg viewBox="0 0 40 48" width="20" height="24"><use href="#drop"/></svg><b>6</b></span><span class="track"><span class="fill"></span><span class="ticks"></span></span></div>
+        </div>
+        <div class="hud-top"><div class="tag">노을관 · 상대</div><div class="timer"><small>남은 시간</small>2:41</div></div>
+        <div class="tag me">달빛관 · 나</div>
+      </div>
+      <div class="notes" id="notes"></div>
+    </div>
+  </section>
+
+  <section>
+    <header>
+      <p class="eyebrow">UI kit</p>
+      <h2>카드 틀, 버튼, 이펙트, 아이콘</h2>
+      <p class="lead">버튼과 카드 틀에는 글자를 넣지 않았습니다. 이름과 숫자는 게임에서 폰트로 올리면 됩니다.</p>
+    </header>
+    <div class="kit">
+      <div>
+        <h3>메뉴 버튼 540×105</h3>
+        <div class="btn" data-b="gold"><span>대항전 시작</span></div>
+        <div class="btn light" data-b="blue"><span>친구 대전: 방 만들기</span></div>
+        <div class="btn" data-b="parchment"><span>친구 대전: 코드 입력</span></div>
+        <div class="btn light" data-b="red"><span>기권</span></div>
+      </div>
+      <div>
+        <h3>카드 틀 136×175 (희귀도 4종)</h3>
+        <div class="frames" id="frames"></div>
+        <h3>대화 상자</h3>
+        <div id="panel"></div>
+      </div>
+      <div>
+        <h3>폭발 6프레임</h3>
+        <div class="fxrow" id="fx-ex"></div>
+        <h3>배치 마법진 4프레임</h3>
+        <div class="fxrow" id="fx-mc"></div>
+        <h3>투사체</h3>
+        <div class="fxrow" id="fx-pr"></div>
+        <h3>앱 아이콘</h3>
+        <div class="icons" id="icons"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <header><p class="eyebrow">Tokens</p><h2>색과 글꼴</h2></header>
+    <div class="swatches">
+      <div class="sw" style="--c:#2a2350"><i></i><div><b>잉크 외곽선</b><code>#2A2350</code><span>UI 외곽선, 그림자</span></div></div>
+      <div class="sw" style="--c:#1d1838"><i></i><div><b>밤 벨벳</b><code>#1D1838</code><span>카드 바탕, 하단 패널</span></div></div>
+      <div class="sw" style="--c:#f4e9d2"><i></i><div><b>양피지</b><code>#F4E9D2</code><span>리본, 대화 상자</span></div></div>
+      <div class="sw" style="--c:#f2c14e"><i></i><div><b>금박</b><code>#F2C14E</code><span>선택, 주요 버튼</span></div></div>
+      <div class="sw" style="--c:#7b4be0"><i></i><div><b>잉크</b><code>#7B4BE0</code><span>마나 바, 코스트</span></div></div>
+      <div class="sw" style="--c:#4f8bff"><i></i><div><b>달빛 블루</b><code>#4F8BFF / #2F5FC8</code><span>내 팀</span></div></div>
+      <div class="sw" style="--c:#ff6b4a"><i></i><div><b>노을 코랄</b><code>#FF6B4A / #C8442C</code><span>상대 팀</span></div></div>
+      <div class="sw" style="--c:linear-gradient(90deg,#3fc9c9,#6a4bd8)"><i></i><div><b>마법 해자</b><code>#3FC9C9 → #6A4BD8</code><span>강</span></div></div>
+    </div>
+    <div class="fonts">
+      <div><small>제목 · 카드 이름</small><span class="s" style="font-family:var(--f-title)">고운바탕 Bold</span><small>Gowun Batang 700</small></div>
+      <div><small>숫자 · 버튼</small><span class="s" style="font-family:var(--f-num)">주아 2:41</span><small>Jua</small></div>
+      <div><small>대사 · 손글씨</small><span class="s" style="font-family:var(--f-hand)">개구 에취!</span><small>Gaegu 700</small></div>
+      <div><small>본문</small><span class="s" style="font-family:var(--f-body);font-size:24px">고운돋움</span><small>Gowun Dodum</small></div>
+    </div>
+  </section>
+
+  <section>
+    <header>
+      <p class="eyebrow">Developer handoff</p>
+      <h2>개발자 전달 파일</h2>
+      <p class="lead">모든 PNG는 <code>design/assets/</code>에 있고, 크기와 프레임 정보는 <code>design/assets/manifest.json</code>에 정리했습니다. 그림을 고치면 <code>node design/export-assets.js</code>로 한 번에 다시 뽑을 수 있습니다.</p>
+    </header>
+    <div class="handoff-grid">
+      <div class="tbl"><table>
+        <thead><tr><th>파일</th><th>크기 (2배)</th><th>내용</th></tr></thead>
+        <tbody>
+          <tr><td><code>units/&lt;id&gt;_blue.png</code> · <code>_red.png</code></td><td>창병·폭탄·기사 126 / 석궁 112 / 박쥐 84 / 거인 224 프레임 × 4</td><td>가로 4프레임: 걷기1, 걷기2, 공격1, 공격2. 원점 0.5, 0.5</td></tr>
+          <tr><td><code>units/catapult_blue.png</code> · <code>_red.png</code></td><td>216×216</td><td>투석기 1장 (깃발이 팀 색)</td></tr>
+          <tr><td><code>towers/tower_main_*.png</code> · <code>tower_side_*.png</code></td><td>272 / 208</td><td>지붕과 깃발이 팀 색. 탑 몸체가 이미지 가운데</td></tr>
+          <tr><td><code>units/spell_fireball.png</code></td><td>160×160</td><td>불덩이(용 선생 재채기) 아이콘</td></tr>
+          <tr><td><code>cards/card_&lt;id&gt;.png</code> × 50</td><td>272×350</td><td>틀 + 그림 완성본. 코스트 숫자는 왼쪽 위 방울, 이름은 리본에 글자로</td></tr>
+          <tr><td><code>ui/card_frame_c|r|e|l.png</code></td><td>272×350</td><td>그림 창이 비어 있는 틀 (새 카드용)</td></tr>
+          <tr><td><code>ui/button_*.png</code> · <code>_pressed.png</code></td><td>1080×210</td><td>금박·파랑·양피지·빨강, 눌림 상태 포함</td></tr>
+          <tr><td><code>ui/panel.png</code></td><td>1120×704</td><td>일시정지·결과 창</td></tr>
+          <tr><td><code>bg/arena.png</code></td><td>1440×2560</td><td>전장 배경 (점대칭, 타워 없음)</td></tr>
+          <tr><td><code>bg/menu.png</code></td><td>1440×3120</td><td>메뉴 배경 (밤의 성)</td></tr>
+          <tr><td><code>fx/explosion.png</code> · <code>fx/deploy_circle.png</code></td><td>160 × 6 / 160 × 4</td><td>폭발, 배치 마법진 시트</td></tr>
+          <tr><td><code>fx/projectile_*.png</code></td><td>64×64</td><td>별사탕, 플라스크, 푸딩, 도깨비불(타워), 불덩이</td></tr>
+          <tr><td><code>icons/*.png</code></td><td>512 / 192 / 180</td><td><code>client/public/icons</code>의 파일 이름과 같습니다</td></tr>
+        </tbody>
+      </table></div>
+      <pre><span class="c">// 팀 색: 두 벌(blue/red)을 미리 뽑아 두었으니 tint 없이 바로 쓰면 됩니다.</span>
+<span class="c">// 예) Phaser 로드</span>
+this.load.spritesheet(<span class="n">"u_spearman_0"</span>, <span class="n">"assets/units/spearman_blue.png"</span>, { frameWidth: <span class="n">126</span>, frameHeight: <span class="n">126</span> });
+this.anims.create({ key: <span class="n">"spearman_walk_0"</span>, frames: this.anims.generateFrameNumbers(<span class="n">"u_spearman_0"</span>, { frames: [<span class="n">0</span>, <span class="n">1</span>] }), frameRate: <span class="n">4</span>, repeat: <span class="n">-1</span> });
+this.anims.create({ key: <span class="n">"spearman_attack_0"</span>, frames: this.anims.generateFrameNumbers(<span class="n">"u_spearman_0"</span>, { frames: [<span class="n">2</span>, <span class="n">3</span>] }), frameRate: <span class="n">8</span> });
+<span class="c">// 표시: setScale(1 / TEX_SCALE)  (TEX_SCALE = 2)</span>
+
+<span class="c">// 글꼴 (index.html)</span>
+&lt;link href=<span class="n">"https://fonts.googleapis.com/css2?family=Jua&amp;family=Gaegu:wght@700&amp;family=Gowun+Dodum&amp;family=Gowun+Batang:wght@700&amp;display=swap"</span> rel=<span class="n">"stylesheet"</span>&gt;</pre>
+      <div class="tbl"><table>
+        <thead><tr><th>id</th><th>이름</th><th>종류</th><th>코스트</th><th>희귀도</th><th>역할</th></tr></thead>
+        <tbody id="roster"></tbody>
+      </table></div>
+    </div>
+  </section>
+</main>
+
+<footer class="end gutter">몬스터 클래스 · Break Fort 아트 디렉션 v0.2</footer>
+
+<div class="modal" id="modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="m-name">
+    <button class="close" type="button" id="m-close">닫기</button>
+    <div id="m-card"></div>
+    <div>
+      <p class="kicker" id="m-kicker"></p>
+      <h3 id="m-name"></h3>
+      <div class="facts" id="m-facts"></div>
+      <p class="ab" id="m-ab"></p>
+      <p class="q" id="m-q"></p>
+      <div class="tiers" id="m-tiers"></div>
+    </div>
+  </div>
+</div>
+
+<script src="art.js"></script>
+<script>
+(function () {
+  const M = window.MC;
+  const TYPE = { unit: '유닛', spell: '주문', building: '건물' };
+  const RN = { c: '일반', r: '희귀', e: '영웅', l: '전설' };
+  const inline = (art, w, h, attrs = '') => `<svg viewBox="${art.vb}" width="${w}"${h === 'auto' ? '' : ` height="${h}"`} ${attrs}><defs>${art.defs}</defs>${art.body}</svg>`;
+
+  function cardHTML(c, extra = '') {
+    const art = M.artFor(c, 0);
+    return `<button class="card r-${c.r} ${extra}" type="button" data-id="${c.id}" aria-label="${c.name} 크게 보기">
+      <span class="cin">
+        <span class="art" style="--ac:${c.art.c}">${inline(art, '100%', '100%', 'preserveAspectRatio="xMidYMax meet"')}${c.n > 1 ? `<span class="cnt">×${c.n}</span>` : ''}</span>
+        <span class="cost"><svg viewBox="0 0 40 48"><use href="#drop"/></svg><b>${c.cost}</b></span>
+        <span class="gem"></span>
+        <span class="ribbon">${c.name}</span>
+        <span class="meta">${TYPE[c.type]} · ${RN[c.r]}</span>
+      </span></button>`;
+  }
+
+  // hero
+  const bg = M.menuBgArt();
+  const hb = document.getElementById('hero-bg');
+  hb.setAttribute('viewBox', '0 120 720 1260');
+  hb.innerHTML = `<defs>${bg.defs}</defs>${bg.body}`;
+  document.getElementById('fan').innerHTML = ['gumiho', 'fireball', 'sleepyDragon'].map((id) => cardHTML(M.ROSTER_BY_ID[id])).join('');
+
+  // gallery
+  const gal = document.getElementById('gallery');
+  gal.innerHTML = M.ROSTER.map((c) => cardHTML(c)).join('');
+  const state = { type: 'all', r: 'all' };
+  function applyFilter() {
+    let n = 0;
+    gal.querySelectorAll('.card').forEach((el) => {
+      const c = M.ROSTER_BY_ID[el.dataset.id];
+      const okT = state.type === 'all' || (state.type === 'ingame' ? c.inGame : c.type === state.type);
+      const okR = state.r === 'all' || c.r === state.r;
+      el.hidden = !(okT && okR);
+      if (!el.hidden) n++;
+    });
+    document.getElementById('count').textContent = `${n}장 표시 중 · 전체 ${M.ROSTER.length}장`;
+  }
+  function seg(id, key) {
+    const box = document.getElementById(id);
+    box.addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      box.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      state[key] = b.dataset.v; applyFilter();
+    });
+  }
+  seg('f-type', 'type'); seg('f-rar', 'r'); applyFilter();
+
+  // modal
+  const modal = document.getElementById('modal');
+  let lastFocus = null;
+  function openCard(id) {
+    const c = M.ROSTER_BY_ID[id];
+    document.getElementById('m-card').innerHTML = cardHTML(c);
+    document.getElementById('m-kicker').textContent = `${c.id}${c.old ? ' · 지금 이름 ' + c.old : ''}`;
+    document.getElementById('m-name').textContent = c.name;
+    document.getElementById('m-facts').innerHTML = [TYPE[c.type], `코스트 ${c.cost}`, RN[c.r], c.n > 1 ? `${c.n}명` : '', c.role].filter(Boolean).map((t) => `<span>${t}</span>`).join('');
+    document.getElementById('m-ab').textContent = c.ab;
+    document.getElementById('m-q').textContent = `“${c.q}”`;
+    const labels = c.type === 'spell' ? [] : [['체력', c.t[0]], ['공격', c.t[1]], ['속도', c.t[2]]].filter(([, v]) => v > 0);
+    if (c.type === 'spell') labels.push(['위력', Math.max(1, c.t[1])]);
+    document.getElementById('m-tiers').innerHTML = labels.map(([k, v]) => `<div><span>${k}</span><span class="pips">${[1, 2, 3, 4, 5].map((i) => `<i class="${i <= v ? 'on' : ''}"></i>`).join('')}</span></div>`).join('');
+    lastFocus = document.activeElement;
+    modal.hidden = false;
+    document.getElementById('m-close').focus();
+  }
+  function closeModal() { modal.hidden = true; if (lastFocus) lastFocus.focus(); }
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest('.card');
+    if (card && !card.closest('#modal') && !card.closest('.phone')) openCard(card.dataset.id);
+  });
+  document.getElementById('m-close').addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+
+  // sprites (actual display size, animated frames)
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const spriteBox = document.getElementById('sprites');
+  const anims = [];
+  const unitIds = ['spearman', 'crossbow', 'shieldGiant', 'bats', 'bombGoblin', 'knights'];
+  const poses = [...M.POSES.walk, ...M.POSES.attack];
+  spriteBox.innerHTML = unitIds.map((id) => {
+    const s = M.SPRITE_SIZES[id], c = M.ROSTER_BY_ID[id];
+    const frames = (team) => poses.map((p, i) => inline(M.charArt(c.art, team, p), s, s, `data-f="${i}" ${i ? 'style="display:none"' : ''}`)).join('');
+    return `<div class="sprite"><div class="stage"><span data-anim>${frames(0)}</span><span data-anim>${frames(1)}</span></div><h3>${c.name}</h3><p>${id} · ${s}px → ${s * 2}px × 4프레임</p></div>`;
+  }).join('') +
+  `<div class="sprite"><div class="stage">${inline(M.bldArt(M.ROSTER_BY_ID.catapult.art, 0), 108, 108)}${inline(M.bldArt(M.ROSTER_BY_ID.catapult.art, 1), 108, 108)}</div><h3>급식 투석기</h3><p>catapult · 108px → 216px</p></div>` +
+  `<div class="sprite"><div class="stage">${inline(M.towerArt('main', 0), 136, 136)}${inline(M.towerArt('side', 1), 104, 104)}</div><h3>기숙사 종탑 · 등불 탑</h3><p>tower 136px / 104px → 272 / 208</p></div>`;
+  spriteBox.querySelectorAll('[data-anim]').forEach((el) => anims.push(el));
+  let tick = 0;
+  if (!reduce) setInterval(() => {
+    tick++;
+    const seq = [0, 1, 0, 1, 2, 3, 0, 1];
+    const f = seq[tick % seq.length];
+    anims.forEach((el) => el.querySelectorAll('svg').forEach((s) => { s.style.display = +s.dataset.f === f ? '' : 'none'; }));
+  }, 320);
+
+  // phone arena composite
+  const ar = M.arenaArt();
+  const place = (art, x, y, size, op = 1) => `<svg x="${x - size / 2}" y="${y - size / 2}" width="${size}" height="${size}" viewBox="${art.vb}" opacity="${op}"><defs>${art.defs}</defs>${art.body}</svg>`;
+  const u = (id, team, x, y, size) => place(M.charArt(M.ROSTER_BY_ID[id].art, team), x, y, size);
+  const mc = M.magicCircleFrame(3, 4, '#f3efe6');
+  document.getElementById('phone-arena').innerHTML = `<defs>${ar.defs}</defs>${ar.body}` +
+    place(M.towerArt('main', 1), 180, 72, 74) + place(M.towerArt('side', 1), 70, 128, 56) + place(M.towerArt('side', 1), 290, 128, 56) +
+    place(M.towerArt('main', 0), 180, 568, 74) + place(M.towerArt('side', 0), 70, 512, 56) + place(M.towerArt('side', 0), 290, 512, 56) +
+    u('apprenticeCat', 1, 92, 240, 40) + u('shieldGiant', 0, 70, 384, 56) + u('crossbow', 0, 252, 440, 36) + u('broomOwl', 1, 296, 226, 40) +
+    place(mc, 186, 470, 54) + place(M.charArt(M.ROSTER_BY_ID.starBunny.art, 0), 186, 466, 38, 0.6) +
+    place(M.projectileArt('star'), 262, 400, 14) + place(M.projectileArt('wisp'), 286, 190, 14);
+  const H = (id, cls = '') => cardHTML(M.ROSTER_BY_ID[id], cls);
+  document.getElementById('hud-hand').innerHTML = `<div class="next">다음${H('bats')}</div>` + H('shieldGiant', 'dim') + H('crossbow', 'sel') + H('fireball') + H('catapult');
+
+  const ico = (art) => inline(art, 56, 56);
+  document.getElementById('notes').innerHTML = [
+    [ico(M.towerArt('main', 0)), '기숙사 종탑 (메인)', '세 개의 첨탑, 팀 색 지붕과 깃발. 문 양옆에 기숙사 휘장이 걸립니다.'],
+    [ico(M.towerArt('side', 1)), '등불 탑 (사이드)', '창의 등불에서 도깨비불 투사체를 쏩니다.'],
+    [ico(M.magicCircleFrame(3)), '배치 마법진', '배치 대기 1초 동안 원이 그려지고 유닛이 반투명하게 보입니다.'],
+    [ico(M.explosionFrame(2)), '폭발 · 용 선생 재채기', '별 조각이 튀는 6프레임 폭발. 주문이 터질 때 화면을 살짝 흔듭니다.'],
+    [ico(M.projectileArt('pudding')), '투사체', '새총은 별사탕, 슬라임은 플라스크, 투석기는 살아 있는 푸딩을 날립니다.'],
+  ].map(([i, b, s]) => `<div><span class="ico">${i}</span><div><b>${b}</b><span>${s}</span></div></div>`).join('');
+
+  // UI kit
+  document.querySelectorAll('.btn[data-b]').forEach((el) => el.insertAdjacentHTML('afterbegin', inline(M.buttonArt(el.dataset.b), '100%', 'auto')));
+  document.getElementById('frames').innerHTML = ['c', 'r', 'e', 'l'].map((r) => `<figure>${inline(M.cardFrameArt(r), '100%', 'auto')}<figcaption>${RN[r]}</figcaption></figure>`).join('');
+  document.getElementById('panel').innerHTML = inline(M.panelArt(), '100%', 'auto');
+  document.getElementById('fx-ex').innerHTML = [0, 1, 2, 3, 4, 5].map((i) => inline(M.explosionFrame(i), 60, 60)).join('');
+  document.getElementById('fx-mc').innerHTML = [0, 1, 2, 3].map((i) => inline(M.magicCircleFrame(i), 60, 60)).join('');
+  document.getElementById('fx-pr').innerHTML = ['star', 'potion', 'pudding', 'wisp', 'fireball'].map((p) => inline(M.projectileArt(p), 44, 44)).join('');
+  document.getElementById('icons').innerHTML = inline(M.iconArt(false), 96, 96) + inline(M.iconArt(true), 72, 72) + inline(M.iconArt(false), 48, 48);
+
+  document.getElementById('roster').innerHTML = M.ROSTER.map((c) => `<tr><td><code>${c.id}</code></td><td><b>${c.name}</b>${c.old ? `<br><small style="color:var(--muted)">지금: ${c.old}</small>` : ''}</td><td>${TYPE[c.type]}</td><td>${c.cost}</td><td>${RN[c.r]}</td><td>${c.role}</td></tr>`).join('');
+})();
+</script>

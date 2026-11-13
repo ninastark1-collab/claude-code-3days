@@ -1,0 +1,761 @@
+<title>삼국 인물·전장 아트</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@600;900&family=Song+Myung&display=swap">
+<style>
+/* Layout: 바이블과 같은 문서 토큰. 초상은 5:6 카드 격자, 전장 유닛은 헥스 타일 격자, 사이에 표와 해부도. 게임 그림은 고정 팔레트. */
+:root {
+  --bg: #E8EBE3; --surface: #F3F5EF; --fg: #1B1F1D; --muted: #59625C; --line: #C6CCC1;
+  --seal: #A93526; --accent: #2F6B4E;
+  --font-display: "Song Myung", "Noto Serif KR", serif;
+  --font-hanja: "Noto Serif KR", "Song Myung", serif;
+  --font-ui: "IBM Plex Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --g-lacquer: #13120F; --g-lacquer-2: #24211B; --g-gold: #C3A15C; --g-gold-dim: rgba(195,161,92,.35);
+  --g-text: #EEE8D7; --g-text-dim: #A49D89; --g-cinnabar: #B5382A; --g-paper: #D8D6C1; --g-ink: #1A1916;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg:#121514; --surface:#1A1E1C; --fg:#E2E6DE; --muted:#9BA49D; --line:#2D3430; --seal:#D25A4A; --accent:#7DBB95; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg:#121514; --surface:#1A1E1C; --fg:#E2E6DE; --muted:#9BA49D; --line:#2D3430; --seal:#D25A4A; --accent:#7DBB95; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); font-size: 15px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 80px; }
+.wrap { max-width: 1200px; margin: 0 auto; display: grid; gap: 72px; }
+a { color: var(--accent); }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; margin: 0; line-height: 1.25; text-wrap: balance; }
+h1 { font-size: clamp(34px, 6vw, 58px); } h2 { font-size: clamp(25px, 3.4vw, 34px); } h3 { font-size: 19px; }
+p { margin: 0; max-width: 70ch; }
+.eyebrow { font-size: 12px; letter-spacing: .14em; color: var(--muted); font-weight: 500; }
+.lead { font-size: 17px; color: var(--muted); margin-top: 14px; }
+.sec { display: grid; gap: 22px; }
+.sec-head { display: grid; gap: 8px; }
+.hz { font-family: var(--font-hanja); font-weight: 900; color: var(--seal); font-size: 14px; letter-spacing: .3em; }
+.sub { font-size: 13.5px; color: var(--muted); }
+
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.fact { background: var(--surface); padding: 16px 18px; display: grid; gap: 3px; align-content: start; min-width: 0; }
+.fact .k { font-size: 12px; color: var(--muted); }
+.fact .v { font-family: var(--font-display); font-size: 24px; line-height: 1.25; }
+.fact p { font-size: 13px; color: var(--muted); }
+
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+table { width: 100%; border-collapse: collapse; min-width: 680px; font-size: 14px; }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; font-weight: 500; color: var(--muted); letter-spacing: .08em; }
+tr:last-child td { border-bottom: 0; }
+td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td:first-child { font-family: var(--font-display); font-size: 16px; white-space: nowrap; }
+
+/* 초상 */
+.pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px; }
+.pcard { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.pcard svg { width: 100%; height: auto; display: block; border-radius: 3px; box-shadow: 0 0 0 1px rgba(195,161,92,.35); }
+.pcard .nm { font-family: var(--font-display); font-size: 19px; line-height: 1.1; }
+.pcard .nm small { font-size: 13px; color: var(--muted); margin-left: 4px; }
+.pcard .tr { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.pgrid.small { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 12px; }
+.pgrid.small .nm { font-size: 15px; }
+.pgrid.small .tr { font-size: 11px; }
+.row-demo { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; }
+.sizes { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; background: var(--g-lacquer); padding: 22px; border-radius: 4px; }
+.sizes figure { margin: 0; display: grid; gap: 6px; justify-items: center; color: var(--g-text-dim); font-size: 11.5px; }
+.seal20 { width: 20px; height: 20px; display: grid; place-items: center; font-family: var(--font-hanja); font-weight: 900; font-size: 11px; color: var(--g-text); background: #3E7D5A; border-radius: 2px; }
+
+/* 전장 */
+.ugrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+.ucard { background: var(--surface); border: 1px solid var(--line); padding: 10px 12px 14px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.ucard svg { width: 100%; height: auto; display: block; background: #2E2A22; border-radius: 3px; }
+.ucard .nm { font-family: var(--font-display); font-size: 17px; }
+.ucard .tg { font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+.ucard .tg b { color: var(--fg); font-weight: 600; }
+.group { display: flex; align-items: baseline; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 6px; margin-top: 6px; }
+.group h3 { font-size: 21px; }
+.group span { font-size: 13px; color: var(--muted); }
+.anat { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px; align-items: center; }
+.anat svg { width: 100%; height: auto; background: #2E2A22; border-radius: 4px; }
+.anat ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; font-size: 14.5px; }
+.heroes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.hero { background: var(--surface); border: 1px solid var(--line); display: grid; gap: 6px; padding: 12px 14px 16px; min-width: 0; }
+.hero svg { width: 100%; height: auto; background: linear-gradient(180deg, #DAD7C4, #B9B5A0); border-radius: 3px; }
+.weap { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 12px; }
+.weap figure { margin: 0; background: var(--g-lacquer); border-radius: 3px; padding: 10px 8px 12px; display: grid; justify-items: center; gap: 6px; color: var(--g-text); }
+.weap svg { width: 100%; height: 150px; }
+.weap figcaption { font-family: var(--font-display); font-size: 15px; text-align: center; line-height: 1.25; }
+.weap figcaption small { display: block; font-family: var(--font-ui); font-size: 10.5px; color: var(--g-text-dim); }
+
+.ph-box { position: relative; width: 100%; max-width: 900px; aspect-ratio: 900 / 446; }
+.ph { position: absolute; left: 0; top: 0; width: 900px; height: 446px; transform-origin: 0 0; transform: scale(var(--s, .5)); background: #0B0B0A; border-radius: 62px; box-shadow: 0 0 0 2px #3A3A36, 0 26px 50px -24px rgba(0,0,0,.55); }
+.scr { position: absolute; left: 28px; top: 28px; width: 844px; height: 390px; border-radius: 40px; overflow: hidden; background: #14130F; color: var(--g-text); }
+.island { position: absolute; left: 10px; top: 160px; width: 34px; height: 126px; background: #000; border-radius: 20px; z-index: 5; }
+
+.docnav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.docnav a { font-size: 13.5px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 3px; text-decoration: none; color: var(--fg); background: var(--surface); }
+.docnav a.here { border-color: var(--seal); color: var(--seal); }
+footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 18px; }
+@media (max-width: 720px) { .two, .anat { grid-template-columns: minmax(0, 1fr); } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="pv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></linearGradient>
+    <radialGradient id="pglow" cx=".42" cy=".38" r=".7"><stop offset="0" stop-color="#EEE8D7" stop-opacity=".22"/><stop offset="1" stop-color="#EEE8D7" stop-opacity="0"/></radialGradient>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">아트 설계서 v0.3 · 2026년 11월 12일 · 담당: 디자인 · 비주얼 바이블·모바일 화면 설계와 한 세트</div>
+  <h1>삼국 인물·전장 아트</h1>
+  <p class="lead">무장 526명의 얼굴과 전장의 장수·병사를 어떻게 그릴지 정한 문서다. 이 페이지의 초상과 유닛은 모두 코드로 조립한 시안이다. 정식 일러스트가 나오기 전까지 게임에 바로 넣어 쓸 수 있고, 일러스트 작가에게는 인물별 특징 지시서가 된다. <b>v0.3에서 화풍을 귀여운 SD 캐릭터(머리가 큰 2~3등신)로 바꿨다.</b> 사실적인 그림도 캐릭터도 아닌 애매함을 없애고, 장수마다의 특징은 더 과장해서 살렸다. v0.2에서 세력 색을 색약 검증을 거친 안료로 바꾸고, 장각·헌제·사마의와 지형 타일 9종, 전투 범위 색을 추가했다.</p>
+  <nav class="docnav" aria-label="디자인 문서"><a href="https://claude.ai/artifact/C62iEPXhV4ELCo1QsrX1ZS" target="_blank" rel="noopener">비주얼 바이블</a><a href="https://claude.ai/artifact/GJzoWaSmYzMnbTngqi2Shi" target="_blank" rel="noopener">모바일 화면 설계</a><a class="here" href="https://claude.ai/artifact/JryyqWc8V25Z8W3rYDrP3o" target="_blank" rel="noopener">인물·전장 아트</a></nav>
+</header>
+
+<section class="sec" aria-labelledby="s-ref">
+  <div class="sec-head"><div class="hz">據</div><h2 id="s-ref">참고한 것</h2><p>개발 쪽 데이터(<code>data/officers*.json</code>, 전투 엔진)와 게임마스터 설계노트, 게이머 위시리스트를 읽고 아트가 감당해야 할 범위를 셌다.</p></div>
+  <div class="facts">
+    <div class="fact"><div class="k">무장 데이터</div><div class="v">526명</div><p>능력 최고치 95 이상 26명, 85~94 91명, 70~84 252명, 그 아래 157명.</p></div>
+    <div class="fact"><div class="k">설계노트 40장</div><div class="v">초상은 자체 제작</div><p>기존 게임 초상을 참고해 그리면 안 된다. 화풍 통일이 가장 중요하다고 적혀 있다.</p></div>
+    <div class="fact"><div class="k">위시리스트</div><div class="v">얼굴이 생명</div><p>“장수가 많아도 얼굴이 있어야 애착이 생김.” 꼭 있어야 할 항목(★★★)이다.</p></div>
+    <div class="fact"><div class="k">설계노트 37장</div><div class="v">병종 7계열</div><p>창·기·궁·노·공성·수군·정예. 모든 병종에 약점이 하나씩 있다.</p></div>
+    <div class="fact"><div class="k">설계노트 22장</div><div class="v">정예 9 · 함선 5</div><p>함진영, 백마의종, 청주병, 호표기, 서량 철기, 백이병, 무당비군, 해번군, 등갑병. 주가, 몽충, 투함, 누선, 화선.</p></div>
+    <div class="fact"><div class="k">현재 전투 엔진</div><div class="v">보병·기병·궁병</div><p>지금 코드에는 세 병종만 있다. 아트는 확장을 대비해 20종을 미리 설계했다.</p></div>
+  </div>
+</section>
+
+<!-- 초상 등급 -->
+<section class="sec" aria-labelledby="s-tier">
+  <div class="sec-head"><div class="hz">像</div><h2 id="s-tier">초상은 세 등급으로 만든다</h2><p>526명 모두에게 일러스트를 그리면 비용이 감당되지 않는다. 연의에서 비중이 큰 순서로 등급을 나누고, 맨 아래 등급은 조립식 초상으로 채운다. 세 등급 모두 같은 얼굴 규칙과 같은 배경, 같은 선 굵기를 써서 섞여 있어도 한 게임처럼 보이게 한다.</p></div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>등급</th><th>인원</th><th>만드는 것</th><th>나이대</th><th>표정</th><th>예</th></tr></thead>
+    <tbody>
+      <tr><td>특급 명장</td><td class="n">약 40명</td><td>전신 일러스트 + 흉상. 이벤트 컷인과 명장면용 장면 그림</td><td>3단계 (청년·장년·노년)</td><td>평상·분노·웃음·부상</td><td>유비, 관우, 장비, 조운, 제갈량, 조조, 여포, 손권, 주유</td></tr>
+      <tr><td>일급</td><td class="n">약 120명</td><td>흉상 일러스트</td><td>2단계</td><td>평상·분노</td><td>하후연, 장료, 감녕, 방통, 마초, 황충</td></tr>
+      <tr><td>일반</td><td class="n">약 366명</td><td>조립식 초상 (이 페이지의 생성기)</td><td>나이에 따라 자동</td><td>4종 자동</td><td>조앙, 봉기, 왕위, 곽원 등</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>화풍 규칙</th><th>내용</th></tr></thead>
+    <tbody>
+      <tr><td>화풍</td><td><b>SD 캐릭터</b>. 초상은 머리가 화면의 60%를 차지하고, 전장 피규어는 2등신. 세계(지도·UI)는 수묵 그대로 두고 인물만 귀엽게 해서 “먹 그림 위의 인형”처럼 보이게 한다.</td></tr><tr><td>선과 색</td><td>둥근 고동색 윤곽선(흉상 2.6px), 평면 채색에 볼터치. 그림자는 한 단계만. 검정 대신 고동색 선을 써서 부드럽게.</td></tr><tr><td>눈</td><td>성격은 눈에 담는다. 온화(큰 타원과 반짝임), 날카로움(윗눈꺼풀이 일자), 봉황눈(관우), 동그란 눈(장비), 실눈(조조·사마의), 여성 눈(속눈썹). 웃으면 ^^, 다치면 눈물.</td></tr><tr><td>특징 과장</td><td>관우 수염은 몸통까지, 장비 수염은 가시 공처럼, 여포 꿩깃은 더듬이처럼, 유비 귀는 크게, 제갈량 부채는 얼굴만큼.</td></tr>
+      <tr><td>구도</td><td>어깨 위 흉상, 5:6 비율. 눈높이는 위에서 55% 지점. 정면 고정이라 조립식 부품이 어긋나지 않는다.</td></tr>
+      <tr><td>배경</td><td>세력색 바탕에 위쪽 빛, 아래로 갈수록 어둡게. 세력이 바뀌면 배경만 다시 칠한다.</td></tr>
+      <tr><td>시대 고증</td><td>귀엽게 줄여도 후한 말 복식의 단서는 지킨다. 관(冠)과 두건, 교령 옷깃, 투구의 술. 후대 명·청 복식과 판타지 갑옷은 쓰지 않는다.</td></tr><tr><td>무거운 장면</td><td>귀여운 화풍이어도 명장 사망 같은 장면은 색을 빼고, 감은 눈과 눈물로 무게를 싣는다. 우스꽝스러운 표정은 쓰지 않는다.</td></tr>
+      <tr><td>얼굴 단서</td><td>연의 원문의 외모 묘사를 그대로 시각화한다. 관우의 붉은 얼굴, 장비의 범 수염, 손권의 푸른 눈과 붉은 수염, 유비의 큰 귀.</td></tr>
+      <tr><td>금지</td><td>다른 게임·애니메이션의 SD 캐릭터를 닮게 그리는 것, 실제 배우 사진을 바탕으로 그리는 것. 귀엽게 만들되 장수마다 실루엣이 달라야 한다.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="sec" aria-labelledby="s-famous">
+  <div class="sec-head"><div class="hz">英傑</div><h2 id="s-famous">특급 명장 시안 15명</h2><p>조립식 생성기로 만든 시안이다. 정식 일러스트는 아래 적은 <b>얼굴 단서</b>를 반드시 지켜서 그린다. 세력색은 194년 기준이다.</p></div>
+  <div class="pgrid" id="famous"></div>
+</section>
+
+<section class="sec" aria-labelledby="s-var">
+  <div class="sec-head"><div class="hz">變</div><h2 id="s-var">나이와 표정</h2><p>184년부터 280년까지 이어지는 게임이라 같은 무장이 수십 년을 산다. 나이에 따라 수염과 머리색이 바뀌고, 이벤트 대화에서는 표정이 바뀐다.</p></div>
+  <div class="two">
+    <div class="sec" style="gap:10px"><h3>조운의 일생</h3><p class="sub">191년 공손찬 휘하, 208년 장판, 228년 기곡. 젊을 때는 수염 없이, 쉰 넘어 흰머리.</p><div class="row-demo" id="ages"></div></div>
+    <div class="sec" style="gap:10px"><h3>장비의 네 표정</h3><p class="sub">이벤트 대사에 맞춰 바꾼다. 일반 등급도 눈썹과 입만 바꿔 자동으로 만든다.</p><div class="row-demo" id="exprs"></div></div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="s-gen">
+  <div class="sec-head"><div class="hz">造</div><h2 id="s-gen">조립식 초상 생성 규칙</h2><p>일반 등급 366명은 능력치와 이름(고유 ID)만으로 얼굴을 자동으로 만든다. 같은 ID는 언제나 같은 얼굴이 나온다. 아래 24명은 실제 게임 데이터에서 뽑아 생성한 결과다. 세력색은 시연용으로 섞었다.</p></div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>부위</th><th>규칙</th><th>종류</th></tr></thead>
+    <tbody>
+      <tr><td>옷</td><td>무력 70 이상이고 무력 ≥ 지력이면 갑옷, 아니면 문관 옷</td><td>갑옷 · 문관 옷 · 군주 옷 · 여성 옷 · 이민족</td></tr>
+      <tr><td>머리</td><td>갑옷이면 투구·머리띠·상투 중 하나, 문관은 정치 65 또는 지력 70 이상이면 관(冠)</td><td>상투 · 관 · 금관 · 투구 · 두건 · 윤건 · 머리띠 · 꿩깃 · 여성 쪽머리 · 이민족 깃관</td></tr>
+      <tr><td>눈</td><td>야망 9 이상이면 날카로운 눈, 매력 75 이상이면 온화한 눈, 나머지는 ID로 고름</td><td>온화 · 날카로움 · 봉황눈 · 둥근 눈 · 가는 눈 · 여성</td></tr>
+      <tr><td>눈썹</td><td>무력 80 이상 치켜뜬 눈썹, 65 이상 굵은 눈썹, 그 아래 가는 눈썹</td><td>가늘게 · 굵게 · 치켜뜸 · 범 눈썹 · 여성</td></tr>
+      <tr><td>입</td><td>매력 75 이상 미소, 야망 10 이상 다문 입</td><td>보통 · 미소 · 다문 입 · 고함</td></tr>
+      <tr><td>수염</td><td>ID로 고르되 24세 아래는 없음, 55세 이상 회색, 68세 이상 흰색</td><td>없음 · 콧수염 · 염소수염 · 콧수염+염소 · 덥수룩 · 긴 수염 · 범 수염 · 세 가닥</td></tr>
+      <tr><td>얼굴형·피부</td><td>ID로 고름. 특급·일급은 특징 시트로 직접 지정</td><td>갸름 · 각진 · 긴 · 둥근 / 피부 6색</td></tr>
+    </tbody>
+  </table></div>
+  <div class="pgrid small" id="auto"></div>
+</section>
+
+<section class="sec" aria-labelledby="s-size">
+  <div class="sec-head"><div class="hz">度</div><h2 id="s-size">크기별 쓰임</h2><p>한 장의 초상을 잘라 네 가지 크기로 쓴다. 44pt 이하에서는 얼굴만 잘라야 알아본다.</p></div>
+  <div class="sizes" id="sizes"></div>
+</section>
+
+<!-- 전장 -->
+<section class="sec" aria-labelledby="s-zoom">
+  <div class="sec-head"><div class="hz">陣</div><h2 id="s-zoom">전장의 부대 표현</h2><p>폰 화면에서 헥스 한 칸은 지름 46pt 정도다. 병사 한 명 한 명을 그리면 알아볼 수 없다. 그래서 <b>부대 = 장수기 + 병사 3명 + 헥스 받침</b>으로 표현하고, 멀리서 볼 때는 깃발과 병종 글자만 남긴다. 병사 실루엣만 봐도 병종이 구분되는 것이 목표다.</p></div>
+  <div class="anat">
+    <svg id="anatomy" viewBox="0 0 520 300" role="img" aria-label="부대 표현 해부도"></svg>
+    <ol>
+      <li><b>장수기</b>: 세력색 깃발에 장수 성씨 한 글자. 누구 부대인지 가장 먼저 읽힌다.</li>
+      <li><b>병사 3명</b>: 병종을 실루엣으로 보여준다. 창은 세로 선, 활은 호, 말은 가로 덩어리.</li>
+      <li><b>세력색 두건·띠</b>: 병사는 모두 같은 회갈색 갑옷이고, 두건과 허리띠만 세력색이다.</li>
+      <li><b>헥스 받침</b>: 세력색 테두리. 선택하면 금색 고리가 생긴다.</li>
+      <li><b>병력 막대</b>: 아군 초록, 적군 빨강. 사기가 30 아래로 떨어지면 깜빡인다.</li>
+      <li><b>상태 인장</b>: 混(혼란), 火(화상), 伏(매복), 鼓(고무)를 막대 위에 작게 찍는다.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="s-units">
+  <div class="sec-head"><div class="hz">兵</div><h2 id="s-units">병종 20종</h2><p>기본 병종 6, 수군 함선 5, 정예 부대 9. 설계노트 37장의 상성과 22장의 정예 부대 표를 따랐다. 1차 개발은 지금 엔진에 있는 창병(보병)·기병·궁병부터.</p></div>
+  <div class="group"><h3>기본 병종</h3><span>징병으로 얻는다</span></div>
+  <div class="ugrid" id="u-basic"></div>
+  <div class="group"><h3>수군 함선</h3><span>강 위 전투 · 적벽</span></div>
+  <div class="ugrid" id="u-navy"></div>
+  <div class="group"><h3>정예 부대</h3><span>이벤트·장수 등용으로만 얻는다</span></div>
+  <div class="ugrid" id="u-elite"></div>
+</section>
+
+<section class="sec" aria-labelledby="s-state">
+  <div class="sec-head"><div class="hz">態</div><h2 id="s-state">부대 상태 여섯 가지</h2><p>숫자를 보지 않아도 부대 상태가 보여야 한다. 같은 창병 부대로 보여준다.</p></div>
+  <div class="ugrid" id="u-state"></div>
+</section>
+
+<section class="sec" aria-labelledby="s-terr">
+  <div class="sec-head"><div class="hz">地形</div><h2 id="s-terr">헥스 지형 9종과 전투 표시</h2><p>위시리스트의 꼭 있어야 할 항목이다. 지형은 색만으로도 구분되지만, 색약인 사람을 위해 무늬(나무, 산 획, 물결)를 함께 그린다. 효과는 설계노트와 위시리스트를 따랐다.</p></div>
+  <div class="ugrid" id="terrain"></div>
+  <div class="group"><h3>범위 표시와 날씨</h3><span>설계노트 17-4의 색 규칙</span></div>
+  <div class="ugrid" id="overlay"></div>
+</section>
+
+<section class="sec" aria-labelledby="s-hero">
+  <div class="sec-head"><div class="hz">將</div><h2 id="s-hero">명장은 전장에서도 다르게</h2><p>모든 병사는 2등신 SD 캐릭터다. 특급 명장의 부대에는 장수 본인이 일반 병사보다 1.4배 크게 서고, 얼굴색·수염·머리 장식·고유 무기·말 색이 그대로 따라온다. 작게 봐도 누가 누구인지 실루엣으로 알 수 있다.</p></div>
+  <div class="heroes" id="heroes"></div>
+  <div class="weap" id="weapons"></div>
+</section>
+
+<section class="sec" aria-labelledby="s-cut">
+  <div class="sec-head"><div class="hz">技</div><h2 id="s-cut">장수 기술 컷인</h2><p>특기나 일기토가 발동하면 0.8초 동안 장수 초상이 대각선 띠로 들어온다. 전투가 멈추지 않도록 화면 위쪽 1/3만 쓰고, 설정의 “연출 끄기”로 생략할 수 있다.</p></div>
+  <div class="ph-box" id="cutbox"><div class="ph"><div class="scr" id="cutin"></div><div class="island"></div></div></div>
+</section>
+
+<section class="sec" aria-labelledby="s-dev">
+  <div class="sec-head"><div class="hz">傳令</div><h2 id="s-dev">개발 쪽에 전달할 것</h2></div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>항목</th><th>요청</th></tr></thead>
+    <tbody>
+      <tr><td>얼굴 데이터</td><td><code>officers.json</code>에 선택 필드 <code>face</code>를 추가한다. 예: <code>{"skin":"red","shape":"long","eyes":"phoenix","brows":"thick","beard":"long","head":"hood","body":"armor"}</code>. 없으면 위 규칙으로 자동 생성한다.</td></tr>
+      <tr><td>등급 필드</td><td><code>portraitTier</code>: <code>"S" | "A" | "gen"</code>. 일러스트 파일이 있으면 그것을, 없으면 생성기를 쓴다. 그래서 일러스트가 늦게 와도 게임은 계속 만들 수 있다.</td></tr>
+      <tr><td>일러스트 규격</td><td>흉상 1000×1200px, 투명 배경 PNG(배경은 게임이 세력색으로 칠함). 특급은 나이별 3장 × 표정 4장.</td></tr>
+      <tr><td>전장 스프라이트</td><td>병사 한 명 64×64px(@2x), 좌우 반전으로 방향 처리. 대기 4·이동 6·공격 6·피격 2·궤주 4프레임.</td></tr>
+      <tr><td>확대 단계</td><td>원경은 깃발과 병종 글자만 그려서 그리기 부담을 줄인다. 근경에서 병사 3명을 그린다.</td></tr>
+      <tr><td>개발 순서</td><td>1차 창병·기병·궁병 + 장수기 → 2차 노병·공성 → 3차 수군(적벽 이벤트 전) → 4차 정예 부대.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<footer>이 페이지의 SD 초상과 유닛은 모두 이 문서를 위해 새로 만든 조립식 그림이다. 기존 게임의 초상이나 도트를 참고하지 않았다. 인물 외모는 『삼국지연의』 원문의 묘사를 따랐다.</footer>
+</div>
+
+<script>
+(function () {
+  var INK = '#3A2A20';
+  var FC = { liu: '#3E7D5A', cao: '#2F5D8A', lubu: '#B678AE', sun: '#C8642C', yshu: '#DDBE52', yshao: '#4A3424', gs: '#A8A292', nan: '#8A4B2A', biao: '#4E8891', ma: '#B86A7E', han: '#7A2E26', yellow: '#E2B634' };
+  function inkOn(c) { var n = [1, 3, 5].map(function (i) { return parseInt(c.substr(i, 2), 16) / 255; }); return (n[0] * .299 + n[1] * .587 + n[2] * .114) > .62 ? '#1A1916' : '#EEE8D7'; }
+  var SKIN = { base: '#E0C29E', warm: '#D6B38D', light: '#E9CFAE', tan: '#CFA985', red: '#A9473C', dark: '#B38660', bronze: '#A7744E' };
+  function rnd(s) { var t = Math.sin(s * 127.1 + 11.7) * 43758.5453; return t - Math.floor(t); }
+  function hash(str) { var h = 0; for (var i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 100000; return h; }
+  function shade(hex, f) {
+    var n = [1, 3, 5].map(function (i) { return parseInt(hex.substr(i, 2), 16); });
+    return '#' + n.map(function (v) { v = f < 0 ? v * (1 + f) : v + (255 - v) * f; return ('0' + Math.round(v).toString(16)).slice(-2); }).join('');
+  }
+
+  /* ================= 초상 생성기 (SD 캐릭터) ================= */
+  // 머리 크게(화면의 60%), 몸은 작게. 선은 둥근 고동색, 평면 채색 + 볼터치. 성격은 눈과 눈썹에 담는다.
+  var SHAPES = { oval: [58, 62, 174, .55], square: [60, 62, 172, .85], long: [54, 58, 178, .5], round: [62, 62, 172, .68], small: [54, 66, 168, .55] };
+  function pathStroke(d, c, w, extra) { return '<path d="' + d + '" fill="none" stroke="' + c + '" stroke-width="' + w + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>'; }
+  function P(d, fill, sw) { return '<path d="' + d + '" fill="' + fill + '" stroke="' + INK + '" stroke-width="' + (sw == null ? 2.6 : sw) + '" stroke-linejoin="round"/>'; }
+  function cir(cx, cy, r, fill, sw) { return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + fill + '"' + (sw === 0 ? '' : ' stroke="' + INK + '" stroke-width="' + (sw || 2.6) + '"') + '/>'; }
+  function ell(cx, cy, rx, ry, fill, op) { return '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '" fill="' + fill + '"' + (op != null ? ' opacity="' + op + '"' : '') + '/>'; }
+  var HL = '<circle cx="2.8" cy="-4" r="3.4" fill="#fff"/><circle cx="-2.6" cy="3.6" r="1.6" fill="#fff"/>';
+  function eyeSvg(kind, ec) {
+    switch (kind) {
+      case 'sharp': return '<path d="M-9,-3 L10,-7 Q10,10 0,10 Q-9,10 -9,-3Z" fill="' + ec + '"/><circle cx="3" cy="-1" r="2.6" fill="#fff"/>';
+      case 'phoenix': return '<path d="M-11,3 Q-2,-5 13,-8 Q6,7 -11,3Z" fill="' + ec + '"/><circle cx="4" cy="-3" r="1.8" fill="#fff"/>';
+      case 'round': return '<circle r="11" fill="#fff" stroke="' + INK + '" stroke-width="2.4"/><circle cx="1" cy="1" r="4.6" fill="' + ec + '"/><circle cx="2.4" cy="-.6" r="1.4" fill="#fff"/>';
+      case 'narrow': return pathStroke('M-9,2 Q0,-5 10,0', ec, 3.8);
+      case 'gentle': return '<ellipse rx="8" ry="10.5" fill="' + ec + '"/>' + HL + pathStroke('M6,-8 L11,-12', INK, 2.2) + pathStroke('M8,-5 L13,-7', INK, 2);
+      case 'happy': return pathStroke('M-9,4 Q0,-8 9,4', INK, 3.8);
+      case 'teary': return '<ellipse rx="8" ry="10.5" fill="' + ec + '"/>' + HL + '<path d="M5,10 Q9,17 5,21 Q1,17 5,10Z" fill="#7FB6D9" stroke="' + INK + '" stroke-width="1.2"/>';
+      default: return '<ellipse rx="8" ry="11" fill="' + ec + '"/>' + HL;
+    }
+  }
+  var BROWS = { thin: ['M-7,1 Q0,-3 7,0', 3], thick: ['M-8,2 Q0,-3 8,-1', 5.6], fierce: ['M-8,4 L8,-4', 5.6], bushy: ['M-10,3 L-5,-4 L0,1 L5,-5 L10,0', 4.8], soft: ['M-7,1 Q0,-2 7,0', 2.4] };
+
+  function portrait(o) {
+    var age = o.age || 38, fc = o.fc || FC.liu, skin = o.skin || SKIN.base;
+    var hc = o.hairColor || '#2B211B';
+    if (age >= 68) hc = '#ECE8DE'; else if (age >= 55) hc = '#A8A49A';
+    var beard = o.beard || 'none';
+    if (age < 24 && !o.keepBeard) beard = 'none';
+    var sh = SHAPES[o.shape || 'oval'], w = sh[0], top = sh[1], bot = sh[2], jaw = sh[3];
+    var ex = o.expr || 'neutral', seed = o.seed || 1;
+    var s = [];
+    // 배경: 세력색 + 둥근 빛 방울
+    s.push('<rect width="200" height="240" fill="' + fc + '"/><rect width="200" height="240" fill="url(#pglow)"/>');
+    for (var i = 0; i < 7; i++) s.push(cir((rnd(i * 3 + seed) * 200).toFixed(1), (rnd(i * 7 + seed) * 240).toFixed(1), (8 + rnd(i + seed) * 22).toFixed(1), '#FFFFFF', 0).replace('/>', ' opacity=".08"/>'));
+    // 뒤쪽 장식
+    if (o.head === 'scholar') s.push(P('M128,' + (top + 20) + ' Q162,' + (top + 60) + ' 152,' + (top + 128) + ' L141,' + (top + 124) + ' Q148,' + (top + 64) + ' 120,' + (top + 28) + 'Z', '#2A3540', 2.2), P('M72,' + (top + 20) + ' Q38,' + (top + 60) + ' 48,' + (top + 128) + ' L59,' + (top + 124) + ' Q52,' + (top + 64) + ' 80,' + (top + 28) + 'Z', '#2A3540', 2.2));
+    if (o.head === 'woman') s.push(P('M46,122 Q34,182 58,216 L76,206 Q60,172 64,126Z', hc), P('M154,122 Q166,182 142,216 L124,206 Q140,172 136,126Z', hc));
+    // 몸
+    var bodyD = 'M44,240 C46,212 66,196 100,196 C134,196 154,212 156,240Z';
+    if (o.body === 'armor') {
+      var metal = o.metal || '#6A6254';
+      s.push(P(bodyD, metal));
+      s.push(pathStroke('M62,222 Q100,232 138,222', 'rgba(255,255,255,.28)', 2.4), pathStroke('M58,234 Q100,244 142,234', 'rgba(255,255,255,.2)', 2.4));
+      s.push(cir(56, 212, 16, shade(metal, .18)), cir(144, 212, 16, shade(metal, .18)));
+      s.push(cir(56, 212, 3, '#E3B34A', 0), cir(144, 212, 3, '#E3B34A', 0));
+      s.push(P('M78,198 Q100,212 122,198 L118,209 Q100,221 82,209Z', o.scarf || fc));
+    } else if (o.body === 'tribal') {
+      s.push(P(bodyD, skin));
+      s.push(P('M44,240 C46,214 58,202 74,198 L82,240Z', '#7A5230'));
+      for (var t = 0; t < 7; t++) { var tx = 84 + t * 5.4, ty = 206 + Math.sin(t / 6 * Math.PI) * 8; s.push(P('M' + (tx - 2.4) + ',' + ty + ' L' + tx + ',' + (ty + 7) + ' L' + (tx + 2.4) + ',' + ty + 'Z', '#FFF8EA', 1.2)); }
+    } else {
+      var robe = o.robe || shade(fc, -.3);
+      s.push(P(bodyD, robe));
+      s.push(P('M84,197 L100,228 L116,197 L109,197 L100,215 L91,197Z', '#F6F1E4', 2));
+      if (o.body === 'ruler') s.push(pathStroke('M82,199 L100,232 L118,199', '#E3B34A', 3.6));
+      if (o.body === 'woman') s.push(P('M52,226 Q100,216 148,226 L148,236 Q100,226 52,236Z', o.sash || '#E3B34A', 2.2));
+      if (o.border) s.push(pathStroke('M80,199 L100,234 L120,199', o.border, 5));
+    }
+    // 목·귀
+    s.push(P('M90,166 L90,202 Q100,208 110,202 L110,166Z', skin, 2.2));
+    var covered = { helmet: 1, hood: 1 };
+    var er = o.bigEars ? 15 : 10;
+    if (!covered[o.head]) { s.push(cir(100 - w + 1, 130, er, skin), cir(100 + w - 1, 130, er, skin)); s.push(pathStroke('M' + (100 - w - 3) + ',126 q3,4 0,8', 'rgba(58,42,32,.45)', 2), pathStroke('M' + (100 + w + 3) + ',126 q-3,4 0,8', 'rgba(58,42,32,.45)', 2)); }
+    // 얼굴
+    var face = 'M' + (100 - w) + ',118 C' + (100 - w) + ',' + (top + 10) + ' ' + (100 - w * .55) + ',' + top + ' 100,' + top + ' C' + (100 + w * .55) + ',' + top + ' ' + (100 + w) + ',' + (top + 10) + ' ' + (100 + w) + ',118 C' + (100 + w) + ',' + (bot - 16) + ' ' + (100 + w * jaw) + ',' + bot + ' 100,' + bot + ' C' + (100 - w * jaw) + ',' + bot + ' ' + (100 - w) + ',' + (bot - 16) + ' ' + (100 - w) + ',118Z';
+    s.push(P(face, skin));
+    var blush = o.skin === SKIN.red ? '#6E2018' : '#EE8A86';
+    s.push(ell(100 - 36, 152, 11, 6.5, blush, .5), ell(100 + 36, 152, 11, 6.5, blush, .5));
+    // 머리카락
+    if (!covered[o.head]) {
+      s.push(P('M' + (100 - w - 4) + ',134 C' + (100 - w - 8) + ',' + (top - 16) + ' ' + (100 + w + 8) + ',' + (top - 16) + ' ' + (100 + w + 4) + ',134 C' + (100 + w - 2) + ',112 ' + (100 + w - 14) + ',' + (top + 40) + ' 124,' + (top + 36) + ' Q114,' + (top + 48) + ' 106,' + (top + 34) + ' Q100,' + (top + 46) + ' 92,' + (top + 34) + ' Q84,' + (top + 48) + ' 76,' + (top + 36) + ' C' + (100 - w + 14) + ',' + (top + 40) + ' ' + (100 - w + 2) + ',112 ' + (100 - w - 4) + ',134Z', hc));
+      s.push(pathStroke('M68,' + (top + 10) + ' Q84,' + (top - 2) + ' 104,' + (top - 2), 'rgba(255,255,255,.28)', 3.4));
+      if (o.head !== 'woman' && o.head !== 'nanman' && o.head !== 'scholar') s.push(cir(100, top - 12, 14, hc), pathStroke('M88,' + (top - 4) + ' L112,' + (top - 4), '#E3B34A', 3.2));
+    }
+    // 눈
+    var ek = ex === 'smile' ? 'happy' : ex === 'hurt' ? 'teary' : (o.eyes || 'calm');
+    var ec = o.eyeColor || INK;
+    if (o.patch !== 'left') s.push('<g transform="translate(76,132) scale(-1,1)">' + eyeSvg(ek, ec) + '</g>');
+    s.push('<g transform="translate(124,132)">' + eyeSvg(ek, ec) + '</g>');
+    // 눈썹
+    var bk = o.brows || 'thin', bd = BROWS[bk];
+    var bpath = ex === 'angry' ? 'M-9,5 L9,-5' : ex === 'hurt' ? 'M-8,-3 L8,3' : bd[0];
+    var bw = ex === 'angry' ? Math.max(bd[1], 5) : bd[1];
+    var bcol = hc === '#ECE8DE' ? '#A8A49A' : hc;
+    var brow = pathStroke(bpath, bcol, bw);
+    s.push('<g transform="translate(76,110) scale(-1,1)">' + brow + '</g><g transform="translate(124,110)">' + brow + '</g>');
+    // 코
+    s.push(pathStroke('M97,144 Q100,147 103,144', 'rgba(58,42,32,.55)', 2.2));
+    // 주름
+    if (age >= 55) s.push(pathStroke('M140,126 l6,-2 M140,134 l6,1', 'rgba(58,42,32,.4)', 2), pathStroke('M60,126 l-6,-2 M60,134 l-6,1', 'rgba(58,42,32,.4)', 2));
+    // 수염 (입보다 먼저)
+    var bc = (o.beardColor && age < 55) ? o.beardColor : hc;
+    var must = P('M84,152 Q90,143 100,149 Q110,143 116,152 Q108,155 100,153 Q92,155 84,152Z', bc, 2.2);
+    var goat = P('M92,' + (bot - 4) + ' Q100,' + (bot + 18) + ' 108,' + (bot - 4) + ' Q100,' + (bot + 2) + ' 92,' + (bot - 4) + 'Z', bc, 2.2);
+    var B = {
+      none: '', mustache: must, goatee: goat, mg: must + goat,
+      full: P('M' + (100 - w + 6) + ',142 Q' + (100 - w + 4) + ',' + (bot + 6) + ' 100,' + (bot + 12) + ' Q' + (100 + w - 4) + ',' + (bot + 6) + ' ' + (100 + w - 6) + ',142 Q' + (100 + w - 16) + ',166 100,168 Q' + (100 - w + 16) + ',166 ' + (100 - w + 6) + ',142Z', bc) + must,
+      long: P('M74,158 Q64,198 84,230 Q100,250 116,230 Q136,198 126,158 Q114,172 100,172 Q86,172 74,158Z', bc) + pathStroke('M92,184 Q94,208 98,228 M108,184 Q106,208 102,228', 'rgba(255,255,255,.22)', 2.4) + must,
+      thin3: pathStroke('M94,151 Q88,153 84,160', bc, 2.8) + pathStroke('M106,151 Q112,153 116,160', bc, 2.8) + pathStroke('M100,' + bot + ' Q98,' + (bot + 12) + ' 101,' + (bot + 22), bc, 3.6),
+      spiky: (function () {
+        var pts = [], n = 16;
+        for (var k = 0; k <= n; k++) { var a = Math.PI * (0.06 + 0.88 * k / n), rr = k % 2 ? 70 : 58; pts.push((100 + Math.cos(a) * rr * 1.02).toFixed(1) + ',' + (126 + Math.sin(a) * rr * .82).toFixed(1)); }
+        return P('M' + pts.join(' L') + ' Q100,' + (bot - 14) + ' ' + pts[0] + 'Z', bc, 2.4) + P('M80,152 L88,144 L94,150 L100,145 L106,150 L112,144 L120,152 L110,156 L100,154 L90,156Z', bc, 2);
+      })()
+    };
+    s.push(B[beard] || '');
+    // 입
+    var mouth = o.mouth || 'neutral';
+    if (ex === 'angry') mouth = 'shout'; else if (ex === 'smile') mouth = 'smile'; else if (ex === 'hurt') mouth = 'frown';
+    var M = {
+      neutral: pathStroke('M94,160 Q100,163 106,160', INK, 2.6),
+      smile: P('M90,156 Q100,158 110,156 Q108,170 100,170 Q92,170 90,156Z', '#B8483E', 2.2) + ell(100, 166, 5, 2.6, '#E58080'),
+      frown: pathStroke('M93,163 Q100,157 107,163', INK, 2.6),
+      shout: P('M88,154 Q100,151 112,154 Q110,176 100,176 Q90,176 88,154Z', '#8E2E26', 2.4) + '<path d="M92,155 L95,161 L98,155Z" fill="#fff"/><path d="M102,155 L105,161 L108,155Z" fill="#fff"/>',
+      smug: pathStroke('M91,159 Q95.5,164 100,159 Q104.5,164 109,159', INK, 2.6),
+      lips: '<path d="M95,159 Q100,155 105,159 Q100,165 95,159Z" fill="#D2505E" stroke="' + INK + '" stroke-width="1.4"/>'
+    };
+    s.push(M[mouth] || M.neutral);
+    // 머리 장식
+    var metalH = o.metal || '#6A6254';
+    var H = {
+      guan: P('M88,' + (top - 8) + ' L112,' + (top - 8) + ' L110,' + (top - 34) + ' Q100,' + (top - 38) + ' 90,' + (top - 34) + 'Z', '#2B211B') + pathStroke('M72,' + (top - 20) + ' L128,' + (top - 20), '#E3B34A', 3.6) + cir(128, top - 20, 4, '#E3B34A', 0) + cir(72, top - 20, 4, '#E3B34A', 0),
+      crown: P('M76,' + (top + 6) + ' L78,' + (top - 20) + ' L89,' + (top - 9) + ' L100,' + (top - 30) + ' L111,' + (top - 9) + ' L122,' + (top - 20) + ' L124,' + (top + 6) + 'Z', '#E3B34A') + cir(100, top - 4, 5.5, '#C8434A', 2) + cir(80, top - 20, 3, '#FFF3C4', 1.4) + cir(120, top - 20, 3, '#FFF3C4', 1.4),
+      helmet: P('M' + (100 - w - 8) + ',122 Q' + (100 - w - 14) + ',150 ' + (100 - w + 2) + ',160 L' + (100 - w + 6) + ',124Z', metalH) + P('M' + (100 + w + 8) + ',122 Q' + (100 + w + 14) + ',150 ' + (100 + w - 2) + ',160 L' + (100 + w - 6) + ',124Z', metalH) +
+        P('M' + (100 - w - 8) + ',124 C' + (100 - w - 12) + ',' + (top - 34) + ' ' + (100 + w + 12) + ',' + (top - 34) + ' ' + (100 + w + 8) + ',124 C' + (100 + w - 6) + ',106 ' + (100 + w - 20) + ',' + (top + 30) + ' 100,' + (top + 30) + ' C' + (100 - w + 20) + ',' + (top + 30) + ' ' + (100 - w + 6) + ',106 ' + (100 - w - 8) + ',124Z', metalH) +
+        pathStroke('M' + (100 - w + 2) + ',' + (top + 26) + ' Q100,' + (top + 8) + ' ' + (100 + w - 2) + ',' + (top + 26), '#E3B34A', 7) + pathStroke('M70,' + (top - 6) + ' Q88,' + (top - 20) + ' 106,' + (top - 20), 'rgba(255,255,255,.3)', 4) +
+        pathStroke('M100,' + (top - 20) + ' L100,' + (top - 32), INK, 3) + cir(100, top - 38, 11, o.plume || '#D2454A'),
+      hood: P('M' + (100 - w - 8) + ',128 C' + (100 - w - 14) + ',' + (top - 30) + ' ' + (100 + w + 14) + ',' + (top - 30) + ' ' + (100 + w + 8) + ',128 C' + (100 + w - 4) + ',108 ' + (100 + w - 22) + ',' + (top + 32) + ' 100,' + (top + 32) + ' C' + (100 - w + 22) + ',' + (top + 32) + ' ' + (100 - w + 4) + ',108 ' + (100 - w - 8) + ',128Z', o.hoodColor || '#3E8A5A') +
+        cir(100 + w + 4, top + 22, 11, o.hoodColor || '#3E8A5A') + P('M' + (100 + w + 8) + ',' + (top + 30) + ' Q' + (100 + w + 24) + ',' + (top + 52) + ' ' + (100 + w + 18) + ',' + (top + 74) + ' L' + (100 + w + 8) + ',' + (top + 70) + ' Q' + (100 + w + 12) + ',' + (top + 52) + ' ' + (100 + w) + ',' + (top + 34) + 'Z', o.hoodColor || '#3E8A5A', 2.2) +
+        pathStroke('M70,' + (top - 6) + ' Q88,' + (top - 18) + ' 108,' + (top - 18), 'rgba(255,255,255,.3)', 4),
+      scholar: P('M' + (100 - w + 2) + ',' + (top + 28) + ' C' + (100 - w - 4) + ',' + (top - 26) + ' ' + (100 + w + 4) + ',' + (top - 26) + ' ' + (100 + w - 2) + ',' + (top + 28) + ' Q100,' + (top + 12) + ' ' + (100 - w + 2) + ',' + (top + 28) + 'Z', '#3A4A5C') + pathStroke('M74,' + (top + 2) + ' Q100,' + (top - 10) + ' 126,' + (top + 2), 'rgba(255,255,255,.3)', 3),
+      band: P('M' + (100 - w - 2) + ',' + (top + 30) + ' Q100,' + (top + 16) + ' ' + (100 + w + 2) + ',' + (top + 30) + ' L' + (100 + w + 2) + ',' + (top + 42) + ' Q100,' + (top + 28) + ' ' + (100 - w - 2) + ',' + (top + 42) + 'Z', o.bandColor || '#C8434A', 2.4) + P('M' + (100 + w) + ',' + (top + 34) + ' Q' + (100 + w + 22) + ',' + (top + 42) + ' ' + (100 + w + 26) + ',' + (top + 64) + ' L' + (100 + w + 16) + ',' + (top + 64) + ' Q' + (100 + w + 12) + ',' + (top + 48) + ' ' + (100 + w - 2) + ',' + (top + 42) + 'Z', o.bandColor || '#C8434A', 2.2),
+      feather: (function () {
+        var z = '';
+        [[-1, 'M90,' + (top - 16) + ' C76,' + (top - 58) + ' 46,' + (top - 66) + ' 30,' + (top - 46)], [1, 'M110,' + (top - 16) + ' C124,' + (top - 58) + ' 154,' + (top - 66) + ' 170,' + (top - 46)]].forEach(function (f) {
+          z += pathStroke(f[1], INK, 9) + pathStroke(f[1], '#E3B34A', 6) + pathStroke(f[1], '#B07A2A', 6, ' stroke-dasharray="3 7"') + cir(f[0] < 0 ? 30 : 170, top - 46, 6, '#E3B34A', 2.2);
+        });
+        return z + P('M80,' + (top + 4) + ' Q80,' + (top - 22) + ' 100,' + (top - 24) + ' Q120,' + (top - 22) + ' 120,' + (top + 4) + 'Z', '#C9973E') + cir(100, top - 8, 6, '#C8434A', 2);
+      })(),
+      woman: cir(100, top - 12, 24, hc) + cir(100, top - 34, 12, hc) + pathStroke('M74,' + (top - 18) + ' L128,' + (top - 4), '#E3B34A', 3.4) + cir(128, top - 4, 4.5, '#E3B34A', 1.6) + pathStroke('M128,' + top + ' L130,' + (top + 18), '#E3B34A', 1.6) + cir(130, top + 21, 3, '#C8434A', 1.2) +
+        cir(78, top + 4, 8, '#F2A0A8', 2) + cir(78, top + 4, 3, '#E3B34A', 0),
+      nanman: (function () { var z = ''; for (var k = 0; k < 9; k++) { var a = Math.PI * (1.1 + .8 * k / 8), cx = 100 + Math.cos(a) * 60, cy = top + 40 + Math.sin(a) * 58; z += '<ellipse cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" rx="8" ry="20" transform="rotate(' + (a * 180 / Math.PI + 90).toFixed(1) + ' ' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ')" fill="' + ['#D2454A', '#F0A53C', '#3E8A5A'][k % 3] + '" stroke="' + INK + '" stroke-width="2.2"/>'; } return z; })() +
+        P('M' + (100 - w) + ',' + (top + 30) + ' Q100,' + (top + 16) + ' ' + (100 + w) + ',' + (top + 30) + ' L' + (100 + w) + ',' + (top + 40) + ' Q100,' + (top + 26) + ' ' + (100 - w) + ',' + (top + 40) + 'Z', '#E3B34A', 2.2),
+      mian: P('M84,' + (top - 4) + ' L116,' + (top - 4) + ' L114,' + (top - 22) + ' L86,' + (top - 22) + 'Z', '#2B211B') + P('M58,' + (top - 30) + ' L142,' + (top - 30) + ' L138,' + (top - 20) + ' L62,' + (top - 20) + 'Z', '#2B211B') + pathStroke('M58,' + (top - 30) + ' L142,' + (top - 30), '#E3B34A', 2.6) +
+        (function () { var z = ''; for (var k = 0; k < 9; k++) { var bx = 66 + k * 8.5; z += pathStroke('M' + bx + ',' + (top - 20) + ' L' + bx + ',' + (top + 2), 'rgba(43,33,27,.8)', 1.4) + cir(bx, top - 9, 2.4, '#E3B34A', 0) + cir(bx, top + 2, 2.6, '#F6F1E4', 1); } return z; })(),
+      taoist: P('M86,' + (top - 4) + ' Q100,' + (top - 40) + ' 114,' + (top - 4) + 'Z', '#B98A3E') + P('M93,' + (top - 8) + ' Q100,' + (top - 26) + ' 107,' + (top - 8) + 'Z', '#E3B34A', 2) + pathStroke('M76,' + (top - 10) + ' L124,' + (top - 10), '#E3B34A', 3)
+    };
+    if (o.head && H[o.head]) s.push(H[o.head]);
+    if (o.band2) s.push(P('M' + (100 - w - 2) + ',' + (top + 30) + ' Q100,' + (top + 16) + ' ' + (100 + w + 2) + ',' + (top + 30) + ' L' + (100 + w + 2) + ',' + (top + 42) + ' Q100,' + (top + 28) + ' ' + (100 - w - 2) + ',' + (top + 42) + 'Z', o.band2, 2.4) + P('M' + (100 + w) + ',' + (top + 34) + ' Q' + (100 + w + 22) + ',' + (top + 42) + ' ' + (100 + w + 26) + ',' + (top + 64) + ' L' + (100 + w + 16) + ',' + (top + 64) + ' Q' + (100 + w + 12) + ',' + (top + 48) + ' ' + (100 + w - 2) + ',' + (top + 42) + 'Z', o.band2, 2.2));
+    // 소품
+    if (o.patch === 'left') s.push(pathStroke('M' + (100 - w - 2) + ',104 L' + (100 + w + 2) + ',' + (top + 40), INK, 3.4), cir(76, 132, 14, '#2B211B'));
+    if (o.scar) s.push('<g transform="rotate(-30 132 150)"><rect x="120" y="145" width="24" height="10" rx="4" fill="#F2D4A8" stroke="' + INK + '" stroke-width="1.6"/>' + pathStroke('M130,147 L130,153 M134,147 L134,153', 'rgba(58,42,32,.4)', 1.2) + '</g>');
+    if (o.earring) s.push(cir(100 - w + 1, 144, 4.5, 'none', 2).replace('stroke="' + INK + '"', 'stroke="#E3B34A"'), cir(100 + w - 1, 144, 4.5, 'none', 2).replace('stroke="' + INK + '"', 'stroke="#E3B34A"'));
+    if (ex === 'hurt') s.push(P('M' + (100 - w + 2) + ',' + (top + 26) + ' Q100,' + (top + 12) + ' ' + (100 + w - 2) + ',' + (top + 26) + ' L' + (100 + w - 2) + ',' + (top + 38) + ' Q100,' + (top + 24) + ' ' + (100 - w + 2) + ',' + (top + 38) + 'Z', '#FFFDF5', 2.2), cir(122, top + 28, 4.5, '#D2454A', 0));
+    if (ex === 'angry') s.push(pathStroke('M150,' + (top + 6) + ' l8,-4 M152,' + (top + 14) + ' l9,0 M150,' + (top + 22) + ' l8,4', '#D2454A', 3));
+    if (o.fan) s.push(pathStroke('M152,240 L158,206', '#7A5A3A', 5), P('M158,208 C128,192 130,150 158,138 C186,150 188,192 158,208Z', '#FFFDF5', 2.4) + pathStroke('M158,204 L148,160 M158,204 L158,148 M158,204 L168,160', 'rgba(58,42,32,.3)', 1.6));
+    if (o.whisk) s.push(pathStroke('M44,240 L52,198', '#7A5A3A', 5) + P('M52,200 C38,172 48,150 62,146 C60,162 68,180 54,200Z', '#FFFDF5', 2.2));
+    s.push('<rect width="200" height="240" fill="url(#pv)" opacity=".3"/>');
+    var vb = o.crop ? o.crop : '0 0 200 240';
+    return '<svg viewBox="' + vb + '" role="img" aria-label="' + (o.alt || '초상') + '">' + s.join('') + '</svg>';
+  }
+
+  /* 특급 12명 */
+  var FAMOUS = [
+    { n: '유비', z: '현덕', alt: '유비 초상', fc: FC.liu, age: 33, shape: 'oval', eyes: 'calm', brows: 'thin', beard: 'thin3', head: 'crown', body: 'ruler', mouth: 'smile', bigEars: 1, seed: 2, tr: '귀가 어깨에 닿을 만큼 크고, 늘 온화한 얼굴. 금관, 수염은 얇은 세 가닥.' },
+    { n: '관우', z: '운장', alt: '관우 초상', fc: FC.liu, age: 32, skin: SKIN.red, shape: 'long', eyes: 'phoenix', brows: 'thick', beard: 'long', keepBeard: 1, head: 'hood', body: 'armor', metal: '#3D4A40', scarf: '#2E6448', seed: 3, tr: '대추처럼 붉은 얼굴, 봉황눈, 누에 눈썹, 가슴까지 오는 긴 수염. 녹색 두건과 녹색 전포.' },
+    { n: '장비', z: '익덕', alt: '장비 초상', fc: FC.liu, age: 27, skin: SKIN.dark, shape: 'round', eyes: 'round', brows: 'bushy', beard: 'spiky', keepBeard: 1, head: 'helmet', plume: '#1A1916', body: 'armor', mouth: 'shout', seed: 4, tr: '표범 머리에 고리눈, 제비 턱에 범 수염. 늘 소리치는 입.' },
+    { n: '조운', z: '자룡', alt: '조운 초상', fc: FC.gs, age: 26, skin: SKIN.light, shape: 'oval', eyes: 'sharp', brows: 'thin', beard: 'none', head: 'helmet', plume: '#EEE8D7', metal: '#6E6E68', body: 'armor', seed: 5, tr: '키 크고 반듯한 청년 장수. 은빛 갑옷에 흰 술 투구. 194년에는 공손찬 휘하.' },
+    { n: '제갈량', z: '공명', alt: '제갈량 초상', fc: FC.liu, age: 27, skin: SKIN.light, shape: 'long', eyes: 'calm', brows: 'thin', beard: 'thin3', keepBeard: 1, head: 'scholar', body: 'robe', robe: '#D2CEBD', border: '#2A3540', fan: 1, seed: 6, tr: '윤건(비단 두건)에 학창의, 손에는 흰 깃털 부채. 207년 출사 시점 기준.' },
+    { n: '조조', z: '맹덕', alt: '조조 초상', fc: FC.cao, age: 39, shape: 'square', eyes: 'narrow', brows: 'fierce', beard: 'mg', head: 'guan', body: 'ruler', mouth: 'smug', seed: 7, tr: '작은 키, 가는 눈, 짧게 다듬은 수염. 웃는지 아닌지 읽히지 않는 얼굴.' },
+    { n: '하후돈', z: '원양', alt: '하후돈 초상', fc: FC.cao, age: 37, shape: 'square', eyes: 'sharp', brows: 'fierce', beard: 'full', head: 'helmet', body: 'armor', patch: 'left', seed: 8, tr: '여포군의 화살에 왼눈을 잃었다. 안대와 덥수룩한 수염.' },
+    { n: '여포', z: '봉선', alt: '여포 초상', fc: FC.lubu, age: 33, shape: 'oval', eyes: 'sharp', brows: 'fierce', beard: 'none', head: 'feather', body: 'armor', metal: '#5A3A30', scarf: '#A93526', mouth: 'neutral', seed: 9, tr: '꿩깃 두 가닥을 꽂은 금관, 붉은 비단 전포. 젊고 오만한 얼굴.' },
+    { n: '손권', z: '중모', alt: '손권 초상', fc: FC.sun, age: 26, shape: 'square', eyes: 'calm', eyeColor: '#2C6A6E', brows: 'thick', beard: 'mg', keepBeard: 1, beardColor: '#6B2A35', head: 'crown', body: 'ruler', seed: 10, tr: '푸른 눈, 붉은 자줏빛 수염, 각진 턱. 강동의 젊은 군주(208년 기준).' },
+    { n: '주유', z: '공근', alt: '주유 초상', fc: FC.sun, age: 33, skin: SKIN.light, shape: 'oval', eyes: 'calm', brows: 'thin', beard: 'none', head: 'guan', body: 'robe', robe: '#6A2E26', mouth: 'smile', seed: 11, tr: '“미주랑”이라 불린 미남. 음악에 밝다. 문관 차림에 붉은 옷.' },
+    { n: '초선', z: '', alt: '초선 초상', fc: '#6E4A5E', age: 18, skin: SKIN.light, shape: 'small', eyes: 'gentle', brows: 'soft', beard: 'none', head: 'woman', body: 'woman', robe: '#B9585E', mouth: 'lips', blush: 1, earring: 1, seed: 12, tr: '왕윤의 가기. 연환계 이벤트의 중심 인물. 쪽머리에 금비녀.' },
+    { n: '축융', z: '', alt: '축융 초상', fc: FC.nan, age: 34, skin: SKIN.bronze, shape: 'small', eyes: 'sharp', brows: 'soft', beard: 'none', head: 'nanman', body: 'tribal', mouth: 'lips', earring: 1, seed: 13, tr: '남만왕 맹획의 부인. 직접 싸우는 몇 안 되는 여성 장수. 불꽃 깃관.' },
+    { n: '장각', z: '', alt: '장각 초상', fc: FC.yellow, age: 50, shape: 'long', eyes: 'narrow', brows: 'thin', beard: 'long', head: 'taoist', band2: '#E2B634', body: 'robe', robe: '#6B5A30', whisk: 1, seed: 14, tr: "184년 황건의 난을 일으킨 '대현량사'. 누런 두건, 도관, 불진(먼지떨이). 184 시나리오의 얼굴." },
+    { n: '헌제', z: '', alt: '헌제 초상', fc: FC.han, age: 14, skin: SKIN.light, shape: 'small', eyes: 'gentle', brows: 'soft', beard: 'none', head: 'mian', body: 'ruler', robe: '#1E1714', mouth: 'frown', seed: 15, tr: '한의 마지막 황제. 면류관과 검붉은 곤룡포. 194년엔 14세, 이각·곽사에게 휘둘린다.' },
+    { n: '사마의', z: '중달', alt: '사마의 초상', fc: FC.cao, age: 56, shape: 'long', eyes: 'narrow', brows: 'fierce', beard: 'long', keepBeard: 1, head: 'guan', body: 'robe', robe: '#1F3048', mouth: 'smug', seed: 16, tr: "몸은 그대로 두고 고개만 뒤로 돌린다는 '이리의 상'. 가는 눈, 무표정. 234년 오장원 기준." }
+  ];
+  var fam = document.getElementById('famous');
+  FAMOUS.forEach(function (f) {
+    var d = document.createElement('div'); d.className = 'pcard';
+    d.innerHTML = portrait(f) + '<div class="nm">' + f.n + (f.z ? '<small>' + f.z + '</small>' : '') + '</div><div class="tr">' + f.tr + '</div>';
+    fam.appendChild(d);
+  });
+
+  /* 나이·표정 */
+  var zy = FAMOUS[3];
+  var ages = document.getElementById('ages');
+  [[20, '191년 · 20대', 'none'], [41, '208년 장판 · 40대', 'mg'], [61, '228년 기곡 · 60대', 'long']].forEach(function (a) {
+    var o = Object.assign({}, zy, { age: a[0], beard: a[2], keepBeard: 1, alt: '조운 ' + a[1] });
+    var d = document.createElement('div'); d.className = 'pcard'; d.innerHTML = portrait(o) + '<div class="tr">' + a[1] + '</div>'; ages.appendChild(d);
+  });
+  var exprs = document.getElementById('exprs');
+  [['neutral', '평상'], ['angry', '분노'], ['smile', '웃음'], ['hurt', '부상']].forEach(function (e) {
+    var o = Object.assign({}, FAMOUS[2], { expr: e[0], mouth: e[0] === 'neutral' ? 'neutral' : undefined, alt: '장비 ' + e[1] });
+    var d = document.createElement('div'); d.className = 'pcard'; d.innerHTML = portrait(o) + '<div class="tr">' + e[1] + '</div>'; exprs.appendChild(d);
+  });
+
+  /* 자동 생성 */
+  var DATA = [["cao_ang","조앙","자수",60,62,58,55,72,4,177,""],["feng_ji","봉기","원도",55,30,78,72,50,8,155,""],["chen_gong","진궁","공대",74,52,88,76,64,7,160,"fire|ambush"],["lu_su","노숙","자경",80,56,92,90,88,5,172,"diplomacy|navy"],["wang_wei","왕위","",66,66,60,50,60,3,160,""],["ma_tie","마철","",48,64,30,30,40,3,178,""],["meng_da","맹달","자도",72,75,65,50,45,9,170,""],["huang_shao","황소","",45,60,25,20,30,6,155,""],["dong_cheng","동승","",60,58,50,50,60,4,150,""],["gongsun_gong","공손공","",40,30,40,50,40,4,175,""],["guo_yuan","곽원","",62,66,40,40,40,5,170,""],["xu_gong","허공","",50,50,50,52,50,6,160,""],["cao_huan","조환","경명",15,10,45,45,55,2,246,""],["han_hao","한호","원사",66,64,58,72,60,4,165,"agriculture"],["fei_yao","비요","",62,66,40,30,40,4,190,""],["zhong_hui","종회","사계",84,62,92,82,72,15,225,"sow_discord|ambush"],["hu_lie","호열","현무",70,70,52,48,52,4,220,""],["xi_zheng","극정","영선",20,15,74,76,60,3,205,""],["fu_shiren","부사인","군의",50,55,30,35,30,4,170,""],["shi_tao","석도","광원",30,30,72,66,56,2,175,""],["zhu_huan","주환","휴목",86,80,70,52,62,7,177,"navy"],["sun_xiu","손휴","자열",42,30,72,76,70,6,235,""],["shen_ying","심영","",70,72,62,54,60,3,220,""],["bian_zhang","변장","",62,52,62,60,62,9,145,""]];
+  function pick(arr, r) { return arr[Math.floor(r * arr.length) % arr.length]; }
+  function autoFace(row, age) {
+    var id = row[0], L = row[3], W = row[4], I = row[5], Po = row[6], Ch = row[7], Am = row[8], sk = row[10];
+    var h = hash(id), r = function (k) { return rnd(h + k * 13.37); };
+    var armor = W >= 70 && W >= I;
+    var o = { seed: h % 97, age: age };
+    o.body = armor ? 'armor' : 'robe';
+    o.head = armor ? pick(['helmet', 'helmet', 'band', 'none'], r(1)) : (Po >= 65 || I >= 70 ? 'guan' : 'none');
+    o.shape = pick(['oval', 'square', 'long', 'round'], r(2));
+    o.eyes = Am >= 9 ? 'sharp' : Ch >= 75 ? 'calm' : pick(['calm', 'narrow', 'round', 'sharp'], r(3));
+    o.brows = W >= 80 ? 'fierce' : W >= 65 ? 'thick' : 'thin';
+    o.beard = pick(['mustache', 'goatee', 'mg', 'full', 'long', 'thin3', 'mg'], r(4));
+    o.mouth = Ch >= 75 ? 'smile' : Am >= 10 ? 'frown' : 'neutral';
+    o.skin = pick([SKIN.base, SKIN.warm, SKIN.light, SKIN.tan, SKIN.base], r(5));
+    o.fc = pick([FC.liu, FC.cao, FC.sun, FC.yshao, FC.yshu, FC.biao, FC.ma, FC.lubu], r(6));
+    o.hairColor = pick(['#1D1B18', '#2A2018', '#1D1B18'], r(7));
+    if (armor && r(8) < .3) o.scar = 1;
+    if (o.head === 'band') o.bandColor = pick(['#A93526', '#1A1916', '#5B5A3A'], r(9));
+    if (sk.indexOf('navy') >= 0 && armor) { o.head = 'band'; o.bandColor = '#2C5A6A'; }
+    o.metal = pick(['#45423B', '#4A4036', '#3E4440'], r(10));
+    return o;
+  }
+  var auto = document.getElementById('auto');
+  DATA.forEach(function (row, i) {
+    var age = [26, 34, 42, 51, 58, 64][i % 6];
+    var o = autoFace(row, age); o.alt = row[1] + ' 자동 생성 초상';
+    var d = document.createElement('div'); d.className = 'pcard';
+    d.innerHTML = portrait(o) + '<div class="nm">' + row[1] + (row[2] ? '<small>' + row[2] + '</small>' : '') + '</div><div class="tr">' + age + '세 · 무' + row[4] + ' 지' + row[5] + ' 정' + row[6] + '</div>';
+    auto.appendChild(d);
+  });
+
+  /* 크기 */
+  var gy = FAMOUS[1];
+  document.getElementById('sizes').innerHTML =
+    '<figure><div style="width:200px">' + portrait(gy) + '</div><figcaption>전신·흉상 200 · 무장 상세, 이벤트</figcaption></figure>' +
+    '<figure><div style="width:96px">' + portrait(Object.assign({}, gy, { crop: '22 22 156 187' })) + '</div><figcaption>96 · 카드, 일기토</figcaption></figure>' +
+    '<figure><div style="width:44px;border-radius:3px;overflow:hidden">' + portrait(Object.assign({}, gy, { crop: '38 60 124 124' })) + '</div><figcaption>44 · 목록, 전투 HUD</figcaption></figure>' +
+    '<figure><div class="seal20">關</div><figcaption>20 · 낙관 (글자만)</figcaption></figure>';
+
+  /* ================= 전장 유닛 (SD 2등신) ================= */
+  var WOOD = '#7A5A3A', STEEL = '#E2DFD2', ARM = '#7A7060', USKIN = '#F2D2AE';
+  function L(d, c, w, extra) { return '<path d="' + d + '" fill="none" stroke="' + c + '" stroke-width="' + w + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>'; }
+  function F(d, fill, sw) { return '<path d="' + d + '" fill="' + fill + '" stroke="' + INK + '" stroke-width="' + (sw == null ? 1.3 : sw) + '" stroke-linejoin="round"/>'; }
+  function uc(cx, cy, r, fill, sw) { return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + fill + '" stroke="' + INK + '" stroke-width="' + (sw == null ? 1.3 : sw) + '"/>'; }
+  function chibiHead(o, cx, cy) {
+    var r = 8.6, s = '', skin = o.skin || USKIN;
+    if (o.hat === 'feather') s += L('M' + (cx - 3) + ',' + (cy - 7) + ' Q' + (cx - 10) + ',' + (cy - 20) + ' ' + (cx - 16) + ',' + (cy - 20), '#E3B34A', 2.2) + L('M' + (cx + 3) + ',' + (cy - 7) + ' Q' + (cx + 10) + ',' + (cy - 20) + ' ' + (cx + 16) + ',' + (cy - 20), '#E3B34A', 2.2) + uc(cx - 16, cy - 20, 1.6, '#E3B34A', .8) + uc(cx + 16, cy - 20, 1.6, '#E3B34A', .8);
+    s += uc(cx, cy, r, skin);
+    // 모자
+    var hat = o.hat || (o.helm === 'iron' ? 'iron' : o.helm === 'rattan' ? 'rattan' : 'cap');
+    if (hat === 'cap') s += F('M' + (cx - 9) + ',' + (cy - 1) + ' Q' + cx + ',' + (cy - 17) + ' ' + (cx + 9) + ',' + (cy - 1) + ' Q' + cx + ',' + (cy - 5) + ' ' + (cx - 9) + ',' + (cy - 1) + 'Z', o.cap || o.fc) + uc(cx, cy - 10, 2.2, o.cap || o.fc, 1);
+    if (hat === 'iron') s += F('M' + (cx - 9.6) + ',' + (cy + 1) + ' Q' + cx + ',' + (cy - 19) + ' ' + (cx + 9.6) + ',' + (cy + 1) + ' Q' + cx + ',' + (cy - 3) + ' ' + (cx - 9.6) + ',' + (cy + 1) + 'Z', '#45423B') + L('M' + (cx - 8) + ',' + (cy - 2) + ' Q' + cx + ',' + (cy - 6) + ' ' + (cx + 8) + ',' + (cy - 2), '#E3B34A', 1.2);
+    if (hat === 'rattan') s += F('M' + (cx - 9.6) + ',' + (cy) + ' Q' + cx + ',' + (cy - 19) + ' ' + (cx + 9.6) + ',' + cy + ' Q' + cx + ',' + (cy - 4) + ' ' + (cx - 9.6) + ',' + cy + 'Z', '#C9A262') + L('M' + (cx - 6) + ',' + (cy - 9) + ' L' + (cx + 4) + ',' + (cy - 2) + ' M' + (cx + 6) + ',' + (cy - 9) + ' L' + (cx - 4) + ',' + (cy - 2), '#8A6A32', .8);
+    if (hat === 'hood') s += F('M' + (cx - 10) + ',' + (cy + 2) + ' Q' + cx + ',' + (cy - 20) + ' ' + (cx + 10) + ',' + (cy + 2) + ' Q' + cx + ',' + (cy - 4) + ' ' + (cx - 10) + ',' + (cy + 2) + 'Z', '#3E8A5A') + uc(cx + 9, cy - 5, 2.6, '#3E8A5A', 1);
+    if (hat === 'helmet') s += F('M' + (cx - 10) + ',' + (cy + 1) + ' Q' + cx + ',' + (cy - 20) + ' ' + (cx + 10) + ',' + (cy + 1) + ' Q' + cx + ',' + (cy - 4) + ' ' + (cx - 10) + ',' + (cy + 1) + 'Z', '#45423B') + uc(cx, cy - 13, 3, o.plumeC || '#D2454A', 1);
+    if (hat === 'feather') s += F('M' + (cx - 8) + ',' + (cy - 2) + ' Q' + cx + ',' + (cy - 15) + ' ' + (cx + 8) + ',' + (cy - 2) + 'Z', '#C9973E');
+    if (o.plume) s += L('M' + (cx + 2) + ',' + (cy - 9) + ' Q' + (cx + 7) + ',' + (cy - 16) + ' ' + (cx + 11) + ',' + (cy - 15), o.plume, 2.4);
+    // 얼굴
+    s += '<circle cx="' + (cx - 3) + '" cy="' + (cy + 2) + '" r="1.35" fill="' + INK + '"/><circle cx="' + (cx + 3.2) + '" cy="' + (cy + 2) + '" r="1.35" fill="' + INK + '"/>';
+    s += '<ellipse cx="' + (cx - 5.4) + '" cy="' + (cy + 4.6) + '" rx="1.8" ry="1" fill="#EE8A86" opacity=".7"/><ellipse cx="' + (cx + 5.6) + '" cy="' + (cy + 4.6) + '" rx="1.8" ry="1" fill="#EE8A86" opacity=".7"/>';
+    if (o.beard === 'long') s += F('M' + (cx - 4) + ',' + (cy + 5.5) + ' Q' + cx + ',' + (cy + 20) + ' ' + (cx + 4) + ',' + (cy + 5.5) + ' Q' + cx + ',' + (cy + 8) + ' ' + (cx - 4) + ',' + (cy + 5.5) + 'Z', '#2B211B', .8);
+    if (o.beard === 'spiky') s += F('M' + (cx - 7) + ',' + (cy + 3) + ' L' + (cx - 6) + ',' + (cy + 9) + ' L' + (cx - 3) + ',' + (cy + 7) + ' L' + cx + ',' + (cy + 11) + ' L' + (cx + 3) + ',' + (cy + 7) + ' L' + (cx + 6) + ',' + (cy + 9) + ' L' + (cx + 7) + ',' + (cy + 3) + ' Q' + cx + ',' + (cy + 7) + ' ' + (cx - 7) + ',' + (cy + 3) + 'Z', '#2B211B', .8);
+    return s;
+  }
+  function man(o) {
+    var s = '', skin = o.skin || USKIN;
+    if (o.cape) s += F('M-5,-15 Q-13,-9 -12,-1 L-4,-5Z', o.cape);
+    if (!o.seated) s += L('M-3,-5 L-3,0 M3,-5 L3,0', INK, 3.4);
+    var w = o.weaponSvg ? 'custom' : o.weapon;
+    if (w === 'spear') s += L('M9.5,-42 L7.5,-1', WOOD, 2.2) + F('M8,-41 L10,-50 L12,-41Z', STEEL, .9) + uc(9.6, -39.5, 1.6, o.fc, .7);
+    if (w === 'bow') s += L('M10,-28 Q20,-16 10,-4', WOOD, 2.4) + L('M10,-28 L10,-4', '#FFF8EA', .8);
+    if (o.weaponSvg) s += o.weaponSvg;
+    s += F('M-6.5,-15 Q-7.8,-4 -5,-3.5 L5,-3.5 Q7.8,-4 6.5,-15 Q0,-17.5 -6.5,-15Z', o.armor || ARM);
+    if (o.rattan) s += L('M-5,-12 L5,-7 M-5,-7 L5,-12', '#7A5A2A', 1);
+    s += F('M-7,-9.5 L7,-9.5 L7,-6.8 L-7,-6.8Z', o.sash || o.fc, .9);
+    if (w === 'xbow') s += L('M-2,-11 L14,-11', WOOD, 3) + L('M13,-16.5 Q17,-11 13,-5.5', WOOD, 2.2);
+    if (w === 'sword') s += L('M8,-11 L15,-24', STEEL, 2.4) + L('M6,-12 L10,-10', '#E3B34A', 2);
+    s += uc(7, -10.5, 2.4, skin, 1);
+    if (o.shield) s += F('M-12.5,-17 Q-12.5,-3 -9,-3 L-5,-3 Q-4,-3 -4,-17Z', o.shield) + uc(-8.2, -10, 1.6, '#E3B34A', .7);
+    if (o.round) s += uc(-8, -10, 6.4, o.round) + uc(-8, -10, 2, '#E3B34A', .7);
+    s += chibiHead(o, 0, -24);
+    return s;
+  }
+  function horse(o) {
+    var c = o.barding || o.horse || '#9A6A44', s = '';
+    s += F('M-14,-14 Q-23,-12 -21,-3 Q-17,-8 -13,-9Z', o.tail || '#4A3020');
+    s += L('M-9,-6 L-9,0 M-4,-6 L-4,0 M5,-6 L5,0 M10,-6 L10,0', INK, 3.6);
+    s += '<ellipse cx="0" cy="-11" rx="14" ry="8.4" fill="' + c + '" stroke="' + INK + '" stroke-width="1.3"/>';
+    if (o.barding) s += L('M-10,-12 Q0,-8 10,-12 M-11,-8 Q0,-4 11,-8', 'rgba(255,255,255,.4)', 1);
+    if (o.stripes) s += L('M-8,-17 L-6,-10 M-2,-18.5 L-1,-11 M4,-18 L4.5,-11', '#E3B34A', 1.4);
+    s += F('M7,-15 Q11,-22 13,-25 L19,-22 Q16,-14 12,-11Z', c);
+    s += '<ellipse cx="17" cy="-23" rx="6.6" ry="5.2" fill="' + c + '" stroke="' + INK + '" stroke-width="1.3"/>';
+    s += F('M13,-27 L14.5,-32 L16.5,-26.5Z', c, 1);
+    s += F('M9,-24 Q8,-30 13,-28 Q12,-21 9.5,-18Z', o.mane || '#4A3020', 1);
+    s += '<circle cx="18.6" cy="-24" r="1.2" fill="' + INK + '"/><circle cx="22" cy="-21.4" r=".7" fill="' + INK + '"/>';
+    return s;
+  }
+  function rider(o) {
+    var m = Object.assign({}, o, { seated: 1, weapon: o.weapon || 'spear' });
+    return horse(o) + L('M-3,-17 L-1,-11', INK, 3) + '<g transform="translate(-1,-11)">' + man(m) + '</g>';
+  }
+  function crew(x, y, fc) { return uc(x, y, 5.4, USKIN, 1.1) + F('M' + (x - 5.6) + ',' + (y - .6) + ' Q' + x + ',' + (y - 11) + ' ' + (x + 5.6) + ',' + (y - .6) + ' Q' + x + ',' + (y - 3) + ' ' + (x - 5.6) + ',' + (y - .6) + 'Z', fc, 1) + '<circle cx="' + (x - 1.8) + '" cy="' + (y + 1) + '" r=".9" fill="' + INK + '"/><circle cx="' + (x + 2) + '" cy="' + (y + 1) + '" r=".9" fill="' + INK + '"/>'; }
+  function boatEye(x, y) { return uc(x, y, 2.6, '#FFF8EA', .9) + '<circle cx="' + (x + .6) + '" cy="' + y + '" r="1.2" fill="' + INK + '"/>'; }
+  var HEX = (function () { var p = []; for (var k = 0; k < 6; k++) { var a = Math.PI / 180 * (60 * k - 30); p.push((60 + 52 * Math.cos(a)).toFixed(1) + ',' + (60 + 52 * Math.sin(a)).toFixed(1)); } return p.join(' '); })();
+  function token(o) {
+    var fc = o.fc, s = '';
+    var ground = o.water ? '#7F9DA3' : (o.ground || '#D8D6C1');
+    s += '<polygon points="' + HEX + '" fill="' + ground + '" stroke="rgba(26,25,22,.25)" stroke-width="1"/>';
+    if (o.water) for (var k = 0; k < 4; k++) s += L('M' + (24 + k * 6) + ',' + (40 + k * 16) + ' q6,-3 12,0 t12,0', 'rgba(238,232,215,.45)', 1.2);
+    if (o.tint) s += '<polygon points="' + HEX + '" fill="' + o.tint + '"/>';
+    s += '<polygon points="' + HEX + '" fill="none" stroke="' + fc + '" stroke-width="4" opacity=".9"/>';
+    if (o.sel) s += '<circle cx="60" cy="60" r="56" fill="none" stroke="#C3A15C" stroke-width="3"/>';
+    if (o.dust) s += '<ellipse cx="22" cy="88" rx="10" ry="5" fill="#B7AE98" opacity=".7"/><ellipse cx="14" cy="82" rx="7" ry="4" fill="#B7AE98" opacity=".5"/>';
+    // 깃발
+    if (!o.noflag) {
+      if (o.fallen) s += L('M26,92 L62,84', WOOD, 2.2) + F('M60,84 L84,79 L86,92 L62,97Z', fc, 1) + '<text x="73" y="92" font-family="Noto Serif KR, serif" font-weight="900" font-size="11" fill="' + inkOn(fc) + '" text-anchor="middle" transform="rotate(-12 73 89)">' + o.hz + '</text>';
+      else s += L('M26,92 L26,18', WOOD, 2.2) + F('M26,18 L50,20 L48,44 L26,42Z', fc, 1) + '<text x="37" y="37" font-family="Noto Serif KR, serif" font-weight="900" font-size="15" fill="' + inkOn(fc) + '" text-anchor="middle">' + o.hz + '</text>';
+    }
+    // 부대
+    var g = o.group || '';
+    var tf = o.flip ? ' scale(-1,1)' : '';
+    var lean = o.lean ? ' rotate(' + o.lean + ')' : '';
+    (o.pos || [[48, 84], [70, 90], [90, 80]]).forEach(function (p, i) {
+      var rot = o.scatter ? ' rotate(' + [-25, 18, -10][i] + ')' : lean;
+      s += '<g transform="translate(' + (p[0] + (o.scatter ? [-6, 8, 4][i] : 0)) + ',' + p[1] + ') scale(' + (o.scale || 1.15) + ')' + tf + rot + '">' + (typeof g === 'function' ? g(i) : g) + '</g>';
+    });
+    if (o.spark) s += F('M100,50 L104,58 L112,58 L106,63 L108,71 L100,66 L92,71 L94,63 L88,58 L96,58Z', '#E9C46A', 1);
+    if (o.hit) s += '<polygon points="' + HEX + '" fill="#D0574A" opacity=".35"/>';
+    if (o.swirl) s += L('M60,22 m-10,0 a10,6 0 1,0 20,0 a7,4 0 1,0 -14,0 a4,2 0 1,0 8,0', '#EEE8D7', 2);
+    if (o.fire) s += '<path d="M78,98 Q74,80 84,72 Q82,82 90,84 Q92,74 98,70 Q100,86 96,98Z" fill="#E07A2E" stroke="#8A2A1A" stroke-width="1"/>';
+    // 막대
+    var hp = o.hp == null ? .85 : o.hp;
+    s += '<rect x="36" y="104" width="48" height="5" fill="rgba(0,0,0,.55)"/><rect x="36" y="104" width="' + 48 * hp + '" height="5" fill="' + (o.enemy ? '#D0574A' : '#6FAE7F') + '"/>';
+    if (o.tag) s += '<rect x="86" y="96" width="18" height="18" rx="2" fill="#13120F" stroke="#C3A15C"/><text x="95" y="110" font-family="Noto Serif KR, serif" font-weight="900" font-size="11" fill="#EEE8D7" text-anchor="middle">' + o.tag + '</text>';
+    return '<svg viewBox="0 0 120 118" role="img" aria-label="' + (o.alt || '부대') + '">' + s + '</svg>';
+  }
+  function ship(kind, fc) {
+    var s = '';
+    if (kind === 'small') s += L('M2,-6 L2,-28', WOOD, 1.8) + F('M3,-27 Q15,-18 3,-9Z', '#FFF8EA', 1) + crew(-7, -9, fc) + F('M-19,-6 Q-19,4 -9,4 L9,4 Q19,4 19,-6Z', '#9A7448') + boatEye(13, -2);
+    if (kind === 'ram') s += F('M-14,-6 Q0,-22 14,-6Z', '#B07A4A') + L('M-6,-12 L-6,-8 M0,-14 L0,-9 M6,-12 L6,-8', 'rgba(58,42,32,.4)', 1) + F('M-21,-6 Q-21,4 -10,4 L14,4 Q22,4 28,-2 L14,-6Z', '#8A6440') + uc(28, -2, 2.6, STEEL, 1) + boatEye(17, -2);
+    if (kind === 'tower') s += F('M-17,-20 Q-17,-24 -13,-24 L13,-24 Q17,-24 17,-20 L17,-6 L-17,-6Z', '#A88458') + L('M-12,-24 L-12,-28 M-4,-24 L-4,-28 M4,-24 L4,-28 M12,-24 L12,-28', INK, 2.4) + crew(-6, -28, fc) + crew(7, -28, fc) + L('M12,-35 Q17,-29 12,-23', WOOD, 1.6) + F('M-23,-6 Q-23,4 -12,4 L12,4 Q23,4 23,-6Z', '#8A6440') + boatEye(16, -2);
+    if (kind === 'flag') s += F('M-22,-20 Q-22,-24 -18,-24 L18,-24 Q22,-24 22,-20 L22,-6 L-22,-6Z', '#A88458') + F('M-14,-34 Q-14,-37 -11,-37 L11,-37 Q14,-37 14,-34 L14,-24 L-14,-24Z', '#B89468') + F('M-7,-45 Q-7,-48 -4,-48 L4,-48 Q7,-48 7,-45 L7,-37 L-7,-37Z', '#C8A478') + crew(0, -53, fc) + L('M8,-48 L8,-64', WOOD, 1.6) + F('M8,-64 Q16,-62 20,-58 Q14,-56 8,-56Z', fc, 1) + F('M-30,-6 Q-30,5 -16,5 L16,5 Q30,5 30,-6Z', '#7A5636') + boatEye(22, -1) + uc(-14, -15, 2.6, '#E3B34A', 1) + uc(0, -15, 2.6, '#E3B34A', 1) + uc(14, -15, 2.6, '#E3B34A', 1);
+    if (kind === 'fire') s += '<path d="M-13,-6 Q-16,-22 -5,-30 Q-6,-18 2,-18 Q1,-32 10,-36 Q15,-18 11,-6Z" fill="#F08A3A" stroke="' + INK + '" stroke-width="1.3"/><path d="M-6,-7 Q-6,-17 0,-21 Q2,-13 6,-9Z" fill="#FFD25E"/><circle cx="-3" cy="-13" r="1.2" fill="' + INK + '"/><circle cx="2.6" cy="-13" r="1.2" fill="' + INK + '"/>' + L('M-1,-10.5 Q0,-9.5 1,-10.5', INK, .9) + F('M-19,-6 Q-19,4 -9,4 L9,4 Q19,4 19,-6Z', '#6A4A2E') + boatEye(13, -2);
+    return s;
+  }
+  function siege(kind, fc) {
+    if (kind === 'ram') return F('M-20,-22 Q-20,-24 -18,-24 L14,-24 Q16,-24 17,-21 L20,-8 L-20,-8Z', '#B08458') + F('M-23,-23 Q-2,-38 18,-23Z', '#8A6440') + crew(-8, -28, fc) + uc(-11, -4, 5.4, '#6A4A2E') + uc(-11, -4, 1.8, '#E3B34A', .8) + uc(11, -4, 5.4, '#6A4A2E') + uc(11, -4, 1.8, '#E3B34A', .8) + L('M14,-15 L30,-15', '#5A3A1E', 5) + uc(31, -15, 3.4, STEEL, 1.1) + F('M-20,-14 L17,-14 L18,-11 L-20,-11Z', fc, .8);
+    return L('M-14,0 L0,-30 L14,0', WOOD, 3) + L('M-11,0 L11,0', WOOD, 3) + L('M-20,-40 L18,-20', '#6A4A2E', 3.4) + F('M13,-23 Q13,-25 15,-25 L22,-25 Q24,-25 24,-23 L24,-13 L13,-13Z', '#55524A') + L('M-20,-40 Q-26,-30 -22,-24', '#FFF8EA', 1.2) + uc(-22, -23, 3.6, '#9A968C', 1.1) + crew(-14, -6, fc) + uc(0, -30, 2.2, '#E3B34A', 1);
+  }
+  function addCards(id, list) {
+    var host = document.getElementById(id);
+    list.forEach(function (u) {
+      var d = document.createElement('div'); d.className = 'ucard';
+      d.innerHTML = token(u.t) + '<div class="nm">' + u.n + '</div><div class="tg">' + u.d + '</div>';
+      host.appendChild(d);
+    });
+  }
+  var LF = FC.liu, CF = FC.cao;
+  addCards('u-basic', [
+    { n: '창병', d: '<b>강</b> 기병 · <b>약</b> 궁병<br>긴 창과 방패. 실루엣은 세로 선.', t: { fc: LF, hz: '張', alt: '창병', group: man({ fc: LF, weapon: 'spear', shield: '#4A5A48' }) } },
+    { n: '기병', d: '<b>강</b> 궁병 · <b>약</b> 창병<br>숲·산 이동 감소. 말 두 필로 표현.', t: { fc: LF, hz: '關', alt: '기병', pos: [[52, 86], [84, 84]], group: rider({ fc: LF }) } },
+    { n: '궁병', d: '<b>강</b> 창병 · <b>약</b> 기병<br>사거리 2. 큰 활의 호가 보이게.', t: { fc: LF, hz: '黃', alt: '궁병', group: man({ fc: LF, weapon: 'bow' }) } },
+    { n: '노병', d: '<b>강</b> 정면의 창·기 · <b>약</b> 근접<br>이동 후 공격 불가. 가로로 든 쇠뇌.', t: { fc: CF, hz: '于', alt: '노병', group: man({ fc: CF, weapon: 'xbow' }) } },
+    { n: '충차', d: '<b>강</b> 성문 · <b>약</b> 모든 부대<br>지붕 덮인 수레와 통나무.', t: { fc: CF, hz: '曹', alt: '충차', pos: [[66, 90]], scale: 1.4, group: siege('ram', CF) } },
+    { n: '투석기', d: '<b>강</b> 성벽 · <b>약</b> 모든 부대<br>건조에 여러 턴. 지렛대 실루엣.', t: { fc: CF, hz: '曹', alt: '투석기', pos: [[68, 92]], scale: 1.4, group: siege('tre', CF) } }
+  ]);
+  var SF = FC.sun;
+  addCards('u-navy', [
+    { n: '주가', d: '작은 배. 빠른 기동과 정찰.', t: { fc: SF, hz: '甘', water: 1, alt: '주가', pos: [[66, 86]], scale: 1.5, group: ship('small', SF) } },
+    { n: '몽충', d: '가죽 덮개와 충각. 들이받는 근접전.', t: { fc: SF, hz: '凌', water: 1, alt: '몽충', pos: [[62, 86]], scale: 1.4, group: ship('ram', SF) } },
+    { n: '투함', d: '성가퀴를 두른 갑판에서 활을 쏜다.', t: { fc: SF, hz: '程', water: 1, alt: '투함', pos: [[64, 88]], scale: 1.4, group: ship('tower', SF) } },
+    { n: '누선', d: '여러 층의 기함. 지휘 범위가 넓고 느리다.', t: { fc: SF, hz: '周', water: 1, alt: '누선', pos: [[66, 90]], scale: 1.2, group: ship('flag', SF) } },
+    { n: '화선', d: '불을 싣고 돌진하는 일회용 배. 황개의 화공.', t: { fc: SF, hz: '黃', water: 1, alt: '화선', pos: [[66, 88]], scale: 1.5, group: ship('fire', SF) } }
+  ]);
+  addCards('u-elite', [
+    { n: '함진영', d: '고순 · 검은 쇠갑옷과 큰 방패. <b>약</b> 궁병 집중 사격.', t: { fc: FC.lubu, hz: '高', alt: '함진영', group: man({ fc: FC.lubu, weapon: 'spear', armor: '#2D2C2A', helm: 'iron', shield: '#3A3A36' }) } },
+    { n: '백마의종', d: '공손찬 · 흰 말을 탄 궁기병. <b>약</b> 창병.', t: { fc: FC.gs, hz: '公', alt: '백마의종', pos: [[52, 86], [84, 84]], group: rider({ fc: FC.gs, horse: '#E2DED0', tail: '#BDB8A8', mane: '#BDB8A8', weapon: 'bow' }) } },
+    { n: '청주병', d: '조조 · 황건 출신 대군이라 누런 두건. 사기가 낮으면 약탈.', t: { fc: CF, hz: '曹', alt: '청주병', pos: [[40, 86], [58, 92], [76, 84], [94, 90]], scale: 1.05, group: man({ fc: CF, weapon: 'spear', cap: '#D9B13E' }) } },
+    { n: '호표기', d: '조조 직속 · 검은 말에 금빛 줄무늬. <b>약</b> 창병 밀집.', t: { fc: CF, hz: '曹', alt: '호표기', pos: [[52, 86], [84, 84]], group: rider({ fc: CF, horse: '#2A2622', stripes: 1, helm: 'iron', armor: '#2D2C2A' }) } },
+    { n: '서량 철기', d: '마등·마초 · 말에도 갑옷. 돌격 최강. <b>약</b> 숲·산.', t: { fc: FC.ma, hz: '馬', alt: '서량 철기', pos: [[52, 86], [84, 84]], group: rider({ fc: FC.ma, barding: '#5A5650', helm: 'iron' }) } },
+    { n: '백이병', d: '유비 친위대 · 투구에 흰 깃털 장식. 군주 곁에서 방어 상승.', t: { fc: LF, hz: '劉', alt: '백이병', group: man({ fc: LF, weapon: 'spear', shield: '#4A5A48', plume: '#EEE8D7' }) } },
+    { n: '무당비군', d: '촉 왕평 · 가벼운 차림의 산악 궁병. <b>약</b> 평지 기병.', t: { fc: LF, hz: '王', ground: '#A7AE8C', alt: '무당비군', group: man({ fc: LF, weapon: 'bow', armor: '#4A5240', cap: '#2E4A36' }) } },
+    { n: '해번군', d: '오 친위 정예 · 둥근 방패와 짧은 칼. 사기 하락에 강함.', t: { fc: SF, hz: '孫', alt: '해번군', group: man({ fc: SF, weapon: 'sword', round: '#2C5A6A' }) } },
+    { n: '등갑병', d: '남만 · 기름 먹인 등나무 갑옷. 칼과 화살에 강하고 <b>불에 극도로 약함</b>.', t: { fc: FC.nan, hz: '兀', alt: '등갑병', group: man({ fc: FC.nan, weapon: 'spear', armor: '#A9844A', rattan: 1, helm: 'rattan', round: '#A9844A' }) } }
+  ]);
+  var sp = man({ fc: LF, weapon: 'spear', shield: '#4A5A48' });
+  addCards('u-state', [
+    { n: '대기', d: '기본 자세. 깃발이 천천히 흔들린다.', t: { fc: LF, hz: '張', group: sp, alt: '대기' } },
+    { n: '이동', d: '앞으로 기울고 뒤에 흙먼지.', t: { fc: LF, hz: '張', group: sp, lean: 8, dust: 1, alt: '이동' } },
+    { n: '공격', d: '크게 기울고 부딪히는 곳에 섬광.', t: { fc: LF, hz: '張', group: sp, lean: 16, spark: 1, sel: 1, alt: '공격' } },
+    { n: '피격', d: '헥스가 붉게 한 번 번쩍. 병력 막대가 줄어든다.', t: { fc: LF, hz: '張', group: sp, lean: -10, hit: 1, hp: .55, alt: '피격' } },
+    { n: '혼란', d: '대열이 흩어지고 머리 위 소용돌이. 混 인장.', t: { fc: LF, hz: '張', group: sp, scatter: 1, swirl: 1, tag: '混', hp: .6, alt: '혼란' } },
+    { n: '궤주', d: '깃발이 쓰러지고 병사가 등을 돌려 달아난다.', t: { fc: LF, hz: '張', group: sp, flip: 1, fallen: 1, scatter: 1, fire: 1, hp: .18, alt: '궤주' } }
+  ]);
+
+  /* 해부도 */
+  document.getElementById('anatomy').innerHTML =
+    '<g transform="translate(40,30) scale(2)">' + token({ fc: LF, hz: '關', sel: 1, pos: [[52, 86], [84, 84]], group: rider({ fc: LF }), tag: '鼓', alt: '해부도' }).replace(/^<svg[^>]*>|<\/svg>$/g, '') + '</g>' +
+    [[1, 130, 92, 330, 40, '장수기'], [2, 210, 190, 340, 112, '병사 실루엣'], [3, 150, 196, 340, 150, '세력색 두건·띠'], [4, 86, 210, 340, 188, '헥스 받침·선택 고리'], [5, 150, 242, 340, 226, '병력 막대'], [6, 230, 244, 340, 262, '상태 인장']].map(function (c) {
+      return '<line x1="' + c[1] + '" y1="' + c[2] + '" x2="' + c[3] + '" y2="' + c[4] + '" stroke="#C3A15C" stroke-width="1"/><circle cx="' + c[3] + '" cy="' + c[4] + '" r="10" fill="#C3A15C"/><text x="' + c[3] + '" y="' + (c[4] + 4) + '" text-anchor="middle" font-size="11" font-weight="600" fill="#13120F" font-family="IBM Plex Sans KR, sans-serif">' + c[0] + '</text><text x="' + (c[3] + 16) + '" y="' + (c[4] + 5) + '" font-size="14" fill="#EEE8D7" font-family="IBM Plex Sans KR, sans-serif">' + c[5] + '</text>';
+    }).join('') +
+    '<g transform="translate(330,270)"><text x="0" y="0" font-size="11" fill="#A49D89" font-family="IBM Plex Sans KR, sans-serif"></text></g>';
+
+
+  /* 지형 */
+  function thex(kind, extra) {
+    var col = { plain: '#D8D6C1', forest: '#A7AE8C', mount: '#C6B894', river: '#7F9DA3', bridge: '#7F9DA3', marsh: '#9DA58C', wall: '#6E6556', gate: '#6E6556', camp: '#D8D6C1' }[kind];
+    var s = '<polygon points="' + HEX + '" fill="' + col + '" stroke="rgba(26,25,22,.3)" stroke-width="1"/>';
+    var k;
+    if (kind === 'plain') for (k = 0; k < 9; k++) s += L('M' + (30 + rnd(k) * 60) + ',' + (34 + rnd(k + 9) * 52) + ' l2,-5 l2,5', 'rgba(90,100,60,.55)', 1.2);
+    if (kind === 'forest') for (k = 0; k < 9; k++) { var fx = 32 + (k % 3) * 24 + rnd(k) * 6, fy = 36 + Math.floor(k / 3) * 22 + rnd(k + 3) * 6; s += L('M' + fx + ',' + (fy + 8) + ' L' + fx + ',' + (fy + 14), '#4A3A26', 2) + '<circle cx="' + fx + '" cy="' + fy + '" r="8" fill="#4E6040" stroke="' + INK + '" stroke-width="1"/>'; }
+    if (kind === 'mount') s += F('M18,86 L46,34 L62,62 L76,42 L102,86Z', '#B3A37C', 1.4) + L('M46,34 L40,60 M76,42 L72,64', 'rgba(26,25,22,.45)', 1.4) + F('M41,44 L46,34 L51,44Z', '#EEE8D7', .8);
+    if (kind === 'river' || kind === 'bridge') for (k = 0; k < 5; k++) s += L('M' + (22 + (k % 2) * 8) + ',' + (30 + k * 14) + ' q8,-4 16,0 t16,0 t16,0 t16,0', 'rgba(238,232,215,.55)', 1.4);
+    if (kind === 'bridge') { s += F('M10,52 L110,52 L110,68 L10,68Z', '#8A6A44', 1.2); for (k = 0; k < 10; k++) s += L('M' + (16 + k * 10) + ',52 L' + (16 + k * 10) + ',68', 'rgba(26,25,22,.4)', 1); }
+    if (kind === 'marsh') { s += '<ellipse cx="46" cy="52" rx="16" ry="7" fill="#6F8A86"/><ellipse cx="76" cy="78" rx="14" ry="6" fill="#6F8A86"/>'; for (k = 0; k < 7; k++) s += L('M' + (34 + k * 9) + ',' + (68 - (k % 2) * 30) + ' l0,-12 M' + (36 + k * 9) + ',' + (68 - (k % 2) * 30) + ' l3,-9', '#4E5A3A', 1.3); }
+    if (kind === 'wall' || kind === 'gate') { for (var r = 0; r < 6; r++) for (k = 0; k < 6; k++) s += '<rect x="' + (14 + k * 16 + (r % 2) * 8) + '" y="' + (34 + r * 12) + '" width="15" height="11" fill="none" stroke="rgba(26,25,22,.35)"/>'; s += F('M14,26 L106,26 L106,34 L14,34Z', '#5A5246', 1); for (k = 0; k < 6; k++) s += '<rect x="' + (16 + k * 16) + '" y="17" width="9" height="9" fill="#5A5246" stroke="' + INK + '" stroke-width="1"/>'; }
+    if (kind === 'gate') s += F('M42,96 L42,60 Q60,42 78,60 L78,96Z', '#4A3420', 1.4) + L('M60,52 L60,96', 'rgba(195,161,92,.6)', 1.4) + '<rect x="36" y="102" width="48" height="5" fill="rgba(0,0,0,.6)"/><rect x="36" y="102" width="34" height="5" fill="#D3A03E"/>';
+    if (kind === 'camp') { for (k = 0; k < 14; k++) { var a = k / 14 * Math.PI * 2; s += L('M' + (60 + Math.cos(a) * 40) + ',' + (66 + Math.sin(a) * 32) + ' l0,-10', '#6B5A3E', 2.4); } s += F('M44,78 L60,50 L76,78Z', '#C9C6B4', 1.4) + L('M60,50 L60,38', WOOD, 1.6) + F('M60,38 L72,41 L60,44Z', '#A93526', .8); }
+    if (extra) s += extra;
+    return '<svg viewBox="0 0 120 118" role="img" aria-label="지형"><defs><clipPath id="hc-' + kind + (extra ? extra.length : 0) + '"><polygon points="' + HEX + '"/></clipPath></defs><g clip-path="url(#hc-' + kind + (extra ? extra.length : 0) + ')">' + s + '</g><polygon points="' + HEX + '" fill="none" stroke="rgba(26,25,22,.35)" stroke-width="1.2"/></svg>';
+  }
+  function tcards(id, list) { var h = document.getElementById(id); list.forEach(function (t) { var d = document.createElement('div'); d.className = 'ucard'; d.innerHTML = t[2] + '<div class="nm">' + t[0] + '</div><div class="tg">' + t[1] + '</div>'; h.appendChild(d); }); }
+  tcards('terrain', [
+    ['평지', '기본 지형. 기병 돌격에 유리.', thex('plain')], ['숲', '방어 상승, 기병 이동 감소. 매복 가능, 불에 약함.', thex('forest')], ['산', '방어 크게 상승, 이동 크게 감소. 궁병 사거리 +1.', thex('mount')],
+    ['강', '수군만 들어간다. 하류로는 빠르고 상류로는 느리다.', thex('river')], ['다리', '한 칸짜리 통로. 끊을 수 있다(장판교).', thex('bridge')], ['늪', '이동 크게 감소, 머무는 부대 사기 하락.', thex('marsh')],
+    ['성벽', '공성 병기와 창병만 공격할 수 있다.', thex('wall')], ['성문', '내구도 막대. 깨지면 성 안으로 들어간다.', thex('gate')], ['진채', '머물면 병력 회복과 보급.', thex('camp')]
+  ]);
+  function rainFx() { var z = '<polygon points="' + HEX + '" fill="rgba(60,70,80,.25)"/>'; for (var k = 0; k < 14; k++) z += L('M' + (22 + rnd(k) * 76) + ',' + (20 + rnd(k + 5) * 66) + ' l-5,12', 'rgba(238,232,215,.75)', 1.2); return z; }
+  function threatFx() { var z = '<polygon points="' + HEX + '" fill="rgba(181,56,42,.18)"/>'; for (var k = 0; k < 7; k++) z += L('M' + (24 + k * 12) + ',96 L' + (44 + k * 12) + ',24', 'rgba(181,56,42,.4)', 1.4); return z; }
+  tcards('overlay', [
+    ['이동 범위', '파랑. 한 번에 갈 수 있는 칸.', thex('plain', '<polygon points="' + HEX + '" fill="rgba(47,93,138,.42)"/>')],
+    ['공격 대상', '빨강. 지금 공격할 수 있는 적.', thex('plain', '<polygon points="' + HEX + '" fill="rgba(181,56,42,.5)"/>')],
+    ['계략 범위', '보라. 화계·혼란을 걸 수 있는 칸.', thex('forest', '<polygon points="' + HEX + '" fill="rgba(120,70,160,.45)"/>')],
+    ['적 위협', '옅은 빨강 빗금. 켜고 끌 수 있다.', thex('plain', threatFx())],
+    ['비', '사선 빗줄기. 화계 불가, 궁병 명중 감소.', thex('plain', rainFx())],
+    ['바람', '화면 위 풍향 표시. 불은 바람 방향으로 번진다.', thex('plain', F('M24,66 L76,66 L76,54 L100,72 L76,90 L76,78 L24,78Z', 'rgba(238,232,215,.9)', 1.2) + '<text x="60" y="46" font-family="Noto Serif KR, serif" font-weight="900" font-size="18" fill="#1A1916" text-anchor="middle">東南</text>')]
+  ]);
+
+  /* 명장 피규어 */
+  function heroSvg(h) {
+    var s = '<svg viewBox="0 0 240 200" role="img" aria-label="' + h.n + ' 전장 피규어">';
+    s += '<ellipse cx="112" cy="190" rx="86" ry="10" fill="#000" opacity=".3"/>';
+    s += '<g transform="translate(108,190) scale(2.75)">' + rider(h) + '</g></svg>';
+    return s;
+  }
+  // 손 위치(7,-10.5) 기준 무기
+  var GUANDAO = L('M-6,4 L14,-42', WOOD, 2.2) + F('M12.5,-40 Q16,-52 23,-57 Q22,-46 16.5,-39Z', STEEL, 1) + uc(13.6, -37, 2, '#3E8A5A', .8);
+  var SNAKE = L('M-6,4 L15,-42', '#3A2A20', 2.2) + F('M14,-41 Q17,-44 15.5,-47 Q19,-49 17.5,-52 Q21,-54 20,-58 Q23,-53 20.5,-49 Q23,-46 19,-43 Q21,-41 17,-39Z', STEEL, .9) + uc(14.4, -38.4, 2, '#D2454A', .8);
+  var HALBERD = L('M-6,4 L15,-42', '#8E2E22', 2.2) + F('M14,-42 L19,-53 L17.5,-41Z', STEEL, .9) + F('M13,-40 Q6,-44 7,-50 Q10,-43 14.6,-41.6Z', STEEL, .9) + F('M16.6,-39 Q23,-36 25,-41 Q20,-40 17.4,-41Z', STEEL, .9) + uc(15, -37, 2, '#D2454A', .8);
+  var hh = document.getElementById('heroes');
+  [
+    { n: '관우 · 언월도', d: '녹색 두건과 전포, 붉은 얼굴, 가슴까지 오는 수염. 200년 이후 적토마로 바뀐다.', fc: LF, cape: '#3E8A5A', armor: '#4E6A56', skin: SKIN.red, beard: 'long', hat: 'hood', horse: '#7A5236', weaponSvg: GUANDAO },
+    { n: '장비 · 장팔사모', d: '물결 날의 긴 창, 검은 말, 가시 공 같은 범 수염.', fc: LF, cape: '#2B211B', armor: '#5A564C', skin: SKIN.dark, beard: 'spiky', hat: 'helmet', plumeC: '#2B211B', horse: '#3A302A', weaponSvg: SNAKE },
+    { n: '여포 · 방천화극', d: '더듬이처럼 솟은 꿩깃, 붉은 망토, 초승달 날 화극, 붉은 적토마.', fc: FC.lubu, cape: '#D2454A', armor: '#7A4A3A', beard: 'none', hat: 'feather', horse: '#B8422E', mane: '#6A1E14', tail: '#6A1E14', weaponSvg: HALBERD }
+  ].forEach(function (h) {
+    var d = document.createElement('div'); d.className = 'hero';
+    d.innerHTML = heroSvg(h) + '<div style="font-family:var(--font-display);font-size:18px">' + h.n + '</div><div class="sub">' + h.d + '</div>';
+    hh.appendChild(d);
+  });
+
+  /* 고유 무기 */
+  function wsvg(inner) { return '<svg viewBox="0 0 60 150" aria-hidden="true">' + inner + '</svg>'; }
+  var WEAP = [
+    ['청룡언월도', '관우', L('M30,148 L30,40', WOOD, 3.5) + F('M27,46 Q22,22 30,4 Q38,14 40,28 Q36,38 33,46Z', STEEL, 1.4) + F('M26,46 L34,46 L34,52 L26,52Z', '#2E6448', 1)],
+    ['장팔사모', '장비', L('M30,148 L30,44', '#2A2018', 3.5) + F('M28,46 Q24,38 30,32 Q24,24 30,18 Q25,10 30,2 Q34,10 31,18 Q36,24 31,32 Q36,38 32,46Z', STEEL, 1.2) + L('M26,50 L34,50', '#A93526', 3)],
+    ['방천화극', '여포', L('M30,148 L30,30', '#5A2A1A', 3.5) + F('M28,32 L30,4 L32,32Z', STEEL, 1.2) + F('M28,38 Q14,34 12,22 Q20,30 28,32Z', STEEL, 1.2) + F('M32,38 Q46,34 48,22 Q40,30 32,32Z', STEEL, 1.2) + L('M30,40 Q24,46 26,56', '#A93526', 2.4)],
+    ['쌍고검', '유비', L('M22,140 L22,30', STEEL, 3) + L('M38,140 L38,30', STEEL, 3) + L('M15,108 L29,108 M31,108 L45,108', '#C3A15C', 3.2) + L('M22,112 L22,138 M38,112 L38,138', '#3A2A1A', 4.2)],
+    ['백우선', '제갈량', L('M30,148 L30,100', WOOD, 4) + F('M30,104 C6,90 8,30 30,14 C52,30 54,90 30,104Z', '#EEE8D7', 1.6) + L('M30,100 L20,40 M30,100 L30,22 M30,100 L40,40', 'rgba(26,25,22,.35)', 1)],
+    ['애용 창', '조운', L('M30,148 L30,30', WOOD, 3) + F('M27,32 L30,6 L33,32Z', STEEL, 1.2) + L('M26,36 L34,36', '#EEE8D7', 4) + L('M30,40 Q38,48 36,58', '#EEE8D7', 2)],
+    ['대궁', '황충', L('M22,8 Q54,75 22,142', WOOD, 4) + L('M22,8 L22,142', '#D8D6C1', 1) + L('M14,75 L50,75', WOOD, 1.6) + F('M50,72 L56,75 L50,78Z', STEEL, .8)],
+    ['쌍철극', '전위', L('M20,148 L20,40 M40,148 L40,40', '#3A3A36', 3.4) + F('M18,42 L20,18 L22,42Z', STEEL, 1) + F('M38,42 L40,18 L42,42Z', STEEL, 1) + F('M18,46 Q8,42 8,32 Q14,40 20,40Z', STEEL, 1) + F('M42,46 Q52,42 52,32 Q46,40 40,40Z', STEEL, 1)]
+  ];
+  document.getElementById('weapons').innerHTML = WEAP.map(function (w) { return '<figure>' + wsvg(w[2]) + '<figcaption>' + w[0] + '<small>' + w[1] + '</small></figcaption></figure>'; }).join('');
+
+  /* 컷인 */
+  var cut = document.getElementById('cutin');
+  cut.innerHTML =
+    '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 80%, #3A3D37, #14130F 70%)"></div>' +
+    '<div style="position:absolute;left:0;right:0;bottom:0;height:240px;opacity:.55">' + (function () {
+      var t = token({ fc: LF, hz: '關', pos: [[52, 86], [84, 84]], group: rider({ fc: LF }), sel: 1 });
+      var e = token({ fc: FC.yshu, hz: '紀', enemy: 1, hp: .6, group: man({ fc: FC.yshu, weapon: 'spear', shield: '#6A5A30' }), flip: 1 });
+      return '<div style="position:absolute;left:280px;top:90px;width:120px">' + t + '</div><div style="position:absolute;left:420px;top:70px;width:120px">' + e + '</div>';
+    })() + '</div>' +
+    '<div style="position:absolute;left:-40px;right:-40px;top:22px;height:118px;background:linear-gradient(90deg,#2E6448,#3E7D5A 60%,rgba(62,125,90,0));transform:skewY(-4deg);border-top:2px solid #C3A15C;border-bottom:2px solid #C3A15C"></div>' +
+    '<div style="position:absolute;left:70px;top:-6px;width:150px;height:180px;overflow:hidden;clip-path:polygon(0 8%,100% 0,100% 88%,0 100%)">' + portrait(Object.assign({}, FAMOUS[1], { crop: '14 22 172 206', expr: 'angry' })) + '</div>' +
+    '<div style="position:absolute;left:240px;top:34px;color:#EEE8D7"><div style="font-family:Noto Serif KR,serif;font-weight:900;font-size:64px;line-height:1;letter-spacing:.06em">威壓</div><div style="font-family:Song Myung,serif;font-size:22px;margin-top:4px">관우의 위압</div></div>' +
+    '<div style="position:absolute;left:520px;top:58px;color:#EEE8D7;font-family:IBM Plex Sans KR,sans-serif;font-size:13px;line-height:1.5">주변 적 부대 사기 <b style="color:#E9C46A">−15</b><br><span style="color:#A49D89">기령 부대 혼란 확률 40%</span></div>' +
+    '<div style="position:absolute;right:54px;bottom:14px;color:#A49D89;font-family:IBM Plex Sans KR,sans-serif;font-size:11px">0.8초 · 누르면 건너뜀</div>';
+
+  function fit() { var b = document.getElementById('cutbox'); b.firstElementChild.style.setProperty('--s', b.clientWidth / 900); }
+  fit(); if (window.ResizeObserver) new ResizeObserver(fit).observe(document.getElementById('cutbox')); else window.addEventListener('resize', fit);
+})();
+</script>

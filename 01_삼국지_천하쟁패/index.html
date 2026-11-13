@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <meta name="theme-color" content="#13120f" />
+    <link rel="apple-touch-icon" href="./icon-512.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="천하쟁패" />
+    <title>삼국지 천하쟁패</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- 세로로 든 폰: 게임은 가로 전용 (QA-DEV-07). 터치 기기에서만 style.css 가 보이게 한다 -->
+    <div id="rotate-hint" role="alert"><div class="rotate-icon"></div>가로로 돌려 주세요</div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,247 @@
+{
+  "units": {
+    "spearman": {
+      "frameSize": 126,
+      "frames": 4,
+      "files": {
+        "blue": "units/spearman_blue.png",
+        "red": "units/spearman_red.png"
+      }
+    },
+    "crossbow": {
+      "frameSize": 112,
+      "frames": 4,
+      "files": {
+        "blue": "units/crossbow_blue.png",
+        "red": "units/crossbow_red.png"
+      }
+    },
+    "shieldGiant": {
+      "frameSize": 224,
+      "frames": 4,
+      "files": {
+        "blue": "units/shieldGiant_blue.png",
+        "red": "units/shieldGiant_red.png"
+      }
+    },
+    "bats": {
+      "frameSize": 84,
+      "frames": 4,
+      "files": {
+        "blue": "units/bats_blue.png",
+        "red": "units/bats_red.png"
+      }
+    },
+    "bombGoblin": {
+      "frameSize": 126,
+      "frames": 4,
+      "files": {
+        "blue": "units/bombGoblin_blue.png",
+        "red": "units/bombGoblin_red.png"
+      }
+    },
+    "knights": {
+      "frameSize": 126,
+      "frames": 4,
+      "files": {
+        "blue": "units/knights_blue.png",
+        "red": "units/knights_red.png"
+      }
+    },
+    "catapult": {
+      "frameSize": 216,
+      "frames": 1,
+      "files": {
+        "blue": "units/catapult_blue.png",
+        "red": "units/catapult_red.png"
+      }
+    },
+    "apprenticeCat": {
+      "frameSize": 126,
+      "frames": 4,
+      "files": {
+        "blue": "units/apprenticeCat_blue.png",
+        "red": "units/apprenticeCat_red.png"
+      }
+    },
+    "pumpkinKnight": {
+      "frameSize": 154,
+      "frames": 4,
+      "files": {
+        "blue": "units/pumpkinKnight_blue.png",
+        "red": "units/pumpkinKnight_red.png"
+      }
+    },
+    "mushroomTrio": {
+      "frameSize": 98,
+      "frames": 4,
+      "files": {
+        "blue": "units/mushroomTrio_blue.png",
+        "red": "units/mushroomTrio_red.png"
+      }
+    },
+    "candleWatch": {
+      "frameSize": 192,
+      "frames": 1,
+      "files": {
+        "blue": "units/candleWatch_blue.png",
+        "red": "units/candleWatch_red.png"
+      }
+    },
+    "broomOwl": {
+      "frameSize": 126,
+      "frames": 4,
+      "files": {
+        "blue": "units/broomOwl_blue.png",
+        "red": "units/broomOwl_red.png"
+      }
+    },
+    "candleGhost": {
+      "frameSize": 112,
+      "frames": 4,
+      "files": {
+        "blue": "units/candleGhost_blue.png",
+        "red": "units/candleGhost_red.png"
+      }
+    },
+    "jellyBear": {
+      "frameSize": 154,
+      "frames": 4,
+      "files": {
+        "blue": "units/jellyBear_blue.png",
+        "red": "units/jellyBear_red.png"
+      }
+    },
+    "crystalTurtle": {
+      "frameSize": 210,
+      "frames": 4,
+      "files": {
+        "blue": "units/crystalTurtle_blue.png",
+        "red": "units/crystalTurtle_red.png"
+      }
+    },
+    "salamander": {
+      "frameSize": 126,
+      "frames": 4,
+      "files": {
+        "blue": "units/salamander_blue.png",
+        "red": "units/salamander_red.png"
+      }
+    },
+    "sleepyDragon": {
+      "frameSize": 182,
+      "frames": 4,
+      "files": {
+        "blue": "units/sleepyDragon_blue.png",
+        "red": "units/sleepyDragon_red.png"
+      }
+    },
+    "frogPrince": {
+      "frameSize": 112,
+      "frames": 4,
+      "files": {
+        "blue": "units/frogPrince_blue.png",
+        "red": "units/frogPrince_red.png"
+      }
+    },
+    "beeMail": {
+      "frameSize": 84,
+      "frames": 4,
+      "files": {
+        "blue": "units/beeMail_blue.png",
+        "red": "units/beeMail_red.png"
+      }
+    },
+    "spireTower": {
+      "frameSize": 204,
+      "frames": 1,
+      "files": {
+        "blue": "units/spireTower_blue.png",
+        "red": "units/spireTower_red.png"
+      }
+    },
+    "talkingTree": {
+      "frameSize": 228,
+      "frames": 1,
+      "files": {
+        "blue": "units/talkingTree_blue.png",
+        "red": "units/talkingTree_red.png"
+      }
+    }
+  },
+  "towers": {
+    "main": {
+      "size": 272,
+      "displaySize": 136,
+      "files": {
+        "blue": "towers/tower_main_blue.png",
+        "red": "towers/tower_main_red.png"
+      }
+    },
+    "side": {
+      "size": 208,
+      "displaySize": 104,
+      "files": {
+        "blue": "towers/tower_side_blue.png",
+        "red": "towers/tower_side_red.png"
+      }
+    }
+  },
+  "cards": {
+    "spearman": "cards/card_spearman.png",
+    "crossbow": "cards/card_crossbow.png",
+    "shieldGiant": "cards/card_shieldGiant.png",
+    "bats": "cards/card_bats.png",
+    "bombGoblin": "cards/card_bombGoblin.png",
+    "knights": "cards/card_knights.png",
+    "fireball": "cards/card_fireball.png",
+    "catapult": "cards/card_catapult.png",
+    "apprenticeCat": "cards/card_apprenticeCat.png",
+    "pumpkinKnight": "cards/card_pumpkinKnight.png",
+    "mushroomTrio": "cards/card_mushroomTrio.png",
+    "quillRain": "cards/card_quillRain.png",
+    "candleWatch": "cards/card_candleWatch.png",
+    "broomOwl": "cards/card_broomOwl.png",
+    "candleGhost": "cards/card_candleGhost.png",
+    "jellyBear": "cards/card_jellyBear.png",
+    "crystalTurtle": "cards/card_crystalTurtle.png",
+    "salamander": "cards/card_salamander.png",
+    "sleepyDragon": "cards/card_sleepyDragon.png",
+    "frogPrince": "cards/card_frogPrince.png",
+    "beeMail": "cards/card_beeMail.png",
+    "spireTower": "cards/card_spireTower.png",
+    "talkingTree": "cards/card_talkingTree.png"
+  },
+  "ui": {
+    "button_gold": "ui/button_gold.png",
+    "button_gold_pressed": "ui/button_gold_pressed.png",
+    "button_blue": "ui/button_blue.png",
+    "button_blue_pressed": "ui/button_blue_pressed.png",
+    "button_parchment": "ui/button_parchment.png",
+    "button_parchment_pressed": "ui/button_parchment_pressed.png",
+    "button_red": "ui/button_red.png",
+    "button_red_pressed": "ui/button_red_pressed.png",
+    "panel": "ui/panel.png"
+  },
+  "fx": {
+    "explosion": {
+      "frameSize": 160,
+      "frames": 6,
+      "file": "fx/explosion.png"
+    },
+    "deployCircle": {
+      "frameSize": 160,
+      "frames": 4,
+      "file": "fx/deploy_circle.png"
+    },
+    "projectile_star": "fx/projectile_star.png",
+    "projectile_potion": "fx/projectile_potion.png",
+    "projectile_pudding": "fx/projectile_pudding.png",
+    "projectile_wisp": "fx/projectile_wisp.png",
+    "projectile_fireball": "fx/projectile_fireball.png"
+  },
+  "bg": {
+    "arena": "bg/arena.png",
+    "menu": "bg/menu.png"
+  }
+}

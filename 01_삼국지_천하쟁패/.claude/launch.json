@@ -1,0 +1,56 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev:web",
+        "--",
+        "--port",
+        "5174"
+      ],
+      "port": 5174
+    },
+    {
+      "name": "design-static",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5178",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "design"
+      ],
+      "port": 5178
+    },
+    {
+      "name": "qa-build",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "preview",
+        "--port",
+        "5190",
+        "--strictPort",
+        "--outDir",
+        "C:/Users/student/AppData/Local/Temp/claude/3983ecd61f056b71/04fd459a-fc02-4ee1-aca5-7aed4a11aa6a/scratchpad/qa-dist"
+      ],
+      "port": 5190
+    },
+    {
+      "name": "bgm-preview",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "--port",
+        "5179",
+        "--strictPort"
+      ],
+      "port": 5179
+    }
+  ]
+}

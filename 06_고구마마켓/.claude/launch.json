@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "goguma-dev",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+      "runtimeArgs": ["goguma-market/node_modules/next/dist/bin/next", "dev", "goguma-market", "-p", "3000"],
+      "port": 3000
+    }
+  ]
+}

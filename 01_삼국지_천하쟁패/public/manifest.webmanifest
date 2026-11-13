@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "삼국지 천하쟁패",
+  "short_name": "천하쟁패",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#13120f",
+  "theme_color": "#13120f",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "description": "삼국지연의 기반 전략 시뮬레이션"
+}

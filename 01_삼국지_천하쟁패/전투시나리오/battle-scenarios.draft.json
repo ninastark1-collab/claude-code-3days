@@ -1,0 +1,880 @@
+{
+  "version": "draft-1",
+  "updated": "2026-11-13",
+  "about": "역사 전투 시나리오 데이터 초안. 전투개편_v2_전례기반_설계서.md 8장의 13선(+백마 2단계, 형주 기습 = 15개 전장)을 엔진이 읽을 수 있는 형태로 적었다. 장수 id는 data/officers*.json 기준으로 자동 검증했다 (validate-scenarios.cjs).",
+  "conventions": {
+    "grid": "24 x 16 (x: 0~23 서→동, y: 0~15 북→남). 지금 엔진의 W·H와 같다",
+    "paint": "위에서부터 차례로 칠한다. r=[x1,y1,x2,y2] 사각형(양끝 포함), p=[x,y] 한 칸. wallring은 사각형 테두리를 성벽, 안쪽을 성내(town)로 칠한다",
+    "side": "atk = 엔진의 공격 측, def = 방어 측. 역사에서 누가 먼저 쳤는지와 무관하게, 게임에서 그 전투가 발동되는 방향을 따른다",
+    "troopsShare": "그 쪽 출진 병력 합계 중 이 부대 비율. 같은 쪽 합이 1이 되게 적었다",
+    "mode": "both = 정사·연의 공통 / yanyi = 연의 모드에서만 / zhengshi = 정사 모드에서만",
+    "optional": "true면 그 장수가 조건(소속·생존)을 못 맞춰도 전투는 열리고, 이 부대만 빠진다"
+  },
+  "newEngineFeatures": {
+    "terrain": {
+      "camp": "영채. 방어 보정, 대치 일수에 따라 견고해짐. 불에 탐",
+      "stockade": "녹각·목책. 통과 느림, 불에 탐, 부서지면 평지",
+      "depot": "군량고. 불타면 그 쪽 군량 급감",
+      "dam": "둑. 수공 발동 지점",
+      "ford": "여울. 강을 건널 수 있으나 건너는 동안 방어 크게 하락",
+      "beacon": "봉화대. 점령·무력화되면 적 원군 반응이 늦어짐"
+    },
+    "unitKind": { "navy": "수군. water 칸 이동 가능, 육지에서 창병 ×0.8" },
+    "objects": { "escort": "호위 대상(전투 단위 아님). 적이 인접하면 포획 판정", "civilians": "백성 행렬. 아군 이동을 늦춤, 민심·명성에 영향", "reinforcement": "정해진 날 지정 가장자리에서 등장하는 원군" },
+    "zones": { "flood": "수공 시 잠기는 칸", "fog": "척후 성공 전까지 가려진 칸", "escape": "이 칸에 닿으면 전장 이탈(승리 조건에 쓰임)" }
+  },
+  "duelMatchups": [
+    { "a": "guan_yu", "b": "yan_liang", "mode": "both", "where": "hist_baima", "source": "정사 관우전: 대군 속에서 안량을 찔러 베고 머리를 가져옴", "style": "single_strike", "lineA": "길을 비켜라. 내가 찾는 것은 저 깃발 아래의 목 하나다.", "lineB": "어디서 온 필부가 감히!" },
+    { "a": "zhao_yun", "b": "wen_chou", "mode": "yanyi", "where": "hist_jieqiao", "source": "연의 7회: 반하에서 공손찬을 쫓던 문추를 젊은 조운이 막아섬", "style": "long", "lineA": "상산의 조자룡이다! 그 장수를 쫓지 마라!", "lineB": "애송이가 겁도 없구나." },
+    { "a": "guan_yu", "b": "wen_chou", "mode": "yanyi", "where": "hist_yanjin", "source": "연의 26회 (정사에선 문추가 난전 중 전사, 누가 베었는지 기록 없음)", "style": "short", "lineA": "안량의 뒤를 따라가거라.", "lineB": "형님의 원수, 여기서 갚는다!" },
+    { "a": "zhao_yun", "b": "xiahou_dun", "mode": "yanyi", "where": "hist_bowang", "source": "연의 39회: 조운이 싸우다 물러나며 하후돈을 박망파 깊이 끌어들임", "style": "feint", "lineA": "하후돈, 따라올 수 있으면 따라와 보아라!", "lineB": "도망치는 자를 놓아줄 내가 아니다!" },
+    { "a": "zhao_yun", "b": "xiahou_en", "mode": "yanyi", "where": "hist_changban", "source": "연의 41회: 조운이 하후은을 베고 청강검을 얻음", "style": "single_strike", "reward": "item:qinggang_sword", "lineA": "주군의 아드님을 품에 안았다. 길을 막는 자는 누구든 벤다.", "lineB": "승상의 칼을 받아라!" },
+    { "a": "xu_chu", "b": "ma_chao", "mode": "both", "where": "hist_tongguan", "source": "정사 허저전: 마초가 조조를 덮치려다 허저가 눈을 부릅뜨자 움직이지 못함 (정사는 위압 대치) / 연의 59회: 갑옷을 벗고 싸운 대결", "style": "zhengshi_glare_yanyi_long", "lineA": "승상께 한 걸음이라도 다가오면 그 목을 꺾겠다.", "lineB": "범 같은 장수라더니, 네가 허저냐." },
+    { "a": "huang_zhong", "b": "xiahou_yuan", "mode": "yanyi", "where": "hist_dingjun", "source": "연의 71회: 황충이 산 위에서 내리쳐 하후연을 단칼에 벰 (정사는 황충의 부대가 하후연을 베었다는 기록)", "style": "single_strike", "lineA": "노장의 칼이 녹슬었는지 보아라!", "lineB": "늙은이가 산 위에서 무엇을—" },
+    { "a": "guan_yu", "b": "pang_de", "mode": "both", "where": "hist_fancheng", "source": "정사 방덕전: 방덕이 관우와 직접 싸워 화살로 관우의 이마를 맞힘 / 연의 74회: 관을 짊어지고 나와 100여 합", "style": "long", "special": "pang_de_arrow: 방덕이 지면 끝나지 않고 1회 저격 판정(관우 부상)", "lineA": "관을 지고 나왔다지. 그 관을 쓰게 해 주마.", "lineB": "나는 위왕의 은혜를 입은 몸. 오늘 죽거나 너를 죽이거나 둘 중 하나다." },
+    { "a": "sun_ce", "b": "taishi_ci", "mode": "both", "where": "any", "source": "정사 태사자전: 신정에서 맞붙어 손책은 태사자의 단극을, 태사자는 손책의 투구를 빼앗음", "style": "draw_favored", "lineA": "강동의 손백부다. 겨뤄 보겠는가!", "lineB": "기다리던 바다." },
+    { "a": "lu_bu", "b": "guo_si", "mode": "both", "where": "any", "source": "정사 여포전: 여포가 곽사와 단독으로 맞붙어 창으로 찌름", "style": "short", "lineA": "병사들은 물러서라. 너와 나 둘이서 정하자.", "lineB": "좋다, 여포!" },
+    { "a": "yan_xing", "b": "ma_chao", "mode": "both", "where": "any", "source": "정사 주 위략: 염행이 마초를 창으로 찔렀으나 창이 부러짐", "style": "short", "lineA": "창이 부러질지언정 물러서지 않는다!", "lineB": "한수의 개가 짖는구나." }
+  ],
+  "scenarios": [
+    {
+      "id": "hist_jieqiao",
+      "name": "계교 전투",
+      "year": [191, 192],
+      "months": [10, 11, 12, 1, 2, 3],
+      "priority": 9,
+      "source": "정사 원소전·공손찬전, 배송지 주 영웅기",
+      "entry": "s190 진행 중 공손찬이 원소의 남피를 공격할 때",
+      "trigger": { "attackerRuler": "gongsun_zan", "defenderRuler": "yuan_shao", "city": "nanpi", "requireAlive": ["gongsun_zan", "yuan_shao"] },
+      "map": {
+        "type": "field",
+        "paint": [
+          { "t": "river", "r": [3, 0, 4, 15] },
+          { "t": "bridge", "r": [3, 7, 4, 8] },
+          { "t": "forest", "r": [13, 1, 15, 3] },
+          { "t": "forest", "r": [13, 12, 15, 14] }
+        ],
+        "zones": { "escape_atk": [[0, 7, 2, 8]] }
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "gongsun_zan", "role": "commander", "kind": "cavalry", "x": 7, "y": 8, "troopsShare": 0.3 },
+          { "officer": "yan_gang", "role": "vanguard", "kind": "cavalry", "x": 10, "y": 8, "troopsShare": 0.25, "note": "백마의종(중견)" },
+          { "officer": "tian_kai", "role": "left", "kind": "infantry", "x": 9, "y": 4, "troopsShare": 0.3, "note": "보병 방진" },
+          { "officer": "zhao_yun", "role": "right", "kind": "cavalry", "x": 9, "y": 12, "troopsShare": 0.15, "optional": true }
+        ],
+        "def": [
+          { "officer": "qu_yi", "role": "vanguard", "kind": "archer", "x": 14, "y": 8, "troopsShare": 0.15, "optional": true, "note": "정병 8백 + 강노 1천. 방패 뒤에 엎드려 시작" },
+          { "officer": "yuan_shao", "role": "commander", "kind": "infantry", "x": 20, "y": 8, "troopsShare": 0.45 },
+          { "officer": "yan_liang", "role": "left", "kind": "infantry", "x": 17, "y": 5, "troopsShare": 0.2 },
+          { "officer": "wen_chou", "role": "right", "kind": "cavalry", "x": 17, "y": 11, "troopsShare": 0.2 }
+        ]
+      },
+      "standoff": { "days": [1, 4], "atkOptions": ["scout", "provoke"], "defOptions": ["scout", "feint_troops"] },
+      "historicalPlan": { "atk": "light_cavalry_rush", "def": "crossbow_wait" },
+      "events": [
+        { "id": "jieqiao_volley", "when": "공손찬 기병이 국의 부대 2칸 안에 진입", "effect": "국의 부대 일제 사격 ×3 + 대상 혼란", "banner": "엎드렸던 강노병이 일제히 일어섰다!" },
+        { "id": "jieqiao_yuanshao_trapped", "when": "추격 국면에서 원소 본진 호위가 2부대 이하", "effect": "공손찬 측 기병 2천이 원소 본진 포위 → 원소 일기토 불가, 강노 사격으로 버팀 판정. 국의 귀환 시 해제", "banner": "원소가 투구를 벗어던졌다. \"대장부라면 앞에서 싸우다 죽는 법이다!\"", "source": "정사 주 영웅기" }
+      ],
+      "branches": [
+        { "if": "공손찬 측 척후 성공", "then": "국의 부대의 매복 상태 해제(일제 사격 ×1.5로 감소). 공손찬이 측면 우회 돌격을 선택할 수 있음" },
+        { "if": "국의가 원소 소속이 아님", "then": "원소 측 선봉은 일반 궁병, 일제 사격 이벤트 없음" }
+      ],
+      "victory": { "atk": "원소 본진 격파", "def": "엄강·공손찬 부대 패주 또는 15일 버팀" }
+    },
+    {
+      "id": "hist_xiapi",
+      "name": "하비 공방전",
+      "year": [198, 199],
+      "months": [9, 10, 11, 12, 1],
+      "priority": 7,
+      "source": "정사 무제기·여포전·순유전, 배송지 주 영웅기·위씨춘추",
+      "entry": "s194 진행 중 여포가 하비를 차지한 상태에서 조조군이 하비를 공격할 때",
+      "trigger": { "attackerRuler": "cao_cao", "defenderRuler": "lu_bu", "city": "xiapi", "requireAlive": ["cao_cao", "lu_bu"] },
+      "map": {
+        "type": "siege",
+        "paint": [
+          { "t": "river", "r": [0, 1, 23, 1] },
+          { "t": "river", "r": [12, 2, 12, 15] },
+          { "t": "bridge", "p": [12, 8] },
+          { "t": "ford", "p": [12, 13] },
+          { "t": "dam", "p": [12, 2] },
+          { "t": "dam", "p": [16, 1] },
+          { "t": "wallring", "r": [14, 4, 20, 11] },
+          { "t": "gate", "p": [14, 8] },
+          { "t": "gate", "p": [17, 4] },
+          { "t": "gate", "p": [17, 11] },
+          { "t": "keep", "p": [17, 8] },
+          { "t": "camp", "r": [4, 6, 7, 10] }
+        ],
+        "zones": { "flood": [[13, 2, 23, 15]] }
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "cao_cao", "role": "commander", "kind": "infantry", "x": 6, "y": 8, "troopsShare": 0.3 },
+          { "officer": "xun_you", "role": "advisor", "kind": "archer", "x": 5, "y": 9, "troopsShare": 0.05 },
+          { "officer": "guo_jia", "role": "advisor", "kind": "archer", "x": 5, "y": 7, "troopsShare": 0.05 },
+          { "officer": "xiahou_dun", "role": "vanguard", "kind": "cavalry", "x": 8, "y": 6, "troopsShare": 0.2 },
+          { "officer": "liu_bei", "role": "right", "kind": "infantry", "x": 8, "y": 10, "troopsShare": 0.15, "optional": true },
+          { "officer": "guan_yu", "role": "main", "kind": "cavalry", "x": 9, "y": 8, "troopsShare": 0.15, "optional": true },
+          { "officer": "zhang_fei", "role": "left", "kind": "cavalry", "x": 9, "y": 11, "troopsShare": 0.1, "optional": true }
+        ],
+        "def": [
+          { "officer": "lu_bu", "role": "commander", "kind": "cavalry", "x": 17, "y": 8, "troopsShare": 0.25 },
+          { "officer": "chen_gong", "role": "advisor", "kind": "archer", "x": 18, "y": 7, "troopsShare": 0.1 },
+          { "officer": "gao_shun", "role": "vanguard", "kind": "infantry", "x": 15, "y": 8, "troopsShare": 0.2, "note": "함진영" },
+          { "officer": "zhang_liao", "role": "left", "kind": "cavalry", "x": 17, "y": 6, "troopsShare": 0.15 },
+          { "officer": "hou_cheng", "role": "reserve", "kind": "infantry", "x": 16, "y": 10, "troopsShare": 0.1, "defectRisk": true },
+          { "officer": "song_xian", "role": "reserve", "kind": "infantry", "x": 18, "y": 10, "troopsShare": 0.1, "defectRisk": true },
+          { "officer": "wei_xu", "role": "right", "kind": "infantry", "x": 19, "y": 6, "troopsShare": 0.1, "defectRisk": true }
+        ]
+      },
+      "standoff": { "days": [10, 25], "atkOptions": ["flood_prep", "inner_agent", "scout", "full_siege"], "defOptions": ["sally_camp", "hold_fast", "feint_troops"] },
+      "historicalPlan": { "atk": "flood_prep + inner_agent → full_siege", "def": "hold_fast" },
+      "events": [
+        { "id": "xiapi_chengong_plan", "when": "대치 1일차, 여포 측 작전 회의", "effect": "여포 측 작전 회의에 '기각지세(여포는 성 밖, 진궁은 성 안)' 선택지 추가. 선택 시 여포 부대가 성 밖 동쪽 고지대(x 21~23)에 별도 진영", "source": "정사 주 위씨춘추·영웅기: 진궁의 계책을 여포의 처가 말려 무산" },
+        { "id": "xiapi_flood", "when": "수공 준비 완료(공사 10일)", "effect": "flood 구역 침수. 성내 군량 매일 -3%, 사기 매일 -2", "banner": "기수와 사수의 둑이 터졌다! 하비성이 물에 잠긴다" },
+        { "id": "xiapi_defect", "when": "성내 사기 40 이하 + 내응 공작 성공", "effect": "후성·송헌·위속이 진궁을 결박하고 성문 개방 (defectRisk 장수 전원 이탈)", "banner": "성문이 안에서 열렸다! 후성이 진궁을 묶어 끌고 나온다", "source": "정사 여포전" }
+      ],
+      "branches": [
+        { "if": "여포가 기각지세를 택함", "then": "수공 효과는 성내에만 적용, 여포 별동대가 매일 조조 영채 습격 판정 → 조조 군량 소모 2배" },
+        { "if": "내응 공작 실패", "then": "성은 수공으로만 무너뜨려야 하며, 대치 한도 내 함락 실패 시 조조 퇴각 판정" }
+      ],
+      "victory": { "atk": "본성 점령 또는 여포 포로", "def": "대치+결전 합계 40일 버팀" }
+    },
+    {
+      "id": "hist_baima",
+      "name": "백마 전투 (관도 1막)",
+      "year": [200, 200],
+      "months": [3, 4, 5],
+      "priority": 2,
+      "source": "정사 무제기·관우전·순유전",
+      "entry": "s200 시작 직후 원소군이 복양(백마)을 공격할 때. s200 시작이 200년 2월이라 첫 두세 달 안에 열린다",
+      "trigger": { "attackerRuler": "yuan_shao", "defenderRuler": "cao_cao", "city": "puyang", "requireAlive": ["yuan_shao", "cao_cao", "yan_liang"] },
+      "map": {
+        "type": "siege",
+        "paint": [
+          { "t": "water", "r": [0, 0, 23, 1] },
+          { "t": "ford", "r": [3, 0, 4, 1] },
+          { "t": "ford", "r": [18, 0, 19, 1] },
+          { "t": "wallring", "r": [17, 6, 21, 10] },
+          { "t": "gate", "p": [17, 8] },
+          { "t": "keep", "p": [19, 8] },
+          { "t": "forest", "r": [8, 12, 11, 14] }
+        ],
+        "zones": { "fog": [[0, 0, 23, 1]] }
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "yan_liang", "role": "commander", "kind": "infantry", "x": 15, "y": 8, "troopsShare": 0.5 },
+          { "officer": "guo_tu", "role": "advisor", "kind": "archer", "x": 13, "y": 7, "troopsShare": 0.2 },
+          { "officer": "chunyu_qiong", "role": "right", "kind": "infantry", "x": 14, "y": 11, "troopsShare": 0.3 }
+        ],
+        "def": [
+          { "officer": "cao_cao", "role": "commander", "kind": "cavalry", "x": 3, "y": 9, "troopsShare": 0.25 },
+          { "officer": "zhang_liao", "role": "vanguard", "kind": "cavalry", "x": 4, "y": 7, "troopsShare": 0.2 },
+          { "officer": "guan_yu", "role": "vanguard", "kind": "cavalry", "x": 5, "y": 8, "troopsShare": 0.2, "optional": true, "note": "조조 휘하일 때만 (하비 함락 후 항복 이벤트)" },
+          { "officer": "xun_you", "role": "advisor", "kind": "archer", "x": 2, "y": 10, "troopsShare": 0.05 },
+          { "officer": "xu_huang", "role": "left", "kind": "infantry", "x": 4, "y": 11, "troopsShare": 0.15 },
+          { "officer": "auto_garrison", "role": "garrison", "kind": "infantry", "x": 19, "y": 8, "troopsShare": 0.15, "note": "동군태수 유연은 데이터에 없음. 복양 태수를 자동 배치" }
+        ],
+        "reinforcement": [
+          { "side": "atk", "officer": "wen_chou", "kind": "cavalry", "day": 6, "edge": "ford_west_or_east", "note": "양동 성공 시 서쪽(연진) 여울, 실패 시 동쪽(백마진) 여울로 등장" }
+        ]
+      },
+      "standoff": { "days": [1, 3], "atkOptions": ["scout", "hold_fast"], "defOptions": ["feint_crossing", "scout", "forced_march"] },
+      "historicalPlan": { "atk": "full_siege", "def": "feint_crossing → single_strike_charge" },
+      "events": [
+        { "id": "baima_feint", "when": "조조 측 '양동 도하' 계책 판정", "effect": "성공 시 원소 원군(문추)이 서쪽 여울로 가서 결전 6일차 이후에야 도착, 실패 시 동쪽 여울로 3일차 도착", "banner": "연진에서 강을 건너는 척하자 원소의 대군이 서쪽으로 움직인다", "source": "정사 순유전" },
+        { "id": "baima_strike", "when": "관우 또는 장료 부대가 안량 부대에 인접", "effect": "단기 돌격 일기토 판정(관우-안량 매치업). 안량 전사 시 원소군 전군 사기 -30, 포위 해제", "banner": "만 명의 군사 속에서, 한 장수가 안량의 깃발로 곧장 달려든다", "source": "정사 관우전" }
+      ],
+      "branches": [
+        { "if": "원소가 예비대를 남김(대치 '견수' 선택)", "then": "양동 무효, 문추 원군 2일차 도착" },
+        { "if": "안량 생존", "then": "다음 전장 '연진'은 안량·문추가 함께 등장" }
+      ],
+      "next": { "id": "hist_yanjin", "when": "조조 측 승리 후 같은 달" },
+      "victory": { "atk": "백마성 함락", "def": "안량 부대 패주 또는 포위 해제" }
+    },
+    {
+      "id": "hist_yanjin",
+      "name": "연진 남판 전투 (관도 2막)",
+      "year": [200, 200],
+      "months": [4, 5, 6],
+      "priority": 2,
+      "source": "정사 무제기 (치중을 버려 미끼로 삼음, 문추 전사)",
+      "entry": "백마 전투에서 조조가 이긴 뒤 같은 달, 원소군이 추격해 올 때",
+      "trigger": { "after": "hist_baima", "attackerRuler": "yuan_shao", "defenderRuler": "cao_cao" },
+      "map": {
+        "type": "field",
+        "paint": [
+          { "t": "water", "r": [0, 0, 23, 1] },
+          { "t": "ford", "r": [16, 0, 17, 1] },
+          { "t": "mountain", "r": [3, 6, 6, 10] },
+          { "t": "depot", "r": [10, 7, 11, 9] },
+          { "t": "forest", "r": [12, 12, 15, 14] }
+        ]
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "wen_chou", "role": "commander", "kind": "cavalry", "x": 17, "y": 3, "troopsShare": 0.55 },
+          { "officer": "liu_bei", "role": "right", "kind": "cavalry", "x": 19, "y": 3, "troopsShare": 0.25, "optional": true, "note": "유비가 원소에게 의탁 중일 때만" },
+          { "officer": "yan_liang", "role": "left", "kind": "cavalry", "x": 15, "y": 3, "troopsShare": 0.2, "optional": true, "note": "백마에서 살아남았을 때만" }
+        ],
+        "def": [
+          { "officer": "cao_cao", "role": "commander", "kind": "cavalry", "x": 4, "y": 8, "troopsShare": 0.35 },
+          { "officer": "zhang_liao", "role": "vanguard", "kind": "cavalry", "x": 5, "y": 7, "troopsShare": 0.2 },
+          { "officer": "xu_huang", "role": "left", "kind": "cavalry", "x": 5, "y": 10, "troopsShare": 0.2 },
+          { "officer": "xun_you", "role": "advisor", "kind": "archer", "x": 3, "y": 9, "troopsShare": 0.05 },
+          { "officer": "guan_yu", "role": "right", "kind": "cavalry", "x": 6, "y": 8, "troopsShare": 0.2, "optional": true, "mode": "yanyi" }
+        ]
+      },
+      "standoff": { "days": [0, 0] },
+      "historicalPlan": { "atk": "light_cavalry_rush", "def": "bait_supply → light_cavalry_rush" },
+      "events": [
+        { "id": "yanjin_bait", "when": "원소 기병이 depot 칸에 진입", "effect": "해당 부대 2틱 정지, 진형 붕괴(방어 -40%). 조조 측 기병 즉시 돌격 명령", "banner": "버려진 치중에 원소의 기병들이 앞다투어 달려든다", "source": "정사 무제기" },
+        { "id": "yanjin_restraint", "when": "원소 측 지휘관 판정(지력·성격)", "effect": "냉정·신중 판정 성공 시 미끼 무시", "banner": "\"줍지 마라! 함정이다!\"" }
+      ],
+      "victory": { "atk": "조조 부대 격파", "def": "문추 부대 패주 또는 문추 전사" }
+    },
+    {
+      "id": "hist_guandu",
+      "name": "관도 대전 (관도 3막)",
+      "year": [200, 200],
+      "months": [7, 8, 9, 10, 11],
+      "priority": 1,
+      "source": "정사 무제기·원소전·순욱전·장합전·서황전, 배송지 주 조만전",
+      "entry": "s200에서 원소군이 진류(관도 방면)를 공격할 때. 백마·연진 이후가 역사 순서지만, 건너뛰어도 열린다",
+      "trigger": { "attackerRuler": "yuan_shao", "defenderRuler": "cao_cao", "city": "chenliu", "requireAlive": ["yuan_shao", "cao_cao"] },
+      "map": {
+        "type": "field_camps",
+        "paint": [
+          { "t": "camp", "r": [3, 2, 18, 3] },
+          { "t": "mountain", "r": [8, 5, 8, 5] },
+          { "t": "mountain", "r": [12, 5, 12, 5] },
+          { "t": "mountain", "r": [16, 5, 16, 5] },
+          { "t": "depot", "r": [21, 1, 22, 2] },
+          { "t": "stockade", "r": [6, 11, 17, 11] },
+          { "t": "plain", "p": [9, 11] },
+          { "t": "plain", "p": [14, 11] },
+          { "t": "camp", "r": [7, 12, 16, 13] },
+          { "t": "depot", "p": [12, 14] }
+        ],
+        "zones": { "fog": [[19, 0, 23, 4]] }
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "yuan_shao", "role": "commander", "kind": "infantry", "x": 11, "y": 2, "troopsShare": 0.3 },
+          { "officer": "zhang_he", "role": "left", "kind": "cavalry", "x": 5, "y": 3, "troopsShare": 0.15 },
+          { "officer": "gao_lan", "role": "right", "kind": "infantry", "x": 17, "y": 3, "troopsShare": 0.15 },
+          { "officer": "chunyu_qiong", "role": "depot_guard", "kind": "infantry", "x": 21, "y": 3, "troopsShare": 0.15, "note": "오소 경비 1만" },
+          { "officer": "guo_tu", "role": "advisor", "kind": "archer", "x": 12, "y": 2, "troopsShare": 0.05 },
+          { "officer": "ju_shou", "role": "advisor", "kind": "archer", "x": 10, "y": 2, "troopsShare": 0.05 },
+          { "officer": "xu_you", "role": "advisor", "kind": "archer", "x": 13, "y": 2, "troopsShare": 0.05, "defectRisk": true },
+          { "officer": "shen_pei", "role": "reserve", "kind": "infantry", "x": 7, "y": 2, "troopsShare": 0.1, "optional": true },
+          { "officer": "han_meng", "role": "supply", "kind": "infantry", "x": 19, "y": 2, "troopsShare": 0.1, "optional": true, "note": "수송대. 대치 중 서황 습격 대상" }
+        ],
+        "def": [
+          { "officer": "cao_cao", "role": "commander", "kind": "cavalry", "x": 12, "y": 13, "troopsShare": 0.25 },
+          { "officer": "xun_you", "role": "advisor", "kind": "archer", "x": 11, "y": 13, "troopsShare": 0.05 },
+          { "officer": "xu_chu", "role": "guard", "kind": "infantry", "x": 13, "y": 13, "troopsShare": 0.15 },
+          { "officer": "cao_ren", "role": "left", "kind": "infantry", "x": 8, "y": 12, "troopsShare": 0.15 },
+          { "officer": "le_jin", "role": "right", "kind": "infantry", "x": 16, "y": 12, "troopsShare": 0.1 },
+          { "officer": "xu_huang", "role": "raider", "kind": "cavalry", "x": 10, "y": 12, "troopsShare": 0.15 },
+          { "officer": "cao_hong", "role": "camp_keeper", "kind": "infantry", "x": 14, "y": 12, "troopsShare": 0.15, "note": "오소 습격 때 본영을 지킴 (정사)" }
+        ]
+      },
+      "standoff": {
+        "days": [15, 30],
+        "atkOptions": ["siege_mounds", "tunnel", "scout", "hold_fast", "provoke"],
+        "defOptions": ["catapult_counter", "trench_counter", "supply_raid", "scout", "hold_fast"]
+      },
+      "historicalPlan": { "atk": "siege_mounds + tunnel", "def": "catapult_counter + trench_counter + supply_raid(서황→한맹, 허유 정보→오소)" },
+      "events": [
+        { "id": "guandu_mounds", "when": "원소 '토산·망루' 계책", "effect": "조조 영채에 매일 화살 피해. '발석거 대응'이 있으면 3일차에 망루 파괴", "banner": "원소군의 망루에서 화살이 비처럼 쏟아진다 / 벽력거가 망루를 부쉈다!" },
+        { "id": "guandu_tunnel", "when": "원소 '땅굴' 계책 7일 경과", "effect": "조조 stockade 일부 붕괴. '참호 대응'이 있으면 무효", "banner": "땅 밑에서 소리가 난다 / 긴 참호가 땅굴을 끊었다" },
+        { "id": "guandu_hanmeng", "when": "조조 '보급 기습' + 서황 지정", "effect": "한맹 수송대 소각, 원소 군량 -15%", "source": "정사 서황전" },
+        { "id": "guandu_xuyou", "when": "대치 10일 이후, 원소 측 판정: 원소 성격(결단 지연) + 허유 의리 낮음 + 심배와 관계 나쁨", "effect": "허유 이탈 → 조조 측에 '오소 위치' 정보(fog 해제). 보급 기습 성공률 대폭 상승", "banner": "원소의 모사 허유가 맨발로 달려 나온 조조를 만났다", "source": "정사 무제기 주 조만전" },
+        { "id": "guandu_wuchao", "when": "조조 측 보급 기습 발동", "effect": "조조 본인+정예 5천 원소 깃발 위장, 밤 습격 → depot 화재. 원소 측 자동 판정: 장합안(구원) vs 곽도안(조조 본영 강공). 원소 작전 회의에서 미리 정한 쪽을 따름, AI는 원소 성격으로 판정", "banner": "원소군의 깃발을 든 군사들이 말 입을 묶고 섶을 들고 오소로 향한다" },
+        { "id": "guandu_zhanghe", "when": "오소 소각 + 본영 강공 실패", "effect": "장합·고람 이탈 판정 (역사대로면 조조에게 투항)", "banner": "장합과 고람이 공성 기구를 불태우고 조조에게 항복했다", "source": "정사 장합전" }
+      ],
+      "branches": [
+        { "if": "원소가 허유를 붙잡아 둠(허유 이탈 판정 실패)", "then": "오소 위치 불명. 조조 보급 기습 성공률 낮음 → 조조 군량 20일 한도에 걸려 퇴각 판정 → 허창 위기 루트" },
+        { "if": "원소가 '구원'을 미리 지정", "then": "오소 소각 피해 절반, 장합 이탈 없음. 대신 본영 압박이 없어 조조 무사 귀환" },
+        { "if": "전풍·저수의 '지구전' 진언을 채택(원소 측 작전 회의 선택지)", "then": "원소 대치 한도가 늘고 조조 군량 압박 강화. 대신 원소 사기 매일 소폭 하락(원소 성격)" }
+      ],
+      "victory": { "atk": "조조 본영 점령 또는 조조 군량 소진", "def": "원소 군량 소진(오소 소각) 또는 원소 본진 격파" }
+    },
+    {
+      "id": "hist_bowang",
+      "name": "박망파 전투",
+      "year": [202, 208],
+      "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "priority": 6,
+      "source": "정사 선주전·이전전 (202) / 연의 39회 (제갈량의 첫 지휘, 208)",
+      "entry": "정사 모드: 202년, 위가 완에서 신야를 칠 때. 연의 모드: 제갈량 합류(삼고초려 플래그) 후 위가 신야를 칠 때",
+      "trigger": { "attackerRuler": "cao_cao", "defenderRuler": "liu_bei", "city": "xinye", "fromCity": "wan", "requireAlive": ["liu_bei", "xiahou_dun"], "modeRule": { "zhengshi": { "year": [202, 203] }, "yanyi": { "flagsRequired": ["zhuge_liang_joined"] } } },
+      "map": {
+        "type": "field",
+        "paint": [
+          { "t": "mountain", "r": [0, 0, 5, 15] },
+          { "t": "mountain", "r": [18, 0, 23, 15] },
+          { "t": "forest", "r": [6, 6, 9, 12] },
+          { "t": "forest", "r": [14, 6, 17, 12] },
+          { "t": "camp", "r": [9, 4, 14, 5] }
+        ],
+        "zones": { "escape_def": [[6, 15, 17, 15]] }
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "xiahou_dun", "role": "commander", "kind": "cavalry", "x": 11, "y": 1, "troopsShare": 0.5 },
+          { "officer": "yu_jin", "role": "left", "kind": "infantry", "x": 9, "y": 1, "troopsShare": 0.25 },
+          { "officer": "li_dian", "role": "rearguard", "kind": "infantry", "x": 14, "y": 1, "troopsShare": 0.25, "note": "복병을 의심하는 신중한 부장" }
+        ],
+        "def": [
+          { "officer": "liu_bei", "role": "commander", "kind": "infantry", "x": 11, "y": 4, "troopsShare": 0.3 },
+          { "officer": "zhao_yun", "role": "vanguard", "kind": "cavalry", "x": 12, "y": 5, "troopsShare": 0.2, "note": "유인 담당" },
+          { "officer": "guan_yu", "role": "ambush", "kind": "infantry", "x": 8, "y": 9, "troopsShare": 0.2, "hidden": true },
+          { "officer": "zhang_fei", "role": "ambush", "kind": "cavalry", "x": 15, "y": 9, "troopsShare": 0.2, "hidden": true },
+          { "officer": "zhuge_liang", "role": "advisor", "kind": "archer", "x": 11, "y": 13, "troopsShare": 0.04, "mode": "yanyi" },
+          { "officer": "guan_ping", "role": "fire", "kind": "infantry", "x": 7, "y": 11, "troopsShare": 0.03, "hidden": true, "mode": "yanyi" },
+          { "officer": "liu_feng", "role": "fire", "kind": "infantry", "x": 16, "y": 11, "troopsShare": 0.03, "hidden": true, "mode": "yanyi" }
+        ]
+      },
+      "standoff": { "days": [1, 3], "atkOptions": ["scout", "cautious_advance"], "defOptions": ["burn_camp_feint", "feint_troops"] },
+      "historicalPlan": { "atk": "pursuit_fast", "def": "burn_camp_feint → feigned_retreat_ambush (+fire in 연의)" },
+      "events": [
+        { "id": "bowang_burn", "when": "결전 1일차", "effect": "유비 camp 칸 스스로 점화, 유비 부대 남쪽으로 퇴각 시작", "banner": "유비가 진영에 불을 지르고 물러난다" },
+        { "id": "bowang_lidian_warning", "when": "하후돈 부대가 forest 사이 길(y 6~12)에 진입하기 전", "effect": "이전 경고 판정. 하후돈 성격(오만/호걸 여부)에 따라 무시 또는 수용", "banner": "이전: \"적이 까닭 없이 물러나니 반드시 복병이 있소. 남쪽 길은 좁고 풀이 무성하오!\"", "source": "정사 이전전" },
+        { "id": "bowang_spring", "when": "하후돈 부대가 매복 2칸 안", "effect": "복병 발동 + (연의) 양쪽 숲 점화", "banner": "숲이 불타오르고 양쪽에서 복병이 일어났다!" }
+      ],
+      "branches": [
+        { "if": "하후돈이 이전의 경고를 받아들임", "then": "추격 중단, 유비군은 신야로 무사 귀환(무승부 처리). 이전 명성 상승" },
+        { "if": "이전이 출진하지 않음", "then": "경고 이벤트 없음 → 복병 성공률 상승" }
+      ],
+      "victory": { "atk": "유비 부대 격파 또는 신야 도달", "def": "하후돈 부대 패주" }
+    },
+    {
+      "id": "hist_changban",
+      "name": "장판 추격전",
+      "year": [208, 208],
+      "months": [8, 9, 10],
+      "priority": 3,
+      "source": "정사 선주전·장비전·조운전·조순전·문빙전 / 연의 41~42회",
+      "entry": "s208(208년 7월 시작)에서 유표 사망·유종 항복 이벤트 후, 유비가 신야·양양에서 강릉 방향으로 물러나고 위군이 인접해 있을 때. 성을 놓고 싸우는 전투가 아닌 '퇴각 중 추격' 전용 전장",
+      "trigger": { "special": "retreat_pursuit", "pursuerRuler": "cao_cao", "fleeingRuler": "liu_bei", "fromCity": "xiangyang", "toCity": "jiangling", "flagsRequired": ["liu_biao_dead", "liu_cong_surrendered"] },
+      "map": {
+        "type": "pursuit",
+        "paint": [
+          { "t": "river", "r": [0, 12, 23, 12] },
+          { "t": "bridge", "r": [11, 12, 12, 12] },
+          { "t": "forest", "r": [2, 4, 5, 7] },
+          { "t": "forest", "r": [18, 5, 21, 8] },
+          { "t": "mountain", "r": [15, 1, 16, 2] }
+        ],
+        "zones": { "escape_def": [[0, 14, 23, 15]] },
+        "objects": [
+          { "type": "escort", "name": "감부인과 유선", "x": 15, "y": 5, "side": "def" },
+          { "type": "civilians", "count": 10, "r": [3, 3, 20, 9], "side": "def", "note": "백성 10여만. 함께 가면 하루 10여 리" }
+        ]
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "cao_cao", "role": "commander", "kind": "cavalry", "x": 12, "y": 0, "troopsShare": 0.3 },
+          { "officer": "cao_chun", "role": "vanguard", "kind": "cavalry", "x": 11, "y": 1, "troopsShare": 0.35, "note": "호표기" },
+          { "officer": "wen_pin", "role": "left", "kind": "cavalry", "x": 8, "y": 1, "troopsShare": 0.2, "optional": true },
+          { "officer": "xiahou_en", "role": "right", "kind": "cavalry", "x": 15, "y": 0, "troopsShare": 0.15, "mode": "yanyi", "note": "청강검 소지" }
+        ],
+        "def": [
+          { "officer": "liu_bei", "role": "commander", "kind": "cavalry", "x": 12, "y": 8, "troopsShare": 0.25 },
+          { "officer": "zhuge_liang", "role": "advisor", "kind": "archer", "x": 13, "y": 9, "troopsShare": 0.05, "optional": true },
+          { "officer": "zhao_yun", "role": "escort", "kind": "cavalry", "x": 14, "y": 6, "troopsShare": 0.15 },
+          { "officer": "zhang_fei", "role": "rearguard", "kind": "cavalry", "x": 12, "y": 13, "troopsShare": 0.05, "note": "기병 20여 기. 다리 남쪽에서 시작" },
+          { "officer": "jian_yong", "role": "civil", "kind": "infantry", "x": 10, "y": 8, "troopsShare": 0.15 },
+          { "officer": "mi_zhu", "role": "civil", "kind": "infantry", "x": 11, "y": 9, "troopsShare": 0.15 },
+          { "officer": "mi_fang", "role": "civil", "kind": "infantry", "x": 13, "y": 7, "troopsShare": 0.2 }
+        ]
+      },
+      "standoff": { "days": [0, 0] },
+      "preBattleChoices": {
+        "def": [
+          { "id": "keep_civilians", "label": "백성과 함께 간다", "effect": "이동 ×0.4, 승리 시 민심·명성 대폭 상승, 패배해도 '인덕' 명성 상승" },
+          { "id": "leave_civilians", "label": "백성을 두고 서둘러 간다", "effect": "이동 정상, 민심·명성 하락, 일부 장수 충성 하락" },
+          { "id": "bridge_cut", "label": "장판교: 건넌 뒤 다리를 끊는다 / 지키며 위압한다", "effect": "정사 모드: 끊으면 추격 차단 확정. 연의 모드: 위압 후 끊으면 적 지력 판정에 따라 허세 발각" }
+        ]
+      },
+      "historicalPlan": { "atk": "pursuit_fast", "def": "keep_civilians + rearguard_glare" },
+      "events": [
+        { "id": "changban_lost", "when": "결전 1일차", "effect": "감부인과 유선이 행렬에서 떨어짐(escort 객체가 북쪽으로 이동). 조운 자동 '되돌아가기' 판정", "banner": "주공의 가족을 잃었다! 조운이 말머리를 돌려 적진으로 달려든다" },
+        { "id": "changban_glare", "when": "추격 부대가 다리 2칸 안", "effect": "장비 위압 판정: 장비 무력·명성 vs 추격 지휘관 지력·성격. 성공 시 추격 부대 정지 4틱", "banner": "\"나는 장익덕이다! 죽고 싶은 자는 나와라!\"", "source": "정사 장비전" },
+        { "id": "changban_escape", "when": "유비와 escort가 escape 구역 도달", "effect": "유비 측 승리. 이어서 관우 수군과 합류 이벤트(한진)" }
+      ],
+      "branches": [
+        { "if": "escort 포획", "then": "유선·감부인 포로 → 이후 외교 이벤트(조조의 회유)로 연결" },
+        { "if": "조운이 escort를 구출하고 탈출", "then": "조운 명성·충성 최대, 연의 모드면 청강검 획득 가능" }
+      ],
+      "victory": { "atk": "유비 포로, 또는 escort 포획 후 4일 경과", "def": "유비가 escape 구역 도달 (escort 함께면 대승)" }
+    },
+    {
+      "id": "hist_chibi",
+      "name": "적벽 대전",
+      "year": [208, 209],
+      "months": [10, 11, 12, 1],
+      "priority": 1,
+      "source": "정사 무제기·주유전·선주전·제갈량전, 배송지 주 강표전·산양공재기 / 연의 43~50회",
+      "entry": "s208에서 위가 강릉을 얻은 뒤, 수로로 강하 또는 시상을 공격할 때. 손권과 유비가 동맹 상태여야 연합군 전장으로 열린다",
+      "trigger": { "attackerRuler": "cao_cao", "defenderRuler": "sun_quan", "cityAny": ["jiangxia", "chaisang"], "fromCity": "jiangling", "viaWater": true, "flagsRequired": ["sun_liu_alliance"] },
+      "map": {
+        "type": "naval",
+        "paint": [
+          { "t": "water", "r": [0, 4, 23, 11] },
+          { "t": "camp", "r": [4, 1, 19, 2] },
+          { "t": "camp", "r": [6, 13, 17, 14] },
+          { "t": "camp", "r": [18, 13, 22, 14] }
+        ],
+        "zones": { "chained_fleet": [[5, 4, 18, 5]] }
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "cao_cao", "role": "commander", "kind": "infantry", "x": 12, "y": 1, "troopsShare": 0.25 },
+          { "officer": "cheng_yu", "role": "advisor", "kind": "archer", "x": 11, "y": 1, "troopsShare": 0.05 },
+          { "officer": "xu_chu", "role": "guard", "kind": "infantry", "x": 13, "y": 1, "troopsShare": 0.1 },
+          { "officer": "cai_mao", "role": "fleet_left", "kind": "navy", "x": 8, "y": 4, "troopsShare": 0.2 },
+          { "officer": "zhang_yun", "role": "fleet_right", "kind": "navy", "x": 16, "y": 4, "troopsShare": 0.2 },
+          { "officer": "wen_pin", "role": "fleet_main", "kind": "navy", "x": 12, "y": 4, "troopsShare": 0.2, "optional": true }
+        ],
+        "def": [
+          { "officer": "zhou_yu", "role": "commander", "kind": "navy", "x": 11, "y": 11, "troopsShare": 0.2 },
+          { "officer": "cheng_pu", "role": "left", "kind": "navy", "x": 10, "y": 11, "troopsShare": 0.15 },
+          { "officer": "huang_gai", "role": "fire_ships", "kind": "navy", "x": 12, "y": 10, "troopsShare": 0.05, "note": "몽충·투함 수십 척, 섶과 기름" },
+          { "officer": "lu_su", "role": "advisor", "kind": "archer", "x": 14, "y": 14, "troopsShare": 0.05 },
+          { "officer": "gan_ning", "role": "right", "kind": "navy", "x": 15, "y": 11, "troopsShare": 0.1 },
+          { "officer": "lu_meng", "role": "vanguard", "kind": "navy", "x": 8, "y": 11, "troopsShare": 0.1 },
+          { "officer": "han_dang", "role": "reserve", "kind": "infantry", "x": 17, "y": 13, "troopsShare": 0.05 },
+          { "officer": "liu_bei", "role": "ally_commander", "kind": "infantry", "x": 19, "y": 13, "troopsShare": 0.1, "optional": true },
+          { "officer": "guan_yu", "role": "ally_fleet", "kind": "navy", "x": 20, "y": 11, "troopsShare": 0.1, "optional": true },
+          { "officer": "zhuge_liang", "role": "ally_advisor", "kind": "archer", "x": 20, "y": 14, "troopsShare": 0.02, "optional": true },
+          { "officer": "zhao_yun", "role": "ally_pursuit", "kind": "cavalry", "x": 21, "y": 13, "troopsShare": 0.03, "optional": true }
+        ]
+      },
+      "standoff": {
+        "days": [5, 20],
+        "atkOptions": ["chain_fleet", "train_navy", "scout", "accept_surrender"],
+        "defOptions": ["false_surrender", "fire_prep", "scout", "sow_discord"]
+      },
+      "preBattleChoices": {
+        "atk": [
+          { "id": "chain_fleet", "label": "배를 쇠사슬로 잇는다(연환)", "effect": "북방 병사 뱃멀미 제거(수전 페널티 해소). 대신 화공이 함대 전체로 번짐" },
+          { "id": "no_chain", "label": "잇지 않는다", "effect": "뱃멀미 그대로(수전 -25%), 역병 매일 판정. 화공 피해 1/3" }
+        ]
+      },
+      "historicalPlan": { "atk": "chain_fleet + accept_surrender", "def": "false_surrender(황개) + fire_prep → fire_ships" },
+      "events": [
+        { "id": "chibi_first_clash", "when": "대치 1일차", "effect": "첫 접전: 조조 수군 불리 판정(뱃멀미). 패하면 북안으로 물러나 대치", "source": "정사 무제기: 처음 한 번 싸워 불리하자 강북으로 물러남" },
+        { "id": "chibi_plague", "when": "대치 매일", "effect": "조조 측 역병 판정: 병력 -1~2%, 사기 -1", "source": "정사 무제기·선주전" },
+        { "id": "chibi_discord_caimao", "when": "연의 모드, 오 측 '이간' 계책 성공", "effect": "채모·장윤 처형 이벤트 → 조조 수군 훈련도 대폭 하락", "mode": "yanyi", "note": "정사에서 채모는 처형되지 않았다" },
+        { "id": "chibi_surrender", "when": "오 측 '위장 투항' 성공 + 조조가 항복을 받아들임(조조 인재욕 성향)", "effect": "황개 화선 함대가 결전 시작 시 조조 함대 2칸 앞까지 무저항 접근", "banner": "황개의 배가 항복 깃발을 달고 다가온다" },
+        { "id": "chibi_wind", "when": "결전, 11~12월 + 강 전장. 정사 모드: 확률 판정 / 연의 모드: 제갈량이 연합군에 있으면 확정(칠성단)", "effect": "동남풍: 불이 북서쪽(조조 함대·영채 방향)으로 번짐 ×2", "banner": "동남풍이 거세게 분다!", "source": "정사 주 강표전에 '동남풍이 급했다'는 기록, 제갈량의 기풍은 연의" },
+        { "id": "chibi_fire", "when": "화선이 조조 함대에 닿음", "effect": "chained_fleet 전체 점화(연환 시) 또는 인접 3칸(비연환 시). 북안 영채까지 확산", "banner": "불길이 하늘을 덮고, 오림의 영채까지 번진다!" },
+        { "id": "chibi_huarong", "when": "조조 측 패배, 추격 국면", "effect": "조조 퇴각로 '화용도' 진흙길: 퇴각 속도 ×0.5, 연의 모드면 관우 매복 이벤트(관우 의리 판정으로 조조를 놓아줄 수 있음)", "source": "정사 주 산양공재기(진흙길) / 연의 50회(관우의 의석)" }
+      ],
+      "branches": [
+        { "if": "조조가 연환하지 않음", "then": "화공 피해 1/3, 대신 뱃멀미·역병으로 결전 전력 약화. 장기 대치 시 조조 자진 퇴각 판정" },
+        { "if": "황개의 항복을 의심(조조 지력·정욱 진언 판정)", "then": "화선 함대가 원거리에서 저지됨 → 연합군은 정면 수전" },
+        { "if": "조조 생포", "then": "역사 붕괴급 if: 위 세력 승계 이벤트(조비)" }
+      ],
+      "victory": { "atk": "연합군 본진(주유) 격파", "def": "조조 함대 50% 이상 소실 또는 조조 퇴각" }
+    },
+    {
+      "id": "hist_tongguan",
+      "name": "동관·위남 전투",
+      "year": [211, 211],
+      "months": [7, 8, 9, 10],
+      "priority": 8,
+      "source": "정사 무제기·허저전·가후전·마초전, 배송지 주 조만전",
+      "entry": "위가 홍농에서 장안(마초·한수 세력)을 공격할 때",
+      "trigger": { "attackerRuler": "cao_cao", "defenderAny": ["ma_teng", "ma_chao", "han_sui"], "city": "changan", "fromCity": "hongnong", "requireAlive": ["ma_chao", "han_sui"] },
+      "map": {
+        "type": "river_crossing",
+        "paint": [
+          { "t": "river", "r": [0, 7, 23, 8] },
+          { "t": "ford", "r": [4, 7, 5, 8] },
+          { "t": "ford", "r": [17, 7, 18, 8] },
+          { "t": "wallring", "r": [20, 1, 23, 5] },
+          { "t": "gate", "p": [20, 3] },
+          { "t": "keep", "p": [22, 3] },
+          { "t": "camp", "r": [3, 11, 15, 13] },
+          { "t": "depot", "p": [16, 5] }
+        ]
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "cao_cao", "role": "commander", "kind": "infantry", "x": 17, "y": 4, "troopsShare": 0.25 },
+          { "officer": "xu_chu", "role": "guard", "kind": "infantry", "x": 18, "y": 4, "troopsShare": 0.15 },
+          { "officer": "jia_xu", "role": "advisor", "kind": "archer", "x": 16, "y": 3, "troopsShare": 0.05 },
+          { "officer": "cao_ren", "role": "vanguard", "kind": "infantry", "x": 17, "y": 6, "troopsShare": 0.2 },
+          { "officer": "xu_huang", "role": "feint_left", "kind": "cavalry", "x": 5, "y": 4, "troopsShare": 0.2, "note": "포판진 선도하 (정사)" },
+          { "officer": "zhu_ling", "role": "feint_left", "kind": "infantry", "x": 6, "y": 5, "troopsShare": 0.15 }
+        ],
+        "def": [
+          { "officer": "ma_chao", "role": "commander", "kind": "cavalry", "x": 12, "y": 10, "troopsShare": 0.25 },
+          { "officer": "han_sui", "role": "co_commander", "kind": "cavalry", "x": 8, "y": 10, "troopsShare": 0.2, "discordTarget": true },
+          { "officer": "pang_de", "role": "vanguard", "kind": "cavalry", "x": 14, "y": 10, "troopsShare": 0.1, "mode": "yanyi" },
+          { "officer": "ma_dai", "role": "left", "kind": "cavalry", "x": 10, "y": 11, "troopsShare": 0.1 },
+          { "officer": "cheng_yi", "role": "right", "kind": "cavalry", "x": 16, "y": 10, "troopsShare": 0.1 },
+          { "officer": "li_kan", "role": "left", "kind": "infantry", "x": 6, "y": 10, "troopsShare": 0.08 },
+          { "officer": "yang_qiu", "role": "reserve", "kind": "cavalry", "x": 4, "y": 10, "troopsShare": 0.07 },
+          { "officer": "hou_xuan", "role": "reserve", "kind": "infantry", "x": 5, "y": 12, "troopsShare": 0.05 },
+          { "officer": "cheng_yin", "role": "reserve", "kind": "infantry", "x": 7, "y": 12, "troopsShare": 0.05 }
+        ]
+      },
+      "standoff": { "days": [5, 20], "atkOptions": ["feint_crossing", "sow_discord", "bait_supply", "scout", "hold_fast"], "defOptions": ["river_strike", "scout", "hold_fast", "provoke"] },
+      "historicalPlan": { "atk": "feint_crossing(서황·주령) + bait_supply(소·말) + sow_discord(가후)", "def": "river_strike" },
+      "events": [
+        { "id": "tongguan_crossing_strike", "when": "조조 본대 도하 중(강·여울 칸) + 마초 '하천 저지'", "effect": "조조 본대 피해 ×1.8, 조조 포획 판정. 허저가 인접하면 판정 무효", "banner": "조조가 강을 건너는 순간, 마초의 기병이 들이닥쳤다! 허저가 조조를 배에 태운다", "source": "정사 허저전" },
+        { "id": "tongguan_cattle", "when": "마초 기병이 depot(소·말) 칸 2칸 안", "effect": "마초 측 기병 부대 2틱 정지(약탈). 조조 도하 완료 판정 +", "banner": "누군가 소와 말을 풀었다! 서량 기병들이 앞다투어 끌고 간다", "source": "정사 주 조만전(교위 정비의 계책, 정비는 데이터에 없음)" },
+        { "id": "tongguan_glare", "when": "마초 부대가 조조 부대 2칸 안 + 허저 인접", "effect": "허저-마초 매치업. 정사 모드: 위압 판정(성공 시 마초 정지) / 연의 모드: 일기토", "banner": "\"네가 호치(虎痴)냐!\" 허저가 눈을 부릅뜨자 마초가 멈칫했다" },
+        { "id": "tongguan_letter", "when": "조조 '이간' 계책 성공", "effect": "한수 부대 협력 거부: 결전에서 한수 부대는 공격받기 전까지 이동 안 함. 마초 사기 -10", "banner": "곳곳을 지운 편지 한 통에, 마초가 한수를 의심하기 시작했다", "source": "정사 무제기·가후전" }
+      ],
+      "branches": [
+        { "if": "이간 간파(한수 측 지력·마초와 관계 판정)", "then": "마초·한수 결속, 서량 기병 전원 협력 → 조조 도하 실패 시 퇴각" },
+        { "if": "마초가 조조 포획", "then": "역사 붕괴급 if" }
+      ],
+      "victory": { "atk": "마초 측 본진 격파", "def": "조조 도하 2회 실패 또는 조조 군량 소진" }
+    },
+    {
+      "id": "hist_hefei",
+      "name": "합비 공방전 (소요진)",
+      "year": [215, 215],
+      "months": [7, 8, 9],
+      "priority": 4,
+      "source": "정사 장료전·이전전·악진전·손권전·능통전·진무전, 배송지 주 헌제춘추·강표전",
+      "entry": "오가 위의 수춘(합비 방면)을 공격할 때. 지도에 합비가 따로 없어 수춘 공격을 합비 전장으로 연다",
+      "trigger": { "attackerRuler": "sun_quan", "defenderRuler": "cao_cao", "city": "shouchun", "requireAlive": ["zhang_liao", "sun_quan"] },
+      "map": {
+        "type": "siege",
+        "paint": [
+          { "t": "wallring", "r": [8, 2, 14, 8] },
+          { "t": "gate", "p": [11, 8] },
+          { "t": "gate", "p": [8, 5] },
+          { "t": "keep", "p": [11, 5] },
+          { "t": "river", "r": [19, 0, 20, 15] },
+          { "t": "bridge", "r": [19, 12, 20, 12] },
+          { "t": "camp", "r": [3, 11, 16, 13] }
+        ],
+        "zones": { "escape_atk": [[21, 11, 23, 13]] }
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "sun_quan", "role": "commander", "kind": "infantry", "x": 10, "y": 12, "troopsShare": 0.2 },
+          { "officer": "chen_wu", "role": "guard", "kind": "infantry", "x": 11, "y": 12, "troopsShare": 0.1, "note": "정사: 합비에서 분전하다 전사" },
+          { "officer": "song_qian", "role": "guard", "kind": "infantry", "x": 9, "y": 12, "troopsShare": 0.1 },
+          { "officer": "ling_tong", "role": "rearguard", "kind": "infantry", "x": 12, "y": 12, "troopsShare": 0.1 },
+          { "officer": "gan_ning", "role": "vanguard", "kind": "infantry", "x": 8, "y": 11, "troopsShare": 0.15 },
+          { "officer": "lu_meng", "role": "left", "kind": "infantry", "x": 6, "y": 11, "troopsShare": 0.15 },
+          { "officer": "jiang_qin", "role": "right", "kind": "infantry", "x": 14, "y": 11, "troopsShare": 0.1 },
+          { "officer": "pan_zhang", "role": "reserve", "kind": "infantry", "x": 5, "y": 12, "troopsShare": 0.1 }
+        ],
+        "def": [
+          { "officer": "zhang_liao", "role": "commander", "kind": "cavalry", "x": 11, "y": 7, "troopsShare": 0.4, "note": "결사대 8백 포함" },
+          { "officer": "li_dian", "role": "sally", "kind": "infantry", "x": 10, "y": 6, "troopsShare": 0.3, "optional": true, "dataConflict": "데이터 사망년 209 ↔ 정사 215년 합비 참전" },
+          { "officer": "le_jin", "role": "hold", "kind": "infantry", "x": 12, "y": 4, "troopsShare": 0.3 }
+        ]
+      },
+      "standoff": { "days": [0, 2], "atkOptions": ["full_siege", "scout"], "defOptions": ["sealed_orders", "hold_fast"] },
+      "preBattleChoices": {
+        "def": [
+          { "id": "sealed_orders", "label": "조조의 봉한 교서를 연다", "effect": "\"손권이 오면 장료·이전은 나가 싸우고, 악진은 성을 지켜라. 호군은 싸우지 마라.\" 이 배치를 따르면 장료 부대 참수 돌격 성공률·사기 대폭 상승", "source": "정사 장료전" }
+        ]
+      },
+      "historicalPlan": { "atk": "full_siege", "def": "sealed_orders → decapitation_charge(새벽) → hold" },
+      "events": [
+        { "id": "hefei_dawn", "when": "결전 1일차 새벽(손권 진영 미완성)", "effect": "장료 참수 돌격: 손권 본진까지 직진, 도중 부대 사기 -20. 손권 본진 도달 시 손권 퇴각 판정", "banner": "\"장료가 여기 있다!\" 8백 결사대가 새벽 안개를 뚫고 손권의 깃발로 달린다", "source": "정사 장료전" },
+        { "id": "hefei_xiaoyao", "when": "추격 국면, 손권 부대가 bridge 칸 진입", "effect": "다리 판자 없음 판정 → 손권 도약 판정(통솔·말). 실패 시 손권 포획 위기, 능통 후위 결사 판정", "banner": "소요진의 다리가 끊겼다! 손권이 말에 채찍을 가해 뛰어넘는다", "source": "정사 주 강표전·헌제춘추" }
+      ],
+      "branches": [
+        { "if": "장료가 성 안에 틀어박힘(교서 무시)", "then": "참수 돌격 없음 → 순수 공성전, 손권 포위 지속" },
+        { "if": "손권이 본진 철벽 배치", "then": "장료 결사대 귀환 판정 실패 시 장료 부대 큰 손실" }
+      ],
+      "victory": { "atk": "합비성 점령", "def": "손권 퇴각(10일 이상 버팀 또는 손권 본진 붕괴)" }
+    },
+    {
+      "id": "hist_dingjun",
+      "name": "정군산 전투",
+      "year": [219, 219],
+      "months": [1, 2, 3],
+      "priority": 5,
+      "source": "정사 선주전·법정전·황충전·하후연전·장합전 / 연의 70~71회",
+      "entry": "촉이 위의 한중을 공격할 때. s219는 정군산 이후(219년 7월) 시작이라 s208 등에서 진행해야 열린다",
+      "trigger": { "attackerRuler": "liu_bei", "defenderRuler": "cao_cao", "city": "hanzhong", "requireAlive": ["xiahou_yuan", "huang_zhong"] },
+      "map": {
+        "type": "mountain_field",
+        "paint": [
+          { "t": "mountain", "r": [0, 0, 23, 1] },
+          { "t": "mountain", "r": [6, 3, 9, 7] },
+          { "t": "forest", "r": [10, 10, 13, 12] },
+          { "t": "river", "r": [0, 14, 23, 14] },
+          { "t": "ford", "r": [5, 14, 6, 14] },
+          { "t": "stockade", "r": [14, 6, 18, 10] },
+          { "t": "camp", "r": [15, 7, 17, 9] },
+          { "t": "camp", "r": [20, 2, 22, 4] }
+        ]
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "liu_bei", "role": "commander", "kind": "infantry", "x": 6, "y": 12, "troopsShare": 0.3 },
+          { "officer": "fa_zheng", "role": "advisor", "kind": "archer", "x": 7, "y": 12, "troopsShare": 0.05 },
+          { "officer": "huang_zhong", "role": "high_ground", "kind": "infantry", "x": 8, "y": 5, "troopsShare": 0.25, "note": "정군산 고지 점거 상태로 시작" },
+          { "officer": "zhao_yun", "role": "right", "kind": "cavalry", "x": 5, "y": 11, "troopsShare": 0.15 },
+          { "officer": "chen_shi", "role": "left", "kind": "infantry", "x": 9, "y": 12, "troopsShare": 0.1 },
+          { "officer": "wei_yan", "role": "vanguard", "kind": "infantry", "x": 10, "y": 9, "troopsShare": 0.15 }
+        ],
+        "def": [
+          { "officer": "xiahou_yuan", "role": "commander", "kind": "cavalry", "x": 16, "y": 8, "troopsShare": 0.4 },
+          { "officer": "guo_huai", "role": "advisor", "kind": "archer", "x": 15, "y": 9, "troopsShare": 0.1 },
+          { "officer": "xiahou_shang", "role": "reserve", "kind": "infantry", "x": 17, "y": 7, "troopsShare": 0.1, "optional": true },
+          { "officer": "zhang_he", "role": "east_camp", "kind": "infantry", "x": 21, "y": 3, "troopsShare": 0.4 }
+        ]
+      },
+      "standoff": { "days": [3, 10], "atkOptions": ["burn_stockade", "attack_east_camp", "scout", "seize_high_ground"], "defOptions": ["repair_stockade", "hold_fast", "scout"] },
+      "historicalPlan": { "atk": "burn_stockade(밤) + attack_east_camp(장합) → high_ground_charge", "def": "repair_stockade(하후연 직접)" },
+      "events": [
+        { "id": "dingjun_burn", "when": "대치, 유비 '녹각 소각' 계책", "effect": "stockade 칸 점화·소멸", "banner": "한밤중, 위군의 녹각이 십여 리에 걸쳐 불타오른다", "source": "정사 하후연전" },
+        { "id": "dingjun_split", "when": "유비 측이 장합 동쪽 진영 공격 + 하후연 측 판정", "effect": "하후연이 자기 병력 절반을 장합에게 보냄(하후연 성격·통솔 판정). 하후연 본대 약화", "source": "정사 하후연전" },
+        { "id": "dingjun_repair", "when": "녹각 소각 다음 날", "effect": "하후연이 소수 병력으로 직접 녹각을 고치러 나감 → 하후연 부대 '고립' 상태", "banner": "하후연이 몸소 녹각을 고치러 나섰다" },
+        { "id": "dingjun_strike", "when": "하후연 고립 + 황충 고지", "effect": "법정 진언 판정(법정 생존·참전). 성공 시 황충 고지 역락 발동: 피해 ×1.8, 하후연 부대 타격 시 위 전군 사기 -20", "banner": "법정: \"칠 때입니다!\" 황충이 북을 울리며 산을 내려온다", "source": "정사 법정전·황충전" }
+      ],
+      "branches": [
+        { "if": "하후연이 녹각을 부장에게 맡김(위 측 작전 회의에서 '직접 수리 금지')", "then": "고립 이벤트 없음 → 정면 공방, 장기전" },
+        { "if": "하후연 생존", "then": "한중 공방 장기화 → 조조 친정(계륵) 이벤트로 연결" }
+      ],
+      "victory": { "atk": "하후연 부대 격파 또는 위 진영 점령", "def": "유비 측 군량 소진 또는 20일 버팀" }
+    },
+    {
+      "id": "hist_fancheng",
+      "name": "번성 전투 (우금 수몰)",
+      "year": [219, 219],
+      "months": [7, 8, 9, 10],
+      "priority": 1,
+      "source": "정사 관우전·조인전·우금전·방덕전·만총전·서황전 / 연의 73~76회",
+      "entry": "s219(219년 7월 시작)에서 관우가 강릉에서 양양(번성)을 공격할 때. 시나리오 첫 달에 바로 열 수 있는 대표 전투",
+      "trigger": { "attackerRuler": "liu_bei", "defenderRuler": "cao_cao", "city": "xiangyang", "fromCity": "jiangling", "requireAlive": ["guan_yu", "cao_ren"] },
+      "map": {
+        "type": "siege_river",
+        "paint": [
+          { "t": "wallring", "r": [8, 1, 15, 6] },
+          { "t": "gate", "p": [11, 6] },
+          { "t": "keep", "p": [11, 3] },
+          { "t": "water", "r": [0, 8, 23, 9] },
+          { "t": "camp", "r": [2, 2, 5, 4] },
+          { "t": "mountain", "r": [17, 1, 18, 2] },
+          { "t": "camp", "r": [6, 11, 16, 13] }
+        ],
+        "zones": { "flood": [[0, 0, 7, 7], [16, 3, 23, 7], [8, 7, 15, 7]] }
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "guan_yu", "role": "commander", "kind": "infantry", "x": 11, "y": 12, "troopsShare": 0.35 },
+          { "officer": "guan_ping", "role": "vanguard", "kind": "infantry", "x": 9, "y": 12, "troopsShare": 0.25 },
+          { "officer": "zhou_cang", "role": "fleet", "kind": "navy", "x": 13, "y": 9, "troopsShare": 0.25 },
+          { "officer": "wang_fu", "role": "advisor", "kind": "archer", "x": 11, "y": 13, "troopsShare": 0.15, "note": "후방(형주) 위험을 진언하는 역할" }
+        ],
+        "def": [
+          { "officer": "cao_ren", "role": "commander", "kind": "infantry", "x": 11, "y": 3, "troopsShare": 0.3 },
+          { "officer": "man_chong", "role": "advisor", "kind": "archer", "x": 12, "y": 4, "troopsShare": 0.05 },
+          { "officer": "yu_jin", "role": "relief_camp", "kind": "infantry", "x": 3, "y": 3, "troopsShare": 0.45, "note": "칠군" },
+          { "officer": "pang_de", "role": "relief_vanguard", "kind": "cavalry", "x": 17, "y": 2, "troopsShare": 0.2, "note": "제방 위" }
+        ],
+        "reinforcement": [
+          { "side": "def", "officer": "xu_huang", "kind": "infantry", "day": 18, "edge": "north", "note": "서황 원군 (정사: 관우의 포위를 깨뜨림)" }
+        ]
+      },
+      "standoff": { "days": [10, 30], "atkOptions": ["flood_prep", "full_siege", "scout", "rear_guard"], "defOptions": ["hold_fast", "high_ground_camp", "relief_wait"] },
+      "preBattleChoices": {
+        "atk": [
+          { "id": "rear_guard", "label": "형주 후방 수비를 늘린다 (왕보의 진언)", "effect": "번성 공격 병력 -20%, 대신 '형주 기습' 전장에서 봉화대·수비 강화" }
+        ],
+        "def": [
+          { "id": "high_ground_camp", "label": "우금 진영을 고지로 옮긴다", "effect": "수몰 피해 무효, 대신 번성과의 연락이 멀어져 원군 효과 감소" }
+        ]
+      },
+      "historicalPlan": { "atk": "flood(정사는 자연 장마, 연의는 관우의 수공) + full_siege", "def": "relief_wait" },
+      "events": [
+        { "id": "fancheng_rain", "when": "8월 + 대치 중", "effect": "큰비 판정(정사 모드: 높은 확률의 자연 홍수 / 연의 모드: 관우 측 수공 준비 성공 시 확정)", "banner": "열흘 넘게 비가 내리고, 한수가 둑을 넘었다!", "source": "정사 우금전·관우전" },
+        { "id": "fancheng_flood", "when": "홍수 발생", "effect": "flood 구역 침수. 우금 부대 항복 판정(우금 의리·사기), 방덕 결사 판정. 관우 수군 이동력 ×1.5", "banner": "우금의 칠군이 물에 잠겼다" },
+        { "id": "fancheng_mangchong", "when": "번성 사기 30 이하", "effect": "조인 퇴성 판정 → 만총 설득 판정 성공 시 사기 회복·수성 지속", "banner": "만총: \"지금 성을 버리면 홍하 이남은 다시는 우리 땅이 아닙니다.\" 만총이 백마를 물에 빠뜨려 맹세했다", "source": "정사 만총전" },
+        { "id": "fancheng_xuhuang", "when": "서황 원군 도착", "effect": "관우 포위망 측면 공격. 관우 측 후방 위협 플래그가 있으면 관우 퇴각 판정" }
+      ],
+      "branches": [
+        { "if": "관우가 번성 함락", "then": "〔if〕허도 위협 → 조조 천도 논의 이벤트(정사에서 실제로 논의됨)" },
+        { "if": "관우 승리 + 후방 수비 약함", "then": "'형주 기습(hist_jingzhou)' 전장 발동 확률 대폭 상승" }
+      ],
+      "next": { "id": "hist_jingzhou", "when": "번성 전투 중 또는 직후, 오가 강릉을 노릴 때" },
+      "victory": { "atk": "번성 본성 점령", "def": "관우 퇴각 또는 40일 버팀" }
+    },
+    {
+      "id": "hist_jingzhou",
+      "name": "형주 기습 (백의도강)",
+      "year": [219, 219],
+      "months": [9, 10, 11, 12],
+      "priority": 3,
+      "source": "정사 여몽전·관우전·육손전",
+      "entry": "번성 전투 중이거나 직후, 오가 촉의 강릉을 공격할 때 (관우 본대가 강릉에 없을 것)",
+      "trigger": { "attackerRuler": "sun_quan", "defenderRuler": "liu_bei", "city": "jiangling", "requireAbsentFromCity": ["guan_yu"], "requireAlive": ["lu_meng"] },
+      "map": {
+        "type": "siege_river",
+        "paint": [
+          { "t": "wallring", "r": [12, 4, 19, 11] },
+          { "t": "gate", "p": [12, 8] },
+          { "t": "gate", "p": [16, 4] },
+          { "t": "keep", "p": [16, 8] },
+          { "t": "water", "r": [0, 13, 23, 15] },
+          { "t": "beacon", "p": [4, 12] },
+          { "t": "beacon", "p": [9, 12] },
+          { "t": "beacon", "p": [21, 12] }
+        ]
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "lu_meng", "role": "commander", "kind": "navy", "x": 6, "y": 14, "troopsShare": 0.4, "note": "흰 옷을 입고 상인으로 위장한 정예가 배 안에" },
+          { "officer": "lu_xun", "role": "advisor", "kind": "navy", "x": 9, "y": 14, "troopsShare": 0.2 },
+          { "officer": "jiang_qin", "role": "left", "kind": "navy", "x": 3, "y": 14, "troopsShare": 0.2 },
+          { "officer": "zhu_ran", "role": "right", "kind": "navy", "x": 11, "y": 14, "troopsShare": 0.2 }
+        ],
+        "def": [
+          { "officer": "mi_fang", "role": "commander", "kind": "infantry", "x": 16, "y": 8, "troopsShare": 0.6, "defectRisk": true },
+          { "officer": "pan_jun", "role": "advisor", "kind": "archer", "x": 17, "y": 7, "troopsShare": 0.1, "defectRisk": true },
+          { "officer": "fu_shiren", "role": "reserve", "kind": "infantry", "x": 14, "y": 7, "troopsShare": 0.3, "optional": true, "defectRisk": true, "note": "원래는 공안 수비. 지도에 공안이 없어 강릉 원군으로 처리" }
+        ]
+      },
+      "standoff": { "days": [1, 4], "atkOptions": ["disguise_infiltration", "inner_agent", "scout"], "defOptions": ["beacon_alert", "hold_fast"] },
+      "historicalPlan": { "atk": "disguise_infiltration(봉화대 무력화) + inner_agent(미방·부사인)", "def": "hold_fast" },
+      "events": [
+        { "id": "jingzhou_whiterobes", "when": "오 측 '위장 침투' 성공", "effect": "beacon 칸 전부 무력화(관우에게 경보 안 감). 오 수군이 성 2칸 앞까지 무저항 접근", "banner": "상인 옷을 입은 군사들이 노를 저어 왔다. 봉화대의 군사들이 소리 한 번 못 내고 묶였다", "source": "정사 여몽전" },
+        { "id": "jingzhou_surrender", "when": "미방 충성 판정(관우와 관계 나쁨 플래그가 있으면 크게 불리)", "effect": "미방·부사인 항복 → 강릉 무혈 함락", "source": "정사 관우전" },
+        { "id": "jingzhou_mercy", "when": "강릉 점령 후", "effect": "여몽 군령: 백성 물건 하나도 손대지 않음 → 관우군 병사 가족이 무사하다는 소식에 관우군 사기 연쇄 하락 (다음 전투)", "source": "정사 여몽전" }
+      ],
+      "branches": [
+        { "if": "관우가 번성에서 '후방 수비 강화'를 택함", "then": "봉화대 1곳 이상 생존 → 관우에게 경보, 관우 회군 원군 등장 → 강릉 공방전" },
+        { "if": "강릉 함락", "then": "관우 맥성 고립 이벤트 → 관우 생존 판정(정사·연의 모두 사망 루트가 기본)" }
+      ],
+      "victory": { "atk": "강릉 본성 점령", "def": "관우 원군 도착까지 버팀" }
+    },
+    {
+      "id": "hist_yiling",
+      "name": "이릉 전투 (효정)",
+      "year": [221, 222],
+      "months": [1, 2, 3, 4, 5, 6, 7, 8],
+      "priority": 3,
+      "source": "정사 선주전·육손전·황권전, 배송지 주 / 연의 81~84회",
+      "entry": "관우 사망 플래그 이후, 촉이 영안에서 수로로 오의 강릉을 공격할 때",
+      "trigger": { "attackerRuler": "liu_bei", "defenderRuler": "sun_quan", "city": "jiangling", "fromCity": "yongan", "requireAlive": ["liu_bei", "lu_xun"], "flagsPreferred": ["guan_yu_dead"] },
+      "map": {
+        "type": "gorge",
+        "paint": [
+          { "t": "mountain", "r": [0, 0, 23, 1] },
+          { "t": "mountain", "r": [0, 14, 23, 15] },
+          { "t": "forest", "r": [0, 2, 17, 4] },
+          { "t": "forest", "r": [0, 11, 17, 13] },
+          { "t": "water", "r": [0, 7, 23, 8] },
+          { "t": "camp", "r": [2, 5, 16, 5] },
+          { "t": "camp", "r": [2, 10, 16, 10] },
+          { "t": "camp", "r": [19, 4, 22, 6] },
+          { "t": "camp", "r": [19, 9, 22, 11] }
+        ]
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "liu_bei", "role": "commander", "kind": "infantry", "x": 6, "y": 10, "troopsShare": 0.25 },
+          { "officer": "huang_quan", "role": "north_bank", "kind": "infantry", "x": 8, "y": 5, "troopsShare": 0.15, "note": "강북에서 위를 견제 (정사)" },
+          { "officer": "wu_ban", "role": "lure", "kind": "infantry", "x": 15, "y": 10, "troopsShare": 0.1, "note": "평지 진영 유인 (정사: 오반 수천을 평지에, 복병 8천을 골짜기에)" },
+          { "officer": "feng_xi", "role": "main", "kind": "infantry", "x": 12, "y": 10, "troopsShare": 0.12 },
+          { "officer": "shamoke", "role": "left", "kind": "archer", "x": 10, "y": 10, "troopsShare": 0.08, "optional": true, "note": "무릉 만이" },
+          { "officer": "chen_shi", "role": "fleet", "kind": "navy", "x": 11, "y": 7, "troopsShare": 0.1 },
+          { "officer": "fu_tong", "role": "rearguard", "kind": "infantry", "x": 4, "y": 10, "troopsShare": 0.08 },
+          { "officer": "cheng_ji", "role": "north_bank", "kind": "infantry", "x": 5, "y": 5, "troopsShare": 0.04 },
+          { "officer": "guan_xing", "role": "vanguard", "kind": "cavalry", "x": 13, "y": 5, "troopsShare": 0.04, "mode": "yanyi" },
+          { "officer": "zhang_bao", "role": "vanguard", "kind": "cavalry", "x": 14, "y": 5, "troopsShare": 0.04, "mode": "yanyi" }
+        ],
+        "def": [
+          { "officer": "lu_xun", "role": "commander", "kind": "infantry", "x": 20, "y": 10, "troopsShare": 0.3 },
+          { "officer": "zhu_ran", "role": "fleet", "kind": "navy", "x": 20, "y": 8, "troopsShare": 0.2 },
+          { "officer": "pan_zhang", "role": "south", "kind": "infantry", "x": 21, "y": 9, "troopsShare": 0.15 },
+          { "officer": "han_dang", "role": "reserve", "kind": "infantry", "x": 21, "y": 11, "troopsShare": 0.15 },
+          { "officer": "xu_sheng", "role": "north", "kind": "infantry", "x": 21, "y": 5, "troopsShare": 0.2 }
+        ]
+      },
+      "standoff": { "days": [20, 60], "atkOptions": ["lure_flat_camp", "provoke", "scout", "camp_in_forest", "camp_on_plain"], "defOptions": ["refuse_battle", "attrition", "fire_prep", "scout"] },
+      "preBattleChoices": {
+        "atk": [
+          { "id": "camp_in_forest", "label": "더위를 피해 숲 그늘에 영채를 잇는다", "effect": "대치 중 피로 누적 절반. 대신 화공 피해 ×2, 연쇄 확산" },
+          { "id": "camp_on_plain", "label": "평지·물가에 영채를 둔다", "effect": "화공 효과 절반. 대신 여름 더위로 피로 누적 ×1.5" }
+        ]
+      },
+      "historicalPlan": { "atk": "camp_in_forest + lure_flat_camp + provoke", "def": "refuse_battle + attrition → fire_prep" },
+      "events": [
+        { "id": "yiling_refuse", "when": "대치 중 촉 '유인'·'도발'", "effect": "육손 냉정 판정. 오 장수들 불만 이벤트(손씨 일족·노장들이 육손을 얕봄) → 육손 매력·명성 판정 실패 시 오 부대 일부 명령 불복", "source": "정사 육손전" },
+        { "id": "yiling_probe", "when": "대치 말기, 육손 시험 공격", "effect": "촉 영채 1곳 공격 → 실패해도 '불에 약하다' 정보 획득(화공 준비 성공률 상승)", "source": "정사 육손전" },
+        { "id": "yiling_fire", "when": "6월 이후 + 오 화공 준비 성공", "effect": "촉 camp 칸 연쇄 점화(숲 영채면 동쪽→서쪽으로 연속 확산). 장남·풍습·사마가 등 전사 판정 상승", "banner": "군사마다 띠풀 한 줌. 사십여 개 영채가 한꺼번에 불길에 휩싸였다", "source": "정사 육손전" },
+        { "id": "yiling_rearguard", "when": "추격 국면", "effect": "역참 사람들이 갑옷과 짐을 태워 길을 막음(오 추격 지연). 부동 결사 판정", "source": "정사 주" },
+        { "id": "yiling_huangquan", "when": "촉 패배 + 황권 강북 고립", "effect": "황권 위 투항 판정", "source": "정사 황권전" }
+      ],
+      "branches": [
+        { "if": "촉이 평지에 영채", "then": "화공 효과 반감 → 장기 대치 후 촉 군량 압박, 결전 승부" },
+        { "if": "오 장수 불복 발생", "then": "오 측 예비대 일부가 촉 유인에 걸려 출격 → 촉 복병 이벤트" }
+      ],
+      "victory": { "atk": "육손 본진 격파 또는 강릉 도달", "def": "유비 본진 붕괴 또는 촉 군량 소진" }
+    },
+    {
+      "id": "hist_jieting",
+      "name": "가정 전투",
+      "year": [227, 229],
+      "months": [1, 2, 3, 4, 5],
+      "priority": 4,
+      "source": "정사 제갈량전·마속전·왕평전·장합전 / 연의 95~96회",
+      "entry": "촉이 한중에서 천수를 차지한 뒤(1차 북벌), 위가 장안에서 천수를 되찾으러 올 때",
+      "trigger": { "attackerRuler": "cao_cao", "attackerFactionAny": ["cao"], "defenderRuler": "liu_bei", "defenderFactionAny": ["liu_bei"], "city": "tianshui", "fromCity": "changan", "requireAlive": ["zhang_he"], "flagsPreferred": ["northern_expedition_1"] },
+      "map": {
+        "type": "crossroads",
+        "paint": [
+          { "t": "mountain", "r": [9, 2, 13, 6] },
+          { "t": "river", "r": [5, 11, 16, 11] },
+          { "t": "ford", "p": [10, 11] },
+          { "t": "town", "r": [10, 8, 13, 9] },
+          { "t": "wallring", "r": [2, 2, 5, 5] },
+          { "t": "gate", "p": [5, 3] },
+          { "t": "keep", "p": [4, 4] },
+          { "t": "mountain", "r": [0, 13, 23, 15] }
+        ]
+      },
+      "deploy": {
+        "atk": [
+          { "officer": "zhang_he", "role": "commander", "kind": "cavalry", "x": 21, "y": 8, "troopsShare": 0.7 },
+          { "officer": "guo_huai", "role": "right", "kind": "infantry", "x": 19, "y": 3, "troopsShare": 0.3, "note": "열류성 고상 공격 (정사)" }
+        ],
+        "def": [
+          { "officer": "ma_su", "role": "commander", "kind": "infantry", "x": 11, "y": 4, "troopsShare": 0.6, "positionChoice": { "hill": [11, 4], "road": [11, 8] } },
+          { "officer": "wang_ping", "role": "subordinate", "kind": "infantry", "x": 8, "y": 9, "troopsShare": 0.15, "note": "1천 병. 마속에게 간언" },
+          { "officer": "gao_xiang", "role": "fort", "kind": "infantry", "x": 3, "y": 3, "troopsShare": 0.25, "note": "열류성" }
+        ]
+      },
+      "standoff": { "days": [1, 5], "atkOptions": ["cut_water", "scout", "full_assault"], "defOptions": ["hold_crossroads", "camp_on_hill", "feint_troops"] },
+      "preBattleChoices": {
+        "def": [
+          { "id": "commander_pick", "label": "가정을 누구에게 맡길 것인가 (제갈량의 결정)", "options": ["ma_su", "wang_ping", "wei_yan"], "effect": "마속: 지력은 높으나 실전 경험 부족·지력 과신 / 왕평: 신중, 길목 고수 / 위연: 무력·통솔 높음, 대신 다른 전선(기곡 등) 약화", "source": "정사 위연전 주: 사람들은 위연이나 오의를 추천했으나 제갈량이 마속을 택함" },
+          { "id": "position", "label": "진을 칠 곳", "options": ["hill", "road"], "effect": "산 위: 내려치는 공격 보너스, 대신 수원 차단에 극도로 취약 / 길목·성: 수원 확보, 방어 보정" }
+        ]
+      },
+      "historicalPlan": { "atk": "cut_water → full_assault", "def": "ma_su + camp_on_hill (왕평의 간언 무시)" },
+      "events": [
+        { "id": "jieting_advice", "when": "작전 회의, 지휘관이 마속이고 진 위치가 산 위", "effect": "왕평 간언 이벤트 → 마속 판정(지력 과신). 무시하면 '명령 위반' 기록 대신 '간언 무시' 기록", "banner": "왕평: \"물길을 버리고 산에 오르면 물을 끊기면 끝입니다!\"", "source": "정사 왕평전" },
+        { "id": "jieting_water", "when": "위 '수원 차단' 성공 + 촉 본대 산 위", "effect": "촉 산 위 부대 매일 사기 -10, 전투력 -10%. 3일 뒤 결전 강제", "banner": "장합이 물길을 끊었다. 산 위의 촉군이 목마름에 흔들린다", "source": "정사 마속전·장합전" },
+        { "id": "jieting_drums", "when": "촉 패배 + 왕평 생존", "effect": "왕평 의병: 북을 울리며 버팀 → 장합 신중 판정 성공 시 추격 정지, 촉 패잔병 회수율 상승", "banner": "왕평의 1천 병이 북을 울리며 물러서지 않는다. 장합이 복병을 의심해 다가오지 않는다", "source": "정사 왕평전" }
+      ],
+      "branches": [
+        { "if": "왕평 또는 위연이 지휘 + 길목 수비", "then": "〔if〕가정 수비 성공 → 1차 북벌 장안 진격 루트, 마속 처형 이벤트 없음" },
+        { "if": "마속 지휘 + 산 위 + 패배", "then": "읍참마속 이벤트(제갈량 명성·군율 상승, 마속 사망)" }
+      ],
+      "victory": { "atk": "가정(town 칸) 점령 + 촉 본대 격파", "def": "15일 버팀 또는 장합 퇴각" }
+    }
+  ]
+}

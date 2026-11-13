@@ -1,0 +1,111 @@
+/*
+ * 디자인 토큰 — design/visual-bible.html (v0.2) · design/mobile-screens.html 의 --g-* 변수.
+ * 컴포넌트에는 색 값을 직접 쓰지 않고 반드시 이 변수를 쓴다.
+ */
+:root {
+  /* 칠기 패널 · 한지 · 먹 */
+  --g-lacquer: rgba(19, 18, 15, 0.92);
+  --g-lacquer-solid: #13120f;
+  --g-lacquer-2: #24211b;
+  --g-lacquer-3: #2e2a22;
+  --g-paper: #d8d6c1;
+  --g-ink: #1a1916;
+  --g-sea: #2b3431;
+  --g-gold: #c3a15c;
+  --g-gold-dim: rgba(195, 161, 92, 0.35);
+  --g-cinnabar: #b5382a;
+  --g-text: #eee8d7;
+  --g-text-dim: #a49d89;
+  --g-on-cinnabar: #f6eedc;
+  --g-good: #6fae7f;
+  --g-warn: #d3a03e;
+  --g-bad: #d0574a;
+  --g-scrim: rgba(8, 8, 7, 0.55);
+  --g-shadow: rgba(0, 0, 0, 0.4);
+  --g-line-soft: rgba(255, 255, 255, 0.08);
+  --g-paper-ink: #6a6350; /* 한지 위 보조 글자 (연대기) */
+  --g-seal-on-paper: #a93526; /* 한지 위 〔if〕 표시 */
+
+  /* 전장 범위 표시 (설계노트 17-4) */
+  --g-range-move: rgba(47, 93, 138, 0.42);
+  --g-range-attack: rgba(181, 56, 42, 0.5);
+  --g-range-plot: rgba(120, 70, 160, 0.45);
+  --g-range-threat: rgba(181, 56, 42, 0.18);
+  --g-range-threat-line: rgba(181, 56, 42, 0.4);
+
+  /* 전장 지형 9종 */
+  --t-plain: #d8d6c1;
+  --t-forest: #a7ae8c;
+  --t-mount: #c6b894;
+  --t-river: #7f9da3;
+  --t-marsh: #9da58c;
+  --t-wall: #6e6556;
+  --t-town: #b7ae98;
+  --t-camp: #d8d6c1;
+
+  /* 세력 안료 v0.2 (색약 검증 후 다시 고른 값) */
+  /* 세력 색 v0.3 (design/세력색_v0.3.md, QA-DSN-01) */
+  --f-han: #973926;
+  --f-yellow: #e2b634;
+  --f-liu: #3e7d5a;
+  --f-gongsun: #9accd6;
+  --f-sunjian: #c38241;
+  --f-hansui: #7e4ba8;
+  --f-dong: #3e3b36;
+  --f-liuyan: #c289a1;
+  --f-yshao: #6d422c;
+  --f-hanfu: #a25cb8;
+  --f-cao: #2f5d8a;
+  --f-yshu: #ddbe52;
+  --f-kongrong: #731f7a;
+  --f-taoqian: #c25a3e;
+  --f-liuyu: #d6ae9a;
+  --f-gsd: #6fa77e;
+  --f-zhangmiao: #7a1f36;
+  --f-kongzhou: #3a9c8a;
+  --f-wangkuang: #aba8c7;
+  --f-zhangyang: #3e3c5d;
+  --f-ma: #b86a7e;
+  --f-liubiao: #4e8891;
+  --f-zhanglu: #8a9a52;
+  --f-liuyao: #6f86c9;
+  --f-yanbaihu: #3c5b5d;
+  --f-wanglang: #6d622c;
+  --f-lubu: #b678ae;
+  --f-lijue: #6a5aa6;
+  --f-liuzhang: #d2a6b0;
+  --f-zhangyan: #d48954;
+  --f-sunce: #cd7637;
+  --f-sun: #c8642c;
+  --f-gongsunkang: #6fa77e;
+  --f-menghuo: #c9709f;
+  --f-none: #b4b09e;
+
+  /* 글꼴 */
+  /* 3D 화면 위 유리 패널 (design/battle-3d.html v0.4 시안의 :root 값) */
+  --g3-text: #f3ebdd;
+  --g3-dim: #b9ae98;
+  --g3-gold: #e3c27a;
+  --g3-line: rgba(227, 194, 122, 0.26);
+  --g3-panel: rgba(20, 18, 15, 0.66);
+  --g3-red: #e0614e;
+
+  --font-display: 'Song Myung', 'Noto Serif KR', serif;
+  --font-hanja: 'Noto Serif KR', 'Song Myung', serif;
+  --font-ui: 'IBM Plex Sans KR', 'Malgun Gothic', system-ui, sans-serif;
+
+  /* 안전 영역: 노치 대응, 최소 54 */
+  --sa: max(54px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+  /* 누르는 영역 최소 */
+  --hit: 44px;
+
+  /* 글자 크기: 설정의 작게/보통/크게 (html font-size 로 조절, 아래 값은 rem 기준 13px) */
+  --fs-micro: 0.7693rem; /* 10 */
+  --fs-small: 0.8847rem; /* 11.5 */
+  --fs-body: 1rem; /* 13 */
+  --fs-ui: 1.0385rem; /* 13.5 */
+  --fs-lead: 1.1539rem; /* 15 */
+  --fs-h3: 1.3077rem; /* 17 */
+  --fs-h2: 1.6923rem; /* 22 */
+  --fs-h1: 2rem; /* 26 */
+}

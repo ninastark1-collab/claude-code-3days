@@ -1,0 +1,231 @@
+<title>클로드 코드 실습 기록</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* 레이아웃: 한 줄 세로 읽기. 요약 → 이틀의 흐름(시간순) → 프로젝트 7개 카드 → 실력이 늘어난 단계 → 배운 점 */
+:root {
+  --accent: #00462A;
+  --accent-pale: #E8EFEB;
+  --bg-page: #FFFDF1;
+  --bg-card: #FFFFFF;
+  --neutral: #B9B9B9;
+  --border: #E1E4E8;
+  --text-primary: #1A1A1A;
+  --text-secondary: #5F6368;
+  --font: Pretendard, "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --mono: Consolas, "D2Coding", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent: #7CC7A0; --accent-pale: #16302A; --bg-page: #121614; --bg-card: #1A201D;
+    --neutral: #5C6460; --border: #2C3531; --text-primary: #ECEFEC; --text-secondary: #A4ADA8; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --accent: #7CC7A0; --accent-pale: #16302A; --bg-page: #121614; --bg-card: #1A201D;
+  --neutral: #5C6460; --border: #2C3531; --text-primary: #ECEFEC; --text-secondary: #A4ADA8; color-scheme: dark;
+}
+body { background: var(--bg-page); color: var(--text-primary); font-family: var(--font); font-size: 15.5px; line-height: 1.7; word-break: keep-all; }
+.wrap { max-width: 960px; margin: 0 auto; padding-block: 40px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 44px; }
+header { display: flex; flex-direction: column; gap: 8px; }
+.eyebrow { font-size: 13px; letter-spacing: .06em; color: var(--text-secondary); }
+h1 { margin: 0; font-size: clamp(26px, 5vw, 34px); line-height: 1.3; color: var(--accent); font-weight: 700; text-wrap: balance; }
+.lead { margin: 0; color: var(--text-secondary); max-width: 64ch; }
+h2 { margin: 0 0 14px; font-size: 21px; color: var(--accent); border-left: 4px solid var(--accent); padding-left: 12px; line-height: 1.35; }
+section > p.desc { margin: -6px 0 16px; color: var(--text-secondary); font-size: 14.5px; }
+.callout { background: var(--accent-pale); border-left: 3px solid var(--accent); padding: 14px 18px; border-radius: 4px; }
+.callout p { margin: 0; }
+.key { color: var(--accent); font-weight: 700; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px; }
+.stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.stat .v { font-size: 26px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1.3; }
+.stat .k { font-size: 14px; font-weight: 500; }
+.stat .n { font-size: 13px; color: var(--text-secondary); }
+
+/* 이틀 타임라인 */
+.days { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 16px; }
+.day { background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; padding: 18px 20px; min-width: 0; }
+.day h3 { margin: 0 0 12px; font-size: 17px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.day h3 small { font-size: 13px; font-weight: 400; color: var(--text-secondary); }
+.day ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.day li { display: grid; grid-template-columns: 54px 1fr; gap: 12px; padding: 8px 0; border-top: 1px solid var(--border); }
+.day li:first-child { border-top: 0; padding-top: 0; }
+.day time { font-family: var(--mono); font-size: 13px; color: var(--text-secondary); font-variant-numeric: tabular-nums; padding-top: 2px; }
+.day li b { font-weight: 700; }
+.day li span { display: block; font-size: 14px; color: var(--text-secondary); }
+
+/* 프로젝트 카드 */
+.projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 16px; }
+.proj { background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; padding: 18px 20px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.proj .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.proj h3 { margin: 0; font-size: 18px; color: var(--accent); line-height: 1.35; }
+.proj .folder { font-family: var(--mono); font-size: 12.5px; color: var(--text-secondary); }
+.proj p { margin: 0; font-size: 14.5px; }
+.proj ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; padding: 1px 8px; border-radius: 3px; border: 1px solid var(--border); color: var(--text-secondary); background: var(--bg-page); white-space: nowrap; }
+.status { font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 3px; white-space: nowrap; border: 1px solid var(--accent); color: var(--accent); }
+.status.done { background: var(--accent); color: var(--bg-card); }
+.proj .note { font-size: 13px; color: var(--text-secondary); border-top: 1px solid var(--border); padding-top: 8px; }
+
+/* 단계 사다리 */
+.ladder { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; background: var(--bg-card); }
+.rung { display: grid; grid-template-columns: 150px 1fr minmax(0, 220px); gap: 16px; padding: 12px 16px; border-top: 1px solid var(--border); align-items: start; }
+.rung:first-child { border-top: 0; }
+.rung .lv { font-weight: 700; color: var(--accent); }
+.rung .lv small { display: block; font-weight: 400; font-size: 12.5px; color: var(--text-secondary); }
+.rung .what { font-size: 14.5px; min-width: 0; }
+.rung .who { font-size: 13.5px; color: var(--text-secondary); }
+.rung .bar { height: 6px; border-radius: 3px; background: var(--accent); margin-top: 6px; }
+@media (max-width: 640px) { .rung { grid-template-columns: 1fr; gap: 4px; } }
+
+.tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr)); gap: 12px; }
+.tip { background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.tip b { font-size: 15px; }
+.tip span { font-size: 14px; color: var(--text-secondary); }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+footer { font-size: 13px; color: var(--text-secondary); border-top: 1px solid var(--border); padding-top: 16px; display: flex; flex-direction: column; gap: 4px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">허세임AI · 비개발자를 위한 바이브코딩 입문 with 클로드 코드 · 2026년 11월 11~12일</span>
+    <h1>클로드 코드로 만든 이틀간의 결과물</h1>
+    <p class="lead">바탕화면에 클로드 코드로 만든 폴더 7개를 열어보고, 무엇을 만들었고 어디까지 왔는지 정리했어요. 코드는 직접 쓰지 않고, 말로 요청하고 결과를 확인하며 고쳐 나갔어요.</p>
+  </header>
+
+  <div class="callout"><p>첫 작품은 <span class="key">HTML 파일 하나짜리 가위바위보</span>였어요. 이틀 뒤에는 <span class="key">로그인·실시간 채팅·푸시 알림이 있는 중고거래 앱</span>, <span class="key">2~4명 온라인 대전 카드 게임</span>, <span class="key">윈도우 설치 파일로 나온 전략 게임</span>까지 만들었어요. 그 사이에 엑셀 업무를 자동화하는 스킬도 만들었어요.</p></div>
+
+  <section aria-label="숫자로 본 이틀">
+    <div class="stats">
+      <div class="stat"><span class="v">7개</span><span class="k">프로젝트 폴더</span><span class="n">게임 3 · 웹 서비스 3 · 업무 자동화 1</span></div>
+      <div class="stat"><span class="v">4곳</span><span class="k">인터넷 배포 설정</span><span class="n">GitHub Pages 1 · Vercel 3</span></div>
+      <div class="stat"><span class="v">2개</span><span class="k">Supabase 서버</span><span class="n">가계부·고구마마켓 공용, 포커 전용</span></div>
+      <div class="stat"><span class="v">1개</span><span class="k">윈도우 설치 파일</span><span class="n">삼국지 천하쟁패 Setup 0.1.0 (약 83MB)</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>이틀의 흐름</h2>
+    <p class="desc">각 폴더의 파일이 처음 생기고 마지막으로 바뀐 시각을 기준으로 정리했어요. 실제 작업 시각과 조금 다를 수 있어요.</p>
+    <div class="days">
+      <div class="day">
+        <h3>11월 11일 <small>첫날 · 화면 하나에서 서버 있는 앱까지</small></h3>
+        <ol>
+          <li><time>오전</time><div><b>몽글몽글 가위바위보</b><span>HTML 파일 하나로 만든 첫 게임</span></div></li>
+          <li><time>11~14시</time><div><b>나의 가계부</b><span>예산 경고, 월말 지출 예측, Supabase 저장, GitHub Pages 배포</span></div></li>
+          <li><time>14시~</time><div><b>고구마마켓 시작</b><span>Next.js와 Supabase로 회원가입·판매글·사진 단계 진행</span></div></li>
+          <li><time>17시~</time><div><b>쇼핑몰 시작</b><span>판매부터 리뷰까지 전체 흐름과 보안 점검</span></div></li>
+        </ol>
+      </div>
+      <div class="day">
+        <h3>11월 12일 <small>둘째 날 · 완성도, 자동화, 큰 프로젝트</small></h3>
+        <ol>
+          <li><time>~10시</time><div><b>고구마마켓 마무리</b><span>8단계까지 완료, 푸시 알림, 근처 동네 보기, 배포</span></div></li>
+          <li><time>10~11시</time><div><b>업무 자동화 실습</b><span>환경 세팅, 매출 파일 8개 통합, 대시보드</span></div></li>
+          <li><time>~12시</time><div><b>쇼핑몰 개편</b><span>이름과 색을 바꾸고, 펫 책임 분양 하우스 '몽글'로 완성</span></div></li>
+          <li><time>11~14시</time><div><b>기억력 포커</b><span>혼자 하기, 2~4명 온라인 대전, 테스트 보고서</span></div></li>
+          <li><time>14시대</time><div><b>스킬 만들기와 활용</b><span>월별 매출 자동화 스킬, 술집·논문 검색 스킬</span></div></li>
+          <li><time>15~17시</time><div><b>삼국지 천하쟁패</b><span>설계 문서 4종, 데스크톱 앱, 윈도우 설치 파일</span></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>프로젝트 7개</h2>
+    <p class="desc">만든 순서대로 놓았어요. 오른쪽 위 표시는 폴더에서 확인한 현재 상태예요.</p>
+    <div class="projects">
+
+      <article class="proj">
+        <div class="top"><div><h3>몽글몽글 가위바위보</h3><span class="folder">game</span></div><span class="status done">완성</span></div>
+        <p>캐릭터 '몽글이'와 가위바위보를 하는 첫 번째 게임이에요.</p>
+        <ul><li>표정이 바뀌는 캐릭터를 코드로 직접 그림</li><li>점수판, 키보드 1·2·3으로도 조작</li></ul>
+        <div class="chips"><span class="chip">HTML 파일 1개</span><span class="chip">게임</span></div>
+      </article>
+
+      <article class="proj">
+        <div class="top"><div><h3>나의 가계부</h3><span class="folder">가계부</span></div><span class="status done">배포됨</span></div>
+        <p>휴대폰과 PC 어디서든 같은 기록을 보는 가계부 웹페이지예요.</p>
+        <ul><li>수입·지출 기록, 월별 잔액과 저축률</li><li>예산 80%·100% 넘으면 경고, 하루에 쓸 수 있는 금액 계산</li><li>지금 속도로 계산한 월말 지출 예측, 카테고리 도넛 차트</li><li>JSON 백업과 복원</li></ul>
+        <div class="chips"><span class="chip">HTML·JavaScript</span><span class="chip">Supabase</span><span class="chip">GitHub Pages</span></div>
+        <div class="note">로그인이 없어서 주소를 아는 사람은 누구나 고칠 수 있어요. README에도 주의 문구를 남겨뒀어요.</div>
+      </article>
+
+      <article class="proj">
+        <div class="top"><div><h3>고구마마켓</h3><span class="folder">POTATOMACKET</span></div><span class="status done">8단계 완료 · 배포</span></div>
+        <p>우리 동네 중고거래 앱이에요. 단계를 나눠 하나씩 쌓아 올렸어요.</p>
+        <ul><li>1~3단계: 회원가입·로그인, 판매글 쓰기·고치기·지우기, 사진 최대 10장</li><li>4~5단계: 관심 목록, 판매자·구매자 1:1 채팅, 댓글</li><li>6~8단계: 후기와 '고구마 온도', 신고·차단, 동네 인증, 거래 약속, 대댓글, 접속 중 표시</li><li>마무리: 휴대폰 푸시 알림, 근처 동네(12km·25km) 보기, 자동 테스트</li></ul>
+        <div class="chips"><span class="chip">Next.js 16</span><span class="chip">Supabase</span><span class="chip">Vercel</span><span class="chip">PWA</span></div>
+        <div class="note">디자인은 '구황작물·향토' 테마예요. 한지 배경, 고구마 껍질 자주색 버튼을 썼어요. 가계부와 같은 Supabase를 쓰되 가계부 표는 건드리지 않게 했어요.</div>
+      </article>
+
+      <article class="proj">
+        <div class="top"><div><h3>몽글 · 평생 가족</h3><span class="folder">shoppingmall</span></div><span class="status">데모 · Vercel 연결</span></div>
+        <p>쇼핑몰로 시작해서 모아마켓 → HAUL. → PIKK.를 거쳐, 반려동물 책임 분양 하우스로 다듬은 데모예요.</p>
+        <ul><li>반려동물 123마리와 용품, 카테고리 8개</li><li>구매자: 검색, 장바구니, 쿠폰함, 반품, 리뷰, 알림함</li><li>셀러: 상품 등록, 주문 처리, 반품 승인, 정산 대시보드</li><li>책임 분양: 만남 예약 후 결제, 평생 비용 안내, 나와 맞는 친구 퀴즈 10문항</li></ul>
+        <div class="chips"><span class="chip">HTML·CSS·JavaScript</span><span class="chip">브라우저 저장</span><span class="chip">개선 보고서 4차</span></div>
+        <div class="note">생명은 택배로 보내지 않고, 국제 거래 규제종은 팔지 않는 규칙을 넣었어요. 결제는 실제로 이루어지지 않아요.</div>
+      </article>
+
+      <article class="proj">
+        <div class="top"><div><h3>기억력 포커</h3><span class="folder">포커</span></div><span class="status">온라인 대전 완성 · 실기기 확인 전</span></div>
+        <p>카드 위치를 외웠다가 골라서 가장 좋은 족보를 만드는 카드 게임이에요.</p>
+        <ul><li>혼자 하기(봇 상대)와 2~4명 온라인 대전, 초대 링크로 참가</li><li>자동 테스트 58개 통과, 260만 가지 패 전체 검사</li><li>휴대폰 화면 5종에서 스크롤 없이 한 화면에 맞춤</li><li>부정행위 막기: 방장만 시작, 카드는 서버에서만 공개, 같은 칸 동시 클릭은 1명만 성공</li></ul>
+        <div class="chips"><span class="chip">Vite</span><span class="chip">Supabase 실시간</span><span class="chip">Vercel</span><span class="chip">홈 화면 앱(PWA)</span></div>
+        <div class="note">직접 사용자처럼 플레이하며 찾은 문제 6개를 바로 고치고, 남은 숙제를 테스트 보고서로 정리했어요.</div>
+      </article>
+
+      <article class="proj">
+        <div class="top"><div><h3>업무 자동화 실습</h3><span class="folder">스튜던트</span></div><span class="status done">스킬 3개 등록</span></div>
+        <p>개발이 아닌 '내 업무'에 클로드 코드를 써본 폴더예요.</p>
+        <ul><li>월별 매출 엑셀 8개를 200건으로 통합하고 원본 합계와 대조</li><li>HTML 대시보드와 공유용 아티팩트, 반성·대응 보고서 문서</li><li>다음 달 파일을 넣으면 한 마디로 다시 만드는 자동화 스킬</li><li>남이 만든 안내서를 스킬로 등록해 당산역 술집 검색, RISS 논문 찾기·요약</li></ul>
+        <div class="chips"><span class="chip">Python·pandas</span><span class="chip">엑셀</span><span class="chip">아티팩트</span><span class="chip">스킬</span></div>
+        <div class="note">AI가 처음 쓴 문장에서 숫자 실수 2건, 화면 문제 2건을 원본 대조와 화면 확인으로 스스로 잡았어요.</div>
+      </article>
+
+      <article class="proj">
+        <div class="top"><div><h3>삼국지 천하쟁패</h3><span class="folder">삼국지</span></div><span class="status">0.1.0 설치 파일 · 개편 중</span></div>
+        <p>삼국지연의를 바탕으로 한 턴제 전략 시뮬레이션이에요. 이틀 중 가장 큰 프로젝트예요.</p>
+        <ul><li>설계 문서 4종: 게이머 위시리스트, 게임 마스터 설계 노트(45장), 전투 개편 설계서, 개발자 전달서</li><li>내정·전쟁·이벤트·세이브 엔진과 헥스 전투</li><li>자동 테스트 5종(밸런스, 데이터, 엔진, 예외 상황, 저장)과 QA 체크리스트</li><li>윈도우 설치 파일 생성</li></ul>
+        <div class="chips"><span class="chip">TypeScript·React</span><span class="chip">Electron 데스크톱 앱</span><span class="chip">Vite</span></div>
+        <div class="note">개발자 전달서에서 할 일을 출시 전 필수(A)·권장(B)·업데이트 이후(C)로 나눴어요. 기존 상용 게임과 겹치는 곳이 없는지 점검하는 항목을 A1으로 두었어요.</div>
+      </article>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>이틀 동안 올라간 계단</h2>
+    <p class="desc">프로젝트를 만든 순서대로, 다룬 기술이 한 칸씩 올라갔어요.</p>
+    <div class="ladder">
+      <div class="rung"><div class="lv">1. 화면 하나<small>파일 1개</small></div><div class="what">HTML 파일 하나에 화면·동작이 다 들어 있어요. 더블클릭하면 열려요.<div class="bar" style="width:15%"></div></div><div class="who">가위바위보</div></div>
+      <div class="rung"><div class="lv">2. 데이터 저장<small>브라우저·서버 DB</small></div><div class="what">기록이 사라지지 않게 저장하고, 다른 기기에서도 같은 데이터를 봐요.<div class="bar" style="width:32%"></div></div><div class="who">가계부, 몽글 쇼핑몰</div></div>
+      <div class="rung"><div class="lv">3. 인터넷 배포<small>주소로 접속</small></div><div class="what">내 컴퓨터 밖에서 링크로 열 수 있게 GitHub Pages와 Vercel에 올렸어요.<div class="bar" style="width:48%"></div></div><div class="who">가계부, 고구마마켓, 포커</div></div>
+      <div class="rung"><div class="lv">4. 회원과 권한<small>로그인·보안 규칙</small></div><div class="what">로그인한 본인만 자기 글을 고치게 하고, 신고·차단과 운영자 화면을 만들었어요.<div class="bar" style="width:66%"></div></div><div class="who">고구마마켓</div></div>
+      <div class="rung"><div class="lv">5. 실시간<small>여러 사람 동시 접속</small></div><div class="what">채팅, 접속 중 표시, 2~4명이 같은 판을 동시에 하는 대전, 푸시 알림을 붙였어요.<div class="bar" style="width:82%"></div></div><div class="who">고구마마켓, 기억력 포커</div></div>
+      <div class="rung"><div class="lv">6. 설계와 품질 관리<small>문서·테스트·설치 파일</small></div><div class="what">만들기 전에 설계 문서를 쓰고, 자동 테스트와 QA 체크리스트로 확인한 뒤 설치 파일로 묶었어요.<div class="bar" style="width:100%"></div></div><div class="who">삼국지 천하쟁패, 기억력 포커</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>해보며 알게 된 것</h2>
+    <div class="tips">
+      <div class="tip"><b>단계를 나누면 끝까지 간다</b><span>고구마마켓은 1~8단계로 나눠 한 단계씩 끝내고 표시했어요. 큰 앱도 무너지지 않고 완성됐어요.</span></div>
+      <div class="tip"><b>사용자처럼 써보게 한다</b><span>포커는 직접 플레이하는 테스트로 헷갈리는 족보 이름, 넘치는 화면 같은 문제를 찾았어요.</span></div>
+      <div class="tip"><b>문서로 먼저 생각한다</b><span>삼국지는 위시리스트 → 설계 노트 → 전달서 순서로 쓰고, 할 일을 A·B·C로 나눴어요.</span></div>
+      <div class="tip"><b>숫자는 원본과 대조한다</b><span>매출 보고서에서 "5월이 최고" 같은 그럴듯한 오답을 원본 대조로 걸러냈어요.</span></div>
+      <div class="tip"><b>반복 일은 스킬로 남긴다</b><span>매달 하는 엑셀 통합은 스킬로 만들어 한 마디로 끝나게 했어요.</span></div>
+      <div class="tip"><b>공개 범위를 확인한다</b><span>로그인 없는 가계부, 외부 서버를 거치는 검색 스킬처럼 정보가 어디까지 보이는지 꼭 따져봐요.</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>바탕화면 폴더 7개의 README, 설계·테스트 문서, 파일 목록을 읽고 정리했어요. 배포 표시는 폴더의 배포 설정을 보고 적었고, 각 주소가 지금 열리는지는 확인하지 않았어요.</span>
+    <span>바탕화면의 빈 폴더 1개(삼국지 이름이 깨진 폴더)는 내용이 없어 뺐어요. 매출 자료는 수업용 가상 데이터예요.</span>
+  </footer>
+</div>

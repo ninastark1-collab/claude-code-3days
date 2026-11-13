@@ -1,0 +1,26 @@
+{
+  "name": "break-fort",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "shared",
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,client -c magenta,cyan \"npm:dev -w server\" \"npm:dev -w client\"",
+    "dev:client": "npm run dev -w client",
+    "dev:server": "npm run dev -w server",
+    "build": "npm run build -w client",
+    "test": "vitest run --root shared",
+    "typecheck": "tsc -p shared && tsc -p client && tsc -p server",
+    "assets": "node client/scripts/build-assets.mjs",
+    "apk": "node client/scripts/build-apk.mjs"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "concurrently": "^10.0.7",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}

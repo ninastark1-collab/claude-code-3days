@@ -1,0 +1,756 @@
+<title>삼국 모바일 화면 설계</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@600;900&family=Song+Myung&display=swap">
+<style>
+/* Layout: 문서는 비주얼 바이블과 같은 토큰. 화면 목업은 가로형 폰(844×390pt) 프레임을 2열 갤러리로, 누르면 한 줄 전체로 커진다. */
+:root {
+  --bg: #E8EBE3; --surface: #F3F5EF; --fg: #1B1F1D; --muted: #59625C; --line: #C6CCC1;
+  --seal: #A93526; --accent: #2F6B4E;
+  --font-display: "Song Myung", "Noto Serif KR", serif;
+  --font-hanja: "Noto Serif KR", "Song Myung", serif;
+  --font-ui: "IBM Plex Sans KR", "Malgun Gothic", system-ui, sans-serif;
+
+  /* 게임 토큰 (고정) */
+  --g-lacquer: rgba(19,18,15,.92); --g-lacquer-solid: #13120F; --g-lacquer-2: #24211B; --g-lacquer-3: #2E2A22;
+  --g-paper: #D8D6C1; --g-ink: #1A1916; --g-gold: #C3A15C; --g-gold-dim: rgba(195,161,92,.35);
+  --g-cinnabar: #B5382A; --g-text: #EEE8D7; --g-text-dim: #A49D89; --g-good: #6FAE7F; --g-warn: #D3A03E; --g-bad: #D0574A;
+  --f-liu: #3E7D5A; --f-cao: #2F5D8A; --f-yshu: #DDBE52; --f-lubu: #B678AE; --f-yshao: #4A3424; --f-biao: #4E8891; --f-gs: #A8A292;
+  --sa: 54px; /* 가로 모드 안전 영역(노치) */
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg:#121514; --surface:#1A1E1C; --fg:#E2E6DE; --muted:#9BA49D; --line:#2D3430; --seal:#D25A4A; --accent:#7DBB95; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg:#121514; --surface:#1A1E1C; --fg:#E2E6DE; --muted:#9BA49D; --line:#2D3430; --seal:#D25A4A; --accent:#7DBB95; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-ui); font-size: 15px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 80px;
+}
+.wrap { max-width: 1220px; margin: 0 auto; display: grid; gap: 72px; }
+a { color: var(--accent); }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; margin: 0; line-height: 1.25; text-wrap: balance; }
+h1 { font-size: clamp(34px, 6vw, 58px); }
+h2 { font-size: clamp(25px, 3.4vw, 34px); }
+h3 { font-size: 19px; }
+p { margin: 0; max-width: 70ch; }
+.eyebrow { font-size: 12px; letter-spacing: .14em; color: var(--muted); font-weight: 500; }
+.sec { display: grid; gap: 22px; }
+.sec-head { display: grid; gap: 8px; }
+.hz { font-family: var(--font-hanja); font-weight: 900; color: var(--seal); font-size: 14px; letter-spacing: .3em; }
+.lead { font-size: 17px; color: var(--muted); margin-top: 14px; }
+button:focus-visible, .shot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* 결정 사항 */
+.decide { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.dc { background: var(--surface); padding: 18px 20px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.dc .k { font-size: 12px; color: var(--muted); letter-spacing: .08em; }
+.dc .v { font-family: var(--font-display); font-size: 22px; line-height: 1.3; }
+.dc p { font-size: 13.5px; color: var(--muted); }
+
+/* 손가락 지도 */
+.thumb { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px; align-items: center; }
+.thumb svg { width: 100%; height: auto; }
+.thumb ul { margin: 0; padding: 0; display: grid; gap: 10px; }
+.thumb li { list-style: none; display: grid; grid-template-columns: 14px 1fr; gap: 10px; font-size: 14.5px; }
+.thumb li i { width: 12px; height: 12px; border-radius: 2px; margin-top: 7px; }
+
+/* 갤러리 */
+.gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px 26px; }
+.shot { display: grid; gap: 10px; min-width: 0; cursor: zoom-in; }
+.shot.big { grid-column: 1 / -1; cursor: zoom-out; }
+.shot .meta { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.shot .id { font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--seal); font-variant-numeric: tabular-nums; }
+.shot .name { font-family: var(--font-display); font-size: 20px; }
+.shot .note { font-size: 13.5px; color: var(--muted); max-width: none; }
+.shot .note b { color: var(--fg); font-weight: 600; }
+.group-title { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 14px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-top: 8px; }
+.group-title h3 { font-size: 22px; }
+.group-title span { font-size: 13px; color: var(--muted); }
+
+.ph-box { position: relative; width: 100%; aspect-ratio: 900 / 446; }
+.ph {
+  position: absolute; left: 0; top: 0; width: 900px; height: 446px; transform-origin: 0 0; transform: scale(var(--s, .5));
+  background: #0B0B0A; border-radius: 62px; box-shadow: 0 0 0 2px #3A3A36, 0 26px 50px -24px rgba(0,0,0,.55);
+}
+.scr {
+  position: absolute; left: 28px; top: 28px; width: 844px; height: 390px; border-radius: 40px; overflow: hidden;
+  background: var(--g-lacquer-solid); color: var(--g-text); font-family: var(--font-ui); font-size: 13px; line-height: 1.4;
+}
+.island { position: absolute; left: 10px; top: 132px; width: 34px; height: 126px; background: #000; border-radius: 20px; z-index: 50; }
+.scr canvas { position: absolute; inset: 0; width: 844px; height: 390px; display: block; }
+
+/* ---- 게임 공통 컴포넌트 ---- */
+.abs { position: absolute; }
+.m-top { position: absolute; left: 0; right: 0; top: 0; height: 42px; padding: 0 var(--sa); display: flex; align-items: center; gap: 14px;
+  background: linear-gradient(180deg, rgba(19,18,15,.96), rgba(19,18,15,.82)); border-bottom: 1px solid var(--g-gold-dim); z-index: 5; }
+.crest { width: 28px; height: 28px; display: grid; place-items: center; font-family: var(--font-hanja); font-weight: 900; font-size: 15px; border-radius: 3px; color: var(--g-text); background: var(--f-liu); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.15); flex: none; }
+.date { font-family: var(--font-display); font-size: 15px; line-height: 1.1; }
+.date small { display: block; font-family: var(--font-ui); font-size: 10px; color: var(--g-text-dim); }
+.res { display: flex; gap: 14px; margin-left: auto; font-variant-numeric: tabular-nums; }
+.res div { display: grid; line-height: 1.05; text-align: right; }
+.res span { font-size: 10px; color: var(--g-text-dim); letter-spacing: .06em; }
+.res b { font-size: 13.5px; font-weight: 600; }
+.menu-btn { width: 36px; height: 30px; border: 1px solid var(--g-gold-dim); border-radius: 3px; display: grid; place-items: center; font-family: var(--font-hanja); font-weight: 900; font-size: 13px; color: var(--g-text-dim); }
+
+.rail { position: absolute; left: var(--sa); top: 54px; display: grid; gap: 6px; z-index: 4; }
+.sbtn { width: 48px; height: 50px; display: grid; place-items: center; align-content: center; gap: 0; background: var(--g-lacquer); border: 1px solid var(--g-gold-dim); border-radius: 4px; }
+.sbtn b { font-family: var(--font-hanja); font-weight: 900; font-size: 18px; line-height: 1.05; }
+.sbtn span { font-size: 10px; color: var(--g-text-dim); }
+.sbtn.on { border-color: var(--g-gold); box-shadow: inset 0 -2px 0 var(--g-gold); }
+.badge { position: absolute; top: -5px; right: -5px; min-width: 17px; height: 17px; border-radius: 9px; background: var(--g-cinnabar); color: #fff; font-size: 10px; font-weight: 600; display: grid; place-items: center; padding: 0 4px; }
+.rel { position: relative; }
+
+.endturn { position: absolute; right: var(--sa); bottom: 14px; width: 104px; height: 58px; background: var(--g-cinnabar); display: grid; place-items: center; text-align: center; line-height: 1.1; border-radius: 4px; box-shadow: 0 8px 18px rgba(0,0,0,.4); z-index: 4; }
+.endturn b { font-family: var(--font-display); font-weight: 400; font-size: 19px; color: #F6EEDC; }
+.endturn span { display: block; font-size: 10px; color: rgba(246,238,220,.78); }
+
+.todo { position: absolute; left: var(--sa); bottom: 14px; display: flex; gap: 6px; z-index: 4; }
+.chip { height: 34px; padding: 0 12px; display: inline-flex; align-items: center; gap: 7px; background: var(--g-lacquer); border: 1px solid var(--g-gold-dim); border-radius: 17px; font-size: 12px; white-space: nowrap; }
+.chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--g-warn); }
+.chip.bad i { background: var(--g-bad); }
+.chip.good i { background: var(--g-good); }
+
+.sheet { position: absolute; top: 0; right: 0; bottom: 0; width: 392px; padding: 14px var(--sa) 12px 18px; background: var(--g-lacquer); border-left: 1px solid var(--g-gold-dim); display: flex; flex-direction: column; gap: 10px; z-index: 6; box-shadow: -18px 0 30px rgba(0,0,0,.35); }
+.sheet .grab { position: absolute; left: 6px; top: 50%; width: 4px; height: 44px; margin-top: -22px; border-radius: 2px; background: rgba(238,232,215,.2); }
+.crumb { font-size: 11px; color: var(--g-text-dim); letter-spacing: .04em; }
+.crumb b { color: var(--g-gold); font-weight: 500; }
+.ttl { font-family: var(--font-display); font-size: 26px; line-height: 1.05; display: flex; align-items: baseline; gap: 8px; }
+.ttl small { font-family: var(--font-hanja); font-weight: 600; font-size: 14px; color: var(--g-gold); }
+.dim { color: var(--g-text-dim); }
+.trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--g-gold-dim); border: 1px solid var(--g-gold-dim); }
+.trio div { background: var(--g-lacquer-solid); padding: 5px 9px; display: grid; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.trio span { font-size: 10px; color: var(--g-text-dim); }
+.trio b { font-size: 14px; font-weight: 600; }
+.bar { display: grid; grid-template-columns: 34px 1fr 52px; gap: 8px; align-items: center; font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.bar > span:first-child { color: var(--g-text-dim); }
+.bar > span:last-child { text-align: right; }
+.trk { height: 5px; background: rgba(255,255,255,.08); position: relative; display: block; }
+.trk i { position: absolute; inset: 0 auto 0 0; background: var(--g-gold); }
+.trk i.g { background: var(--g-good); } .trk i.w { background: var(--g-warn); } .trk i.b { background: var(--g-bad); }
+.cmds { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-top: auto; }
+.cmd { height: 54px; display: grid; place-items: center; align-content: center; background: var(--g-lacquer-2); border: 1px solid var(--g-gold-dim); border-radius: 4px; }
+.cmd b { font-family: var(--font-hanja); font-weight: 900; font-size: 19px; line-height: 1.1; }
+.cmd span { font-size: 10px; color: var(--g-text-dim); }
+.cmd.on { background: var(--g-lacquer-3); border-color: var(--g-gold); }
+.offs { display: flex; flex-wrap: wrap; gap: 4px; }
+.off { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 8px 0 3px; font-size: 11.5px; background: var(--g-lacquer-2); border-radius: 3px; }
+.off i, .sl { font-style: normal; width: 20px; height: 20px; display: grid; place-items: center; font-family: var(--font-hanja); font-weight: 900; font-size: 11px; background: var(--f-liu); color: var(--g-text); border-radius: 2px; flex: none; }
+.off.done { opacity: .45; }
+.lbl { font-size: 10px; letter-spacing: .1em; color: var(--g-text-dim); display: flex; justify-content: space-between; }
+.btn { height: 44px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--g-gold-dim); border-radius: 4px; font-size: 13px; color: var(--g-text); background: var(--g-lacquer-2); white-space: nowrap; }
+.btn.pri { background: var(--g-gold); border-color: var(--g-gold); color: var(--g-ink); font-weight: 600; }
+.btn.red { background: var(--g-cinnabar); border-color: var(--g-cinnabar); color: #F6EEDC; font-weight: 600; }
+.btn.sm { height: 34px; font-size: 12px; padding: 0 12px; }
+.toggle { width: 38px; height: 22px; border-radius: 11px; background: var(--g-lacquer-3); position: relative; border: 1px solid var(--g-gold-dim); flex: none; }
+.toggle::after { content: ""; position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--g-text-dim); }
+.toggle.on { background: var(--g-gold); } .toggle.on::after { left: 18px; background: var(--g-ink); }
+.seg { display: inline-flex; border: 1px solid var(--g-gold-dim); border-radius: 4px; overflow: hidden; }
+.seg span { padding: 6px 12px; font-size: 12px; color: var(--g-text-dim); }
+.seg span.on { background: var(--g-gold); color: var(--g-ink); font-weight: 600; }
+.peek { position: absolute; width: 196px; padding: 10px 12px; background: var(--g-lacquer); border: 1px solid var(--g-gold); border-radius: 4px; font-size: 11.5px; z-index: 7; box-shadow: 0 10px 20px rgba(0,0,0,.4); }
+.peek .t { font-family: var(--font-display); font-size: 17px; }
+.peek .rows { display: grid; grid-template-columns: auto 1fr; gap: 1px 10px; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.peek .rows span:nth-child(odd) { color: var(--g-text-dim); }
+.scrim { position: absolute; inset: 0; background: rgba(8,8,7,.55); z-index: 5; }
+.modal { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: var(--g-lacquer-solid); border: 1px solid var(--g-gold-dim); border-radius: 6px; z-index: 8; box-shadow: 0 20px 50px rgba(0,0,0,.6); }
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--g-gold-dim); }
+.tabs span { padding: 8px 14px; font-size: 12.5px; color: var(--g-text-dim); }
+.tabs span.on { color: var(--g-text); box-shadow: inset 0 -2px 0 var(--g-gold); }
+.portrait { display: grid; place-items: center; position: relative; background: linear-gradient(170deg, var(--fc, #3E7D5A), #13120F 120%); }
+.portrait .s { border: 2px solid rgba(238,232,215,.85); display: grid; place-items: center; font-family: var(--font-hanja); font-weight: 900; color: #EEE8D7; border-radius: 3px; }
+.num { font-variant-numeric: tabular-nums; }
+.disp { font-family: var(--font-display); }
+
+/* 명세 카드 */
+.specs { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+.spec { border: 1px solid var(--line); background: var(--surface); padding: 18px 18px 20px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.spec .id { font-size: 12px; font-weight: 600; color: var(--seal); letter-spacing: .06em; }
+.spec h3 { font-size: 19px; }
+.spec p { font-size: 13.5px; color: var(--muted); }
+.spec .wire { height: 92px; border: 1px dashed var(--line); border-radius: 4px; position: relative; background: var(--bg); overflow: hidden; }
+.spec .wire i { position: absolute; background: var(--line); border-radius: 2px; }
+
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+table { width: 100%; border-collapse: collapse; min-width: 660px; font-size: 14px; }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; font-weight: 500; color: var(--muted); letter-spacing: .08em; }
+tr:last-child td { border-bottom: 0; }
+td code { font-size: 12.5px; }
+.flow { background: var(--surface); border: 1px solid var(--line); padding: 18px; overflow-x: auto; }
+.docnav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.docnav a { font-size: 13.5px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 3px; text-decoration: none; color: var(--fg); background: var(--surface); }
+.docnav a.here { border-color: var(--seal); color: var(--seal); }
+footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 18px; }
+
+@media (max-width: 760px) {
+  .gallery { grid-template-columns: minmax(0, 1fr); }
+  .thumb { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">화면 설계서 v0.2 · 2026년 11월 12일 · 담당: 디자인 · 비주얼 바이블 v0.2와 한 세트</div>
+  <h1>삼국 모바일 화면 설계</h1>
+  <p class="lead">최종 목표는 폰에서 돌아가는 버전이다. 그래서 폰 가로 화면을 기본 설계로 삼고, PC(1280×800) 창은 같은 배치를 키워서 쓴다. 게임에 필요한 화면 35개를 모두 정했고, 그중 핵심 18개는 실제 크기 목업으로 그렸다. v0.2 검토에서 터치·글자 규칙 위반을 고치고, 빠졌던 명장 사망 연출과 지도 확대 단계, 명령 응답 대사, 계절 표현을 추가했다.</p>
+  <nav class="docnav" aria-label="디자인 문서"><a href="https://claude.ai/artifact/C62iEPXhV4ELCo1QsrX1ZS" target="_blank" rel="noopener">비주얼 바이블</a><a class="here" href="https://claude.ai/artifact/GJzoWaSmYzMnbTngqi2Shi" target="_blank" rel="noopener">모바일 화면 설계</a><a href="https://claude.ai/artifact/JryyqWc8V25Z8W3rYDrP3o" target="_blank" rel="noopener">인물·전장 아트</a></nav>
+</header>
+
+<!-- 결정 -->
+<section class="sec" aria-labelledby="s-dec">
+  <div class="sec-head"><div class="hz">定</div><h2 id="s-dec">먼저 정한 것</h2></div>
+  <div class="decide">
+    <div class="dc"><div class="k">화면 방향</div><div class="v">가로 고정</div><p>지도와 헥스 전장은 가로로 넓어야 판세가 보인다. 세로 모드는 지원하지 않는다.</p></div>
+    <div class="dc"><div class="k">설계 기준 크기</div><div class="v">844 × 390 pt</div><p>요즘 폰 가로 화면의 대표값. 더 넓은 폰과 태블릿은 지도가 넓어지고 패널 크기는 그대로다.</p></div>
+    <div class="dc"><div class="k">안전 영역</div><div class="v">좌우 54 pt</div><p>노치와 둥근 모서리를 피하는 여백. 지도는 끝까지 깔고, 버튼과 글자는 이 안쪽에만 둔다.</p></div>
+    <div class="dc"><div class="k">터치 크기</div><div class="v">누르는 영역 44 pt</div><p>보이는 크기는 34pt까지 줄일 수 있지만, 손가락이 닿는 영역은 반드시 44pt 이상. 명령 인장 버튼은 48~54pt. 버튼 사이 간격 최소 6pt.</p></div>
+    <div class="dc"><div class="k">최소 글자</div><div class="v">본문 13 · 보조 10 pt</div><p>설정에서 크게(+2pt) 옵션. 숫자는 고정폭 숫자를 써서 자릿수가 흔들리지 않게 한다.</p></div>
+    <div class="dc"><div class="k">마우스가 없다</div><div class="v">길게 누르기 = 툴팁</div><p>PC의 마우스 올리기는 폰에서 길게 누르기(0.35초)로 바꾼다. 단축키 대신 화면의 인장 버튼을 쓴다.</p></div>
+    <div class="dc"><div class="k">아이콘</div><div class="v">한 글자 인장</div><p>政 軍 人 外 計 報처럼 한자 한 글자를 인장에 새겨 아이콘으로 쓴다. 그림 아이콘 수백 개를 그릴 필요가 없고 분위기도 산다.</p></div>
+    <div class="dc"><div class="k">앱 포장</div><div class="v">같은 React 코드</div><p>지금 Electron용 화면 코드를 Capacitor 같은 도구로 폰 앱에 감싸는 것을 전제로 설계했다. 화면을 두 벌 만들지 않는다.</p></div>
+  </div>
+</section>
+
+<!-- 손가락 -->
+<section class="sec" aria-labelledby="s-thumb">
+  <div class="sec-head"><div class="hz">指</div><h2 id="s-thumb">두 엄지로 쥐었을 때</h2><p>가로로 쥐면 양 엄지가 아래 모서리에 있다. 자주 누르는 것은 아래 모서리에, 자주 안 누르는 것은 위 가운데에 둔다.</p></div>
+  <div class="thumb">
+    <svg viewBox="0 0 900 446" role="img" aria-label="가로 폰에서 엄지가 닿는 영역">
+      <defs>
+        <radialGradient id="tz" cx="0" cy="1" r="1"><stop offset="0" stop-color="#6FAE7F" stop-opacity=".75"/><stop offset=".55" stop-color="#6FAE7F" stop-opacity=".35"/><stop offset="1" stop-color="#6FAE7F" stop-opacity="0"/></radialGradient>
+        <radialGradient id="tz2" cx="1" cy="1" r="1"><stop offset="0" stop-color="#6FAE7F" stop-opacity=".75"/><stop offset=".55" stop-color="#6FAE7F" stop-opacity=".35"/><stop offset="1" stop-color="#6FAE7F" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect x="0" y="0" width="900" height="446" rx="62" fill="#0B0B0A"/>
+      <rect x="28" y="28" width="844" height="390" rx="40" fill="#2B3431"/>
+      <rect x="28" y="28" width="844" height="390" rx="40" fill="#D3A03E" fill-opacity=".18"/>
+      <rect x="28" y="168" width="420" height="250" fill="url(#tz)"/>
+      <rect x="452" y="168" width="420" height="250" fill="url(#tz2)"/>
+      <rect x="38" y="160" width="34" height="126" rx="17" fill="#000"/>
+      <rect x="82" y="28" width="736" height="390" fill="none" stroke="#EEE8D7" stroke-opacity=".45" stroke-dasharray="6 6"/>
+      <text x="450" y="70" fill="#EEE8D7" font-size="22" text-anchor="middle" font-family="IBM Plex Sans KR, sans-serif">위 가운데: 닿기 어렵다 → 날짜·자원 같은 읽기 전용 정보</text>
+      <text x="96" y="398" fill="#13120F" font-size="20" font-family="IBM Plex Sans KR, sans-serif" font-weight="600">왼손: 이동·목록 (보조)</text>
+      <text x="804" y="398" fill="#13120F" font-size="20" text-anchor="end" font-family="IBM Plex Sans KR, sans-serif" font-weight="600">오른손: 결정·다음 달 (주요)</text>
+      <text x="450" y="246" fill="#EEE8D7" font-size="18" text-anchor="middle" fill-opacity=".8" font-family="IBM Plex Sans KR, sans-serif">가운데: 지도·전장 (드래그·핀치)</text>
+      <text x="96" y="110" fill="#EEE8D7" font-size="15" fill-opacity=".8" font-family="IBM Plex Sans KR, sans-serif">점선 안쪽 = 안전 영역</text>
+    </svg>
+    <ul>
+      <li><i style="background:#6FAE7F"></i><span><b>오른쪽 아래</b>: 다음 달, 출진, 확인, 전투 명령. 게임에서 가장 많이 누르는 버튼.</span></li>
+      <li><i style="background:#6FAE7F"></i><span><b>왼쪽 아래</b>: 할 일 칩, 전투 일시정지, 부대 목록. 왼손은 보조 조작.</span></li>
+      <li><i style="background:#6FAE7F"></i><span><b>왼쪽 세로 줄</b>: 세력·무장·외교·연대기로 가는 메뉴. 왼손 엄지를 올리면 닿는 높이.</span></li>
+      <li><i style="background:#D3A03E"></i><span><b>위쪽 띠</b>: 날짜와 자원. 누를 일이 거의 없는 정보만 둔다.</span></li>
+      <li><i style="background:#2B3431"></i><span><b>오른쪽 시트</b>: 도시·명령·장수 선택은 오른쪽에서 밀려 나오는 시트 하나로 처리한다. 오른쪽으로 쓸어 닫는다.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 흐름 -->
+<section class="sec" aria-labelledby="s-flow">
+  <div class="sec-head"><div class="hz">路</div><h2 id="s-flow">화면 흐름</h2><p>모든 화면은 메인 맵에서 두 번 이내로 닿는다. 명령은 도시 → 명령 → 장수, 세 번 누르면 끝난다.</p></div>
+  <div class="flow">
+<pre class="mermaid">
+flowchart LR
+  T[S01 타이틀] --> SC[S02 시나리오] --> RU[S03 군주 선택] --> M((S04 메인 맵))
+  M --> CS[S05 도시 시트] --> CMD[S06 장수 선택] --> M
+  M --> TR[S07 턴 보고] --> M
+  M --> OL[S08 무장 목록] --> OD[S09 무장 상세]
+  M --> DP[S10 외교]
+  M --> CH[S16 연대기]
+  M --> EV[S11 이벤트 대화] --> M
+  CMD --> FM[S12 출진 편성] --> BT[S13 전투] --> DU[S14 일기토] --> BT --> RS[S15 전투 결과] --> M
+</pre>
+  </div>
+</section>
+
+<!-- 갤러리 -->
+<section class="sec" aria-labelledby="s-gal">
+  <div class="sec-head"><div class="hz">圖</div><h2 id="s-gal">핵심 화면 18개</h2><p>모두 844×390pt 실제 크기로 만든 목업이다. 화면을 누르면 크게 볼 수 있다. 상황은 194년 겨울, 유비가 서주를 받은 직후부터 원술과 싸우는 흐름으로 이어진다.</p></div>
+  <div class="gallery" id="gallery"></div>
+</section>
+
+<!-- 나머지 화면 -->
+<section class="sec" aria-labelledby="s-spec">
+  <div class="sec-head"><div class="hz">補</div><h2 id="s-spec">나머지 17개 화면 명세</h2><p>위 18개와 같은 부품으로 조립한다. 목업은 해당 기능 개발이 시작되면 그린다.</p></div>
+  <div class="specs" id="specs"></div>
+</section>
+
+<!-- 컴포넌트 -->
+<section class="sec" aria-labelledby="s-comp">
+  <div class="sec-head"><div class="hz">器</div><h2 id="s-comp">모바일 공통 부품</h2><p>모든 화면이 이 부품만으로 만들어진다. 크기는 pt 기준이고 PC에서는 그대로 1pt = 1px.</p></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>부품</th><th>크기</th><th>동작</th><th>쓰는 곳</th></tr></thead>
+      <tbody>
+        <tr><td>상단 띠</td><td>높이 42</td><td>누르면 해당 자원의 내역 시트</td><td>S04, S05, S08 등 전략 화면 전부</td></tr>
+        <tr><td>인장 버튼</td><td>48×50 (명령은 54 높이)</td><td>누름: 실행 · 길게: 설명</td><td>왼쪽 메뉴, 도시 명령, 전투 명령</td></tr>
+        <tr><td>오른쪽 시트</td><td>너비 392 (안전 영역 포함)</td><td>시트 <b>안쪽</b>에서 오른쪽으로 쓸거나 기기 뒤로 버튼으로 닫힘 (화면 끝 쓸기는 안드로이드 뒤로 제스처와 겹치므로 쓰지 않음). 단계가 쌓이면 위에 경로 표시</td><td>S05, S06, S10</td></tr>
+        <tr><td>다음 달 버튼</td><td>104×58, 주사색</td><td>누름: 남은 명령이 있으면 한 번 확인 · 길게: 바로 진행</td><td>S04</td></tr>
+        <tr><td>할 일 칩</td><td>보이는 높이 34 · 누르는 영역 44</td><td>누르면 해당 도시·장수로 지도 이동</td><td>S04, S07</td></tr>
+        <tr><td>엿보기 카드</td><td>너비 196</td><td>도시·부대를 길게 누르면 뜨고, 손을 떼면 닫힘</td><td>S04, S13</td></tr>
+        <tr><td>모달</td><td>최대 560×320</td><td>긴급 알림과 되돌릴 수 없는 결정에만 사용</td><td>S07, 처형, 저장 덮어쓰기</td></tr>
+        <tr><td>목록 한 줄</td><td>높이 44</td><td>머리글을 누르면 정렬, 줄을 누르면 상세</td><td>S08, S26</td></tr>
+        <tr><td>낙관 초상</td><td>20 · 44 · 96 · 전신</td><td>세력색 바탕 + 성씨 한자. 일러스트가 있으면 대체</td><td>전 화면</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="s-dev">
+  <div class="sec-head"><div class="hz">傳令</div><h2 id="s-dev">개발 쪽에 전달할 것</h2></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>항목</th><th>요청</th></tr></thead>
+      <tbody>
+        <tr><td>기준 해상도</td><td>게임 화면을 논리 크기 844×390으로 짜고, 화면 비율에 따라 지도 영역만 늘린다. PC 1280×800 창은 같은 배치를 1.5배로 확대하거나 지도 영역을 넓혀서 쓴다.</td></tr>
+        <tr><td>안전 영역</td><td>CSS <code>env(safe-area-inset-left/right)</code>를 읽어 <code>--sa</code> 변수(최소 54)로 쓴다. 지도와 배경은 안전 영역 밖까지 깐다.</td></tr>
+        <tr><td>입력</td><td>마우스 올리기에 의존하는 정보는 모두 길게 누르기로도 열려야 한다. 키보드 단축키는 PC 전용 보너스로 둔다.</td></tr>
+        <tr><td>지도 조작</td><td>한 손가락 드래그 = 이동, 두 손가락 = 확대·축소, 두 번 누르기 = 그 도시로 확대. 확대 3단계(천하·주·도시)에서 표시 정보가 달라진다.</td></tr>
+        <tr><td>성능</td><td>세력 칠 레이어는 세력 변동 시에만 다시 그린다. 전투는 30fps면 충분하고 배터리를 아끼기 위해 일시정지 중에는 그리기를 멈춘다.</td></tr>
+        <tr><td>현재 코드와 연결</td><td>지금 있는 화면(Title, NewGame, Strategy, Battle, CityPanel, Commands, SaveLoad, Help)은 S01·S02·S04·S13·S05·S06·S27·S30에 대응한다. 나머지는 새로 만든다.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>비주얼 바이블 v0.1의 색·글꼴·낙관 카드 규칙을 그대로 따른다. 지도와 전장은 코드로 그린 스케치이며, 실제 아트는 청록산수 일러스트로 따로 제작한다.</footer>
+</div>
+
+<script>
+(function () {
+  var FC = { liu:'#3E7D5A', cao:'#2F5D8A', lubu:'#B678AE', yshao:'#4A3424', yshu:'#DDBE52', gongsun:'#A8A292', gsd:'#5C5A8A', liubiao:'#4E8891', lijue:'#3E3B36', ma:'#B86A7E', zhanglu:'#8A9A52', liuzhang:'#D2A6B0', none:'#B4B09E', sun:'#C8642C' };
+  var C = [
+    ['하비',118.0,34.3,'liu'],['소패',116.9,34.7,'liu'],['팽성',117.2,34.25,'liu'],
+    ['진류',114.3,34.8,'cao'],['견성',115.5,35.6,'cao'],['동아',116.25,36.1,'cao'],
+    ['복양',115.0,35.7,'lubu'],['산양',116.1,35.15,'lubu'],
+    ['업',114.4,36.3,'yshao'],['남피',116.7,38.0,'yshao'],['평원',116.4,37.2,'yshao'],['거록',115.0,37.2,'yshao'],
+    ['계',116.4,39.9,'gongsun'],['북평',118.9,40.3,'gongsun'],['역경',116.0,39.0,'gongsun'],['양평',122.8,41.0,'gsd'],
+    ['수춘',116.8,32.6,'yshu'],['여남',114.4,33.0,'yshu'],['여강',116.9,31.5,'yshu'],['우이',118.5,33.0,'yshu'],
+    ['양양',112.1,32.0,'liubiao'],['강릉',112.2,30.3,'liubiao'],['강하',114.3,30.6,'liubiao'],['장사',113.0,28.2,'liubiao'],['무릉',111.7,29.0,'liubiao'],
+    ['장안',108.9,34.3,'lijue'],['홍농',110.9,34.6,'lijue'],['천수',105.7,34.6,'ma'],['무위',102.6,37.9,'ma'],['안정',106.6,35.5,'ma'],
+    ['한중',107.0,33.1,'zhanglu'],['성도',104.1,30.7,'liuzhang'],['강주',106.5,29.6,'liuzhang'],['영안',109.5,31.0,'liuzhang'],['자동',105.1,31.6,'liuzhang'],
+    ['낙양',112.4,34.6,'none'],['허',113.8,34.0,'none'],['완',112.5,33.0,'none'],['북해',118.9,36.7,'none'],
+    ['곡아',119.6,32.0,'none'],['오',120.6,31.3,'none'],['회계',120.6,30.0,'none'],['진양',112.5,37.9,'none'],['상당',113.1,36.2,'none'],['예장',115.9,28.7,'none'],['단양',118.8,31.0,'none']
+  ];
+  var LAND = [[98,42],[105,42.5],[112,42.6],[118,42.8],[124,43],[125.6,41.2],[124.2,39.9],[121.3,38.8],[121.6,40.6],[119.6,39.9],[118.1,39.2],[117.7,38.5],[118.8,37.6],[119.6,37.1],[120.7,37.8],[122.5,37.4],[121.1,36.6],[120.2,35.9],[119.4,35.0],[120.3,34.3],[120.9,32.6],[121.9,31.7],[121.9,30.9],[122.0,29.8],[121.4,28.5],[120.6,27.6],[119.6,26.0],[118.6,24.6],[117,23.5],[115,22.8],[113.6,22.3],[111,21.5],[108,21.6],[104,22.8],[101,22.5],[98,24],[97.5,28],[98,32],[97,36]];
+  var RIVERS = [
+    [[101.8,36.1],[103.8,36.1],[105.5,37.5],[106.5,39.5],[108,40.6],[110.5,40.5],[111.2,39.5],[110.5,37],[110.3,34.7],[112.4,34.85],[114,34.95],[115.5,35.45],[117,36.6],[118.8,37.6]],
+    [[100.5,27.3],[103.5,28.8],[104.6,28.8],[106.5,29.6],[108.4,30.8],[110.4,31.0],[111.3,30.7],[112.2,30.2],[113,29.4],[114.3,30.6],[115.9,29.7],[117,30.5],[118.4,31.4],[119.3,32.2],[121.0,31.8]],
+    [[107,33.1],[109.5,32.7],[111,32.6],[112.1,32.0],[112.6,31],[114.3,30.6]],
+    [[113.3,32.6],[115,32.4],[116.8,32.6],[118.5,33.2],[119.8,33.8]]
+  ];
+  var MOUNTS = [[113.6,37.2],[113.2,35.8],[108.2,33.8],[110,33.6],[106.2,32.6],[109.6,30.0],[103.0,32.5],[117.3,36.3],[111.6,27.5],[118.2,29.5],[111.0,38.4],[104.6,36.0],[115.6,34.1]];
+
+  function rnd(s) { var t = Math.sin(s * 127.1) * 43758.5453; return t - Math.floor(t); }
+  function inkOn(c) { var n = [1, 3, 5].map(function (i) { return parseInt(c.substr(i, 2), 16) / 255; }); return (n[0] * .299 + n[1] * .587 + n[2] * .114) > .62 ? '#1A1916' : '#EEE8D7'; }
+  function noise(a, b) { return Math.sin(a * .021 + Math.sin(b * .017) * 2) * .5 + Math.sin(b * .033 + a * .011) * .35 + Math.sin((a + b) * .06) * .15; }
+  function hex2(h) { return [parseInt(h.substr(1,2),16), parseInt(h.substr(3,2),16), parseInt(h.substr(5,2),16)]; }
+
+  function setup(cv) {
+    var dpr = Math.min(2, window.devicePixelRatio || 1), w = 844, h = 390;
+    cv.width = w * dpr; cv.height = h * dpr;
+    var x = cv.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return x;
+  }
+
+  /* 전략 지도 */
+  function drawMap(cv, o) {
+    var x = setup(cv), W = 844, H = 390, K = o.K;
+    var px = function (lon) { return (lon - o.lon) * K + W / 2 + (o.dx || 0); };
+    var py = function (lat) { return (o.lat - lat) * K + H / 2 + (o.dy || 0); };
+    function land() { x.beginPath(); LAND.forEach(function (p, i) { i ? x.lineTo(px(p[0]), py(p[1])) : x.moveTo(px(p[0]), py(p[1])); }); x.closePath(); }
+    x.fillStyle = '#2B3431'; x.fillRect(0, 0, W, H);
+    x.save(); land(); x.fillStyle = '#D8D6C1'; x.fill(); x.restore();
+    x.save(); land(); x.clip();
+    for (var i = 0; i < 2600; i++) { x.fillStyle = 'rgba(70,64,48,' + (rnd(i * 3) * .06) + ')'; x.fillRect(rnd(i * 3 + 1) * W, rnd(i * 3 + 2) * H, 1, 1 + rnd(i) * 3); }
+    var G = 3, gw = Math.ceil(W / G), gh = Math.ceil(H / G), own = new Int16Array(gw * gh);
+    var pts = C.map(function (c) { return [px(c[1]), py(c[2])]; });
+    var R = 3.6 * K, NZ = .62 * K;
+    for (var gy = 0; gy < gh; gy++) for (var gx = 0; gx < gw; gx++) {
+      var X = gx * G + 1.5, Y = gy * G + 1.5, best = -1, bd = 1e9;
+      for (var k = 0; k < pts.length; k++) {
+        var ddx = X - pts[k][0], ddy = Y - pts[k][1];
+        var d = Math.sqrt(ddx * ddx + ddy * ddy) + noise((X - W / 2) / K * 42 + k * 37, (Y - H / 2) / K * 42 - k * 19) * NZ;
+        if (d < bd) { bd = d; best = k; }
+      }
+      own[gy * gw + gx] = bd < R ? best : -1;
+    }
+    var off = document.createElement('canvas'); off.width = gw; off.height = gh;
+    var oc = off.getContext('2d'), img = oc.createImageData(gw, gh);
+    for (i = 0; i < own.length; i++) {
+      if (own[i] < 0) continue;
+      var rgb = hex2(FC[C[own[i]][3]]), a = 125 + noise(i % gw * 9, (i / gw | 0) * 7) * 40;
+      img.data[i*4] = rgb[0]; img.data[i*4+1] = rgb[1]; img.data[i*4+2] = rgb[2]; img.data[i*4+3] = a;
+    }
+    oc.putImageData(img, 0, 0);
+    x.globalCompositeOperation = 'multiply'; x.drawImage(off, 0, 0, W, H); x.globalCompositeOperation = 'source-over';
+    function fac(j) { return own[j] < 0 ? '' : C[own[j]][3]; }
+    for (gy = 1; gy < gh - 1; gy++) for (gx = 1; gx < gw - 1; gx++) {
+      var id = gy * gw + gx, f0 = fac(id); if (!f0) continue;
+      var f1 = fac(id + 1), f2 = fac(id + gw);
+      if ((f1 && f1 !== f0) || (f2 && f2 !== f0)) { x.fillStyle = 'rgba(26,25,22,' + (.3 + rnd(id) * .3) + ')'; x.fillRect(gx * G, gy * G, 1.8, 1.8); }
+    }
+    var ms = Math.max(.5, K / 42);
+    x.lineCap = 'round';
+    MOUNTS.forEach(function (m, mi) {
+      var cx = px(m[0]), cy = py(m[1]);
+      for (var j = 0; j < 4; j++) {
+        var ox = cx + (j - 1.5) * 15 * ms, oy = cy + rnd(mi * 7 + j) * 8 * ms, hg = (9 + rnd(mi + j * 3) * 8) * ms;
+        x.strokeStyle = 'rgba(26,25,22,' + (.3 + rnd(j + mi) * .25) + ')'; x.lineWidth = 1.5;
+        x.beginPath(); x.moveTo(ox - 9 * ms, oy + 4); x.quadraticCurveTo(ox - 2 * ms, oy - hg, ox + ms, oy - hg + 1); x.quadraticCurveTo(ox + 4 * ms, oy - hg + 4, ox + 10 * ms, oy + 4); x.stroke();
+      }
+    });
+    RIVERS.forEach(function (r) {
+      [[4 + K / 30, 'rgba(216,214,193,.55)'], [1.6 + K / 40, 'rgba(47,72,82,.75)']].forEach(function (s) {
+        x.lineWidth = s[0]; x.strokeStyle = s[1]; x.beginPath();
+        r.forEach(function (p, j) {
+          if (!j) { x.moveTo(px(p[0]), py(p[1])); return; }
+          var q = r[j - 1]; x.quadraticCurveTo(px(q[0]), py(q[1]), (px(q[0]) + px(p[0])) / 2, (py(q[1]) + py(p[1])) / 2);
+        });
+        var l = r[r.length - 1]; x.lineTo(px(l[0]), py(l[1])); x.stroke();
+      });
+    });
+    x.restore();
+    x.save(); land(); x.lineWidth = 1.3; x.strokeStyle = 'rgba(26,25,22,.7)'; x.stroke(); x.restore();
+    if (K >= 40) {
+      x.setLineDash([3, 4]); x.lineWidth = 1; x.strokeStyle = 'rgba(26,25,22,.45)';
+      var seen = {};
+      pts.forEach(function (a, ai) {
+        pts.map(function (b, bi) { return [Math.hypot(a[0] - b[0], a[1] - b[1]) / K, bi]; })
+          .filter(function (d) { return d[1] !== ai && d[0] < 3.3; }).sort(function (p, q) { return p[0] - q[0]; }).slice(0, 3)
+          .forEach(function (n) { var key = Math.min(ai, n[1]) + '-' + Math.max(ai, n[1]); if (seen[key]) return; seen[key] = 1; x.beginPath(); x.moveTo(a[0], a[1]); x.lineTo(pts[n[1]][0], pts[n[1]][1]); x.stroke(); });
+      });
+      x.setLineDash([]);
+    }
+    if (o.arrows) o.arrows.forEach(function (ar) {
+      var ax = px(ar[0][0]), ay = py(ar[0][1]), bx = px(ar[1][0]), by = py(ar[1][1]);
+      var mx = (ax + bx) / 2 + (by - ay) * .25, my = (ay + by) / 2 - (bx - ax) * .25;
+      x.lineWidth = 3.5; x.strokeStyle = ar[2]; x.beginPath(); x.moveTo(ax, ay); x.quadraticCurveTo(mx, my, bx, by); x.stroke();
+      var an = Math.atan2(by - my, bx - mx); x.fillStyle = ar[2]; x.beginPath(); x.moveTo(bx, by);
+      x.lineTo(bx - 13 * Math.cos(an - .45), by - 13 * Math.sin(an - .45)); x.lineTo(bx - 13 * Math.cos(an + .45), by - 13 * Math.sin(an + .45)); x.closePath(); x.fill();
+    });
+    C.forEach(function (c, ci) {
+      var X = pts[ci][0], Y = pts[ci][1];
+      if (X < -20 || X > W + 20 || Y < -20 || Y > H + 20) return;
+      var sel = o.sel === c[0], s = K >= 60 ? (sel ? 18 : 14) : K >= 40 ? (sel ? 14 : 10) : 6;
+      if (sel) { x.strokeStyle = '#C3A15C'; x.lineWidth = 2; x.beginPath(); x.arc(X, Y, s + 7, 0, 7); x.stroke(); x.strokeStyle = 'rgba(195,161,92,.4)'; x.lineWidth = 1; x.beginPath(); x.arc(X, Y, s + 13, 0, 7); x.stroke(); }
+      x.fillStyle = '#1A1916'; x.fillRect(X - s / 2 - 1.5, Y - s / 2 - 1.5, s + 3, s + 3);
+      x.fillStyle = FC[c[3]]; x.fillRect(X - s / 2, Y - s / 2, s, s);
+      if (o.mine && c[3] === 'liu' && K >= 60) { x.fillStyle = '#EEE8D7'; x.font = '900 ' + (s * .62 | 0) + 'px "Noto Serif KR", serif'; x.textAlign = 'center'; x.fillText('劉', X, Y + s * .22); x.textAlign = 'left'; }
+      if (K >= 40) {
+        var fs = K >= 60 ? (sel ? 19 : 15) : 13; x.font = fs + 'px "Song Myung", serif';
+        var tx = X + s / 2 + 6, ty = Y + fs * .35;
+        x.lineWidth = 3.5; x.strokeStyle = 'rgba(216,214,193,.92)'; x.strokeText(c[0], tx, ty); x.fillStyle = '#1A1916'; x.fillText(c[0], tx, ty);
+      }
+    });
+    if (o.units) o.units.forEach(function (u) {
+      var X = px(u[0]), Y = py(u[1]);
+      x.fillStyle = u[3]; x.strokeStyle = '#1A1916'; x.lineWidth = 1.5;
+      x.beginPath(); x.moveTo(X, Y - 20); x.lineTo(X + 18, Y - 14); x.lineTo(X, Y - 8); x.closePath(); x.fill(); x.stroke();
+      x.beginPath(); x.moveTo(X, Y + 5); x.lineTo(X, Y - 20); x.stroke();
+      x.font = '600 12px "IBM Plex Sans KR", sans-serif'; x.lineWidth = 3; x.strokeStyle = 'rgba(216,214,193,.92)'; x.strokeText(u[2], X - 20, Y + 19); x.fillStyle = '#1A1916'; x.fillText(u[2], X - 20, Y + 19);
+    });
+    if (o.dim) { x.fillStyle = 'rgba(10,10,9,' + o.dim + ')'; x.fillRect(0, 0, W, H); }
+    var g = x.createRadialGradient(W / 2, H / 2, 160, W / 2, H / 2, 560); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.4)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  }
+
+  /* 헥스 전장 */
+  function drawBattle(cv, o) {
+    var x = setup(cv), W = 844, H = 390, r = 23, hw = Math.sqrt(3) * r, vh = 1.5 * r;
+    x.fillStyle = '#2E2A22'; x.fillRect(0, 0, W, H);
+    function center(c, rw) { return [c * hw + (rw % 2 ? hw / 2 : 0) + 10, rw * vh + 30]; }
+    function terr(c, rw) {
+      var riv = Math.abs(rw - (c * .42 - 1.2)) < .7;
+      if (c >= 17) return (c === 17) ? 'wall' : 'castle';
+      if (riv) return 'river';
+      var n = noise(c * 30, rw * 40);
+      if (n > .55) return 'forest';
+      if (n < -.62) return 'hill';
+      return 'plain';
+    }
+    var col = { plain: '#D8D6C1', forest: '#A7AE8C', hill: '#C6B894', river: '#7F9DA3', wall: '#6E6556', castle: '#B7AE98' };
+    var mv = o.move || [], at = o.atk || [];
+    function inList(l, c, rw) { for (var i = 0; i < l.length; i++) if (l[i][0] === c && l[i][1] === rw) return true; return false; }
+    for (var rw = 0; rw < 12; rw++) for (var c = 0; c < 20; c++) {
+      var p = center(c, rw), t = terr(c, rw);
+      x.beginPath(); for (var k = 0; k < 6; k++) { var an = Math.PI / 180 * (60 * k - 30); x.lineTo(p[0] + r * Math.cos(an), p[1] + r * Math.sin(an)); } x.closePath();
+      x.fillStyle = col[t]; x.fill();
+      if (inList(mv, c, rw)) { x.fillStyle = 'rgba(47,93,138,.38)'; x.fill(); }
+      if (inList(at, c, rw)) { x.fillStyle = 'rgba(181,56,42,.45)'; x.fill(); }
+      if (inList(o.plot || [], c, rw)) { x.fillStyle = 'rgba(120,70,160,.42)'; x.fill(); }
+      x.strokeStyle = 'rgba(26,25,22,.18)'; x.lineWidth = 1; x.stroke();
+      if (t === 'forest') for (k = 0; k < 4; k++) { x.fillStyle = 'rgba(40,52,34,.55)'; x.beginPath(); x.arc(p[0] - 8 + rnd(c * 17 + rw * 5 + k) * 16, p[1] - 6 + rnd(c * 3 + rw * 11 + k) * 12, 3.2, 0, 7); x.fill(); }
+      if (t === 'hill') { x.strokeStyle = 'rgba(26,25,22,.45)'; x.lineWidth = 1.4; x.beginPath(); x.moveTo(p[0] - 10, p[1] + 5); x.quadraticCurveTo(p[0] - 2, p[1] - 10, p[0] + 10, p[1] + 5); x.stroke(); }
+      if (t === 'wall') { x.fillStyle = 'rgba(26,25,22,.6)'; x.fillRect(p[0] - 4, p[1] - 14, 8, 28); }
+    }
+    if (o.units) o.units.forEach(function (u) {
+      var p = center(u[0], u[1]), w = 34, h = 22;
+      if (u[6]) { x.strokeStyle = '#C3A15C'; x.lineWidth = 2.5; x.beginPath(); x.arc(p[0], p[1], 21, 0, 7); x.stroke(); }
+      x.fillStyle = '#1A1916'; x.fillRect(p[0] - w / 2 - 1.5, p[1] - h / 2 - 1.5, w + 3, h + 3);
+      x.fillStyle = u[3]; x.fillRect(p[0] - w / 2, p[1] - h / 2, w, h);
+      x.fillStyle = inkOn(u[3]); x.font = '900 13px "Noto Serif KR", serif'; x.textAlign = 'center'; x.fillText(u[2], p[0], p[1] + 4.5); x.textAlign = 'left';
+      x.fillStyle = 'rgba(0,0,0,.5)'; x.fillRect(p[0] - w / 2, p[1] + h / 2 + 2, w, 4);
+      x.fillStyle = u[5] ? '#D0574A' : '#6FAE7F'; x.fillRect(p[0] - w / 2, p[1] + h / 2 + 2, w * u[4], 4);
+    });
+    if (o.path) { x.setLineDash([5, 4]); x.strokeStyle = 'rgba(238,232,215,.9)'; x.lineWidth = 2.5; x.beginPath(); o.path.forEach(function (q, i) { var p = center(q[0], q[1]); i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1]); }); x.stroke(); x.setLineDash([]); }
+    if (o.fire) o.fire.forEach(function (f) { var p = center(f[0], f[1]); var g = x.createRadialGradient(p[0], p[1], 2, p[0], p[1], 22); g.addColorStop(0, 'rgba(255,170,60,.9)'); g.addColorStop(1, 'rgba(181,56,42,0)'); x.fillStyle = g; x.beginPath(); x.arc(p[0], p[1], 22, 0, 7); x.fill(); });
+    var g = x.createRadialGradient(W / 2, H / 2, 180, W / 2, H / 2, 560); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.42)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+    if (o.dim) { x.fillStyle = 'rgba(10,10,9,' + o.dim + ')'; x.fillRect(0, 0, W, H); }
+  }
+
+  /* 먹 배경 (이벤트·일기토) */
+  function drawInk(cv, o) {
+    var x = setup(cv), W = 844, H = 390;
+    x.fillStyle = o.base || '#1C1A16'; x.fillRect(0, 0, W, H);
+    for (var i = 0; i < 70; i++) {
+      var cx = rnd(i * 5 + o.seed) * W, cy = H * (.45 + rnd(i * 7 + o.seed) * .6), rr = 40 + rnd(i * 11) * 160;
+      var g = x.createRadialGradient(cx, cy, 0, cx, cy, rr); g.addColorStop(0, 'rgba(216,214,193,' + (.05 + rnd(i) * .06) + ')'); g.addColorStop(1, 'rgba(216,214,193,0)');
+      x.fillStyle = g; x.fillRect(cx - rr, cy - rr, rr * 2, rr * 2);
+    }
+    x.strokeStyle = 'rgba(216,214,193,.18)'; x.lineWidth = 1.2;
+    for (var m = 0; m < 3; m++) { x.beginPath(); for (var X = 0; X <= W; X += 12) x.lineTo(X, H * (.42 + m * .1) - Math.abs(Math.sin(X * .006 + m * 2)) * (90 - m * 25) - Math.sin(X * .03 + m) * 6); x.stroke(); }
+    if (o.split) {
+      x.fillStyle = o.split[0]; x.globalAlpha = .55; x.beginPath(); x.moveTo(0, 0); x.lineTo(W * .58, 0); x.lineTo(W * .42, H); x.lineTo(0, H); x.closePath(); x.fill();
+      x.fillStyle = o.split[1]; x.beginPath(); x.moveTo(W * .58, 0); x.lineTo(W, 0); x.lineTo(W, H); x.lineTo(W * .42, H); x.closePath(); x.fill(); x.globalAlpha = 1;
+      x.strokeStyle = '#EEE8D7'; x.lineWidth = 3; x.beginPath(); x.moveTo(W * .58, 0); x.lineTo(W * .42, H); x.stroke();
+    }
+  }
+
+  /* ---------- 화면 정의 ---------- */
+  function top(opt) {
+    opt = opt || {};
+    return '<div class="m-top"><div class="crest">劉</div><div class="date">흥평 ' + (opt.y || '원년 12월') + '<small>' + (opt.s || '194년 · 겨울') + '</small></div>' +
+      '<div class="res"><div><span>금</span><b>1,240</b></div><div><span>병량</span><b>18,600</b></div><div><span>병력</span><b>31,000</b></div><div><span>명성</span><b>412</b></div></div><div class="menu-btn">設</div></div>';
+  }
+  function rail(on) {
+    var items = [['勢','세력'],['將','무장'],['外','외교'],['史','연대기']];
+    return '<div class="rail">' + items.map(function (it) { return '<div class="sbtn' + (on === it[0] ? ' on' : '') + (it[0] === '將' ? ' rel' : '') + '"><b>' + it[0] + '</b><span>' + it[1] + '</span>' + (it[0] === '將' ? '<i class="badge">1</i>' : '') + '</div>'; }).join('') + '</div>';
+  }
+  function cmds(on) {
+    return '<div class="cmds">' + [['政','내정'],['軍','군사'],['人','인사'],['外','외교'],['計','계략'],['報','정보']].map(function (c) { return '<div class="cmd' + (on === c[0] ? ' on' : '') + '"><b>' + c[0] + '</b><span>' + c[1] + '</span></div>'; }).join('') + '</div>';
+  }
+  function sl(ch, f, size) { return '<i class="sl" style="color:' + inkOn(FC[f] || f) + ';background:' + (FC[f] || f) + (size ? ';width:' + size + 'px;height:' + size + 'px;font-size:' + (size * .5) + 'px' : '') + '">' + ch + '</i>'; }
+
+  var MAINMAP = { K: 70, lon: 116.3, lat: 34.6, sel: '하비', mine: 1, arrows: [[[115.0, 35.55], [114.45, 34.95], 'rgba(181,56,42,.85)'], [[116.75, 32.8], [117.85, 34.1], 'rgba(181,56,42,.85)']], units: [[116.3, 33.45, '원술 3만', '#DDBE52']] };
+
+  var S = [
+    { g: '시작', id: 'S01', name: '타이틀', note: '<b>이어하기</b>를 가장 크게. 마지막 자동 저장의 날짜와 도시를 보여줘서 한 번에 돌아가게 한다.',
+      canvas: ['ink', { seed: 3, base: '#191813' }],
+      html: '<div class="abs" style="left:var(--sa);top:56px"><div style="font-family:var(--font-hanja);font-weight:900;font-size:86px;line-height:.95;letter-spacing:.04em">三國</div><div class="disp" style="font-size:22px;margin-top:10px">삼국 <span class="dim" style="font-size:14px">가제</span></div><div class="dim" style="font-size:12px;margin-top:4px">나관중 『삼국지연의』에 기초한 전략 시뮬레이션</div></div>' +
+        '<div class="abs" style="right:var(--sa);top:50px;width:290px;display:grid;gap:8px">' +
+        '<div class="btn pri" style="height:64px;justify-content:space-between;padding:0 18px"><span style="font-size:17px" class="disp">이어하기</span><span style="font-size:11px;font-weight:500;text-align:right;line-height:1.3">유비 · 흥평 원년 12월<br>하비 · 3분 전 자동 저장</span></div>' +
+        '<div class="btn" style="justify-content:flex-start"><span class="disp" style="font-size:16px">새 게임</span></div><div class="btn" style="justify-content:flex-start"><span class="disp" style="font-size:16px">불러오기</span></div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="btn"><span class="disp" style="font-size:15px">연대기</span></div><div class="btn"><span class="disp" style="font-size:15px">설정</span></div></div></div>' +
+        '<div class="abs dim" style="left:var(--sa);bottom:14px;font-size:10px">v0.1 · 무장 120명 · 시나리오 6</div>' },
+
+    { g: '시작', id: 'S02', name: '시나리오 선택', note: '왼쪽 연표에서 고르면 오른쪽 지도가 <b>그 해의 세력도</b>로 바뀐다. 세력 수와 추천 군주를 함께 보여준다.',
+      canvas: ['map', { K: 15, lon: 111, lat: 32.5, dx: 140, dim: 0 }],
+      html: '<div class="abs" style="left:0;top:0;bottom:0;width:330px;padding:16px 16px 16px var(--sa);background:var(--g-lacquer);border-right:1px solid var(--g-gold-dim);display:grid;gap:5px;align-content:start">' +
+        '<div class="lbl" style="margin-bottom:4px"><span>시나리오</span><span>6개</span></div>' +
+        [['184','황건적의 난','영웅들의 시작'],['190','반동탁 연합','열여덟 제후가 낙양으로'],['194','군웅할거','서주를 둘러싼 각축',1],['200','관도대전','조조 대 원소'],['208','적벽대전','손유 연합의 화공'],['219','삼국정립','관우, 형주에서 북상']].map(function (s) {
+          return '<div style="display:grid;grid-template-columns:44px 1fr;gap:8px;align-items:center;height:44px;padding:0 10px;border-radius:3px;' + (s[3] ? 'background:var(--g-lacquer-3);box-shadow:inset 3px 0 0 var(--g-gold)' : '') + '"><span class="num" style="font-weight:600;color:' + (s[3] ? 'var(--g-gold)' : 'var(--g-text-dim)') + '">' + s[0] + '</span><span><span class="disp" style="font-size:15px">' + s[1] + '</span><br><span class="dim" style="font-size:10.5px">' + s[2] + '</span></span></div>';
+        }).join('') + '</div>' +
+        '<div class="abs" style="right:var(--sa);top:16px;width:250px;padding:12px 14px;background:var(--g-lacquer);border:1px solid var(--g-gold-dim);border-radius:4px"><div class="disp" style="font-size:20px">194 · 군웅할거</div><p class="dim" style="font-size:11.5px;margin-top:4px">도겸이 죽고 서주가 비었다. 연주에서는 여포가 조조의 근거지를 노린다.</p><div class="lbl" style="margin-top:8px"><span>세력 12</span><span>도시 46</span></div></div>' +
+        '<div class="abs btn pri" style="right:var(--sa);bottom:14px;width:160px;height:52px;font-size:14px">군주 선택 →</div>' },
+
+    { g: '시작', id: 'S03', name: '군주 선택', note: '난이도를 별 대신 <b>말로</b> 적는다(쉬움·보통·어려움). 연의 팬이 이 군주로 무엇을 할 수 있는지 한 줄로 알려준다.',
+      canvas: ['ink', { seed: 9, base: '#171612' }],
+      html: '<div class="abs" style="left:var(--sa);top:16px;right:var(--sa);display:flex;justify-content:space-between;align-items:baseline"><span class="disp" style="font-size:20px">군주를 고르십시오</span><span class="dim" style="font-size:11px">194 · 군웅할거 · 옆으로 밀어 더 보기</span></div>' +
+        '<div class="abs" style="left:var(--sa);top:52px;display:flex;gap:10px">' +
+        [['劉','유비','liu','어려움',1],['曹','조조','cao','보통'],['袁','원소','yshao','쉬움'],['袁','원술','yshu','보통'],['呂','여포','lubu','어려움']].map(function (r) {
+          return '<div style="width:112px;height:230px;border:1px solid ' + (r[4] ? 'var(--g-gold)' : 'var(--g-gold-dim)') + ';border-radius:4px;overflow:hidden;display:grid;grid-template-rows:1fr auto;' + (r[4] ? 'box-shadow:0 0 0 2px var(--g-gold)' : 'opacity:.8') + '"><div class="portrait" style="--fc:' + FC[r[2]] + '"><div class="s" style="width:58px;height:58px;font-size:32px">' + r[0] + '</div></div><div style="padding:8px 10px;background:var(--g-lacquer-solid)"><div class="disp" style="font-size:17px">' + r[1] + '</div><div class="dim" style="font-size:10.5px">' + r[3] + '</div></div></div>';
+        }).join('') + '</div>' +
+        '<div class="abs" style="right:var(--sa);top:52px;width:186px;display:grid;gap:8px;font-size:11.5px"><div class="disp" style="font-size:22px">유비 현덕</div><div class="dim">도시 3 · 무장 9 · 병력 3.1만</div><p style="font-size:11.5px">관우·장비와 함께 서주를 막 물려받았다. 사방이 강적이다. 인덕으로 인재를 모아 버텨라.</p><div class="lbl"><span>주요 무장</span></div><div class="offs">' + ['關','張','簡','孫','糜','陳'].map(function (h) { return sl(h, 'liu'); }).join('') + '</div></div>' +
+        '<div class="abs btn pri" style="right:var(--sa);bottom:14px;width:186px;height:52px;font-size:14px">이 군주로 시작</div>' },
+
+    { g: '전략', id: 'S04', name: '메인 맵', note: '지도가 화면의 80%. 진류를 <b>길게 누르면</b> 엿보기 카드가 뜬다. 붉은 화살표는 위협, 아래 칩은 이번 달 할 일.',
+      canvas: ['map', MAINMAP],
+      html: top() + rail() +
+        '<div class="peek" style="left:110px;top:198px"><div class="t">진류 <span class="dim" style="font-size:11px">조조 · 태수 하후돈</span></div><div class="rows"><span>병력</span><span>21,000</span><span>병량</span><span>12,300</span><span>민심</span><span>58</span><span>관계</span><span style="color:var(--g-warn)">중립 41</span></div></div>' +
+        '<div class="todo"><span class="chip"><i></i>명령 대기 도시 2</span><span class="chip bad"><i></i>원술군 접근</span><span class="chip"><i></i>장비 불만</span></div>' +
+        '<div class="endturn"><div><b>다음 달</b><span>남은 명령 5</span></div></div>' },
+
+    { g: '전략', id: 'S05', name: '도시 시트', note: '도시를 누르면 오른쪽에서 시트가 나온다. 지도는 왼쪽에 보이는 채로 남는다. <b>위임</b> 스위치로 후방 도시는 AI에게 맡긴다.',
+      canvas: ['map', Object.assign({}, MAINMAP, { dx: -170, dim: .15 })],
+      html: top() + rail() +
+        '<div class="sheet"><span class="grab"></span><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="crumb">서주 · 하비군</div><div class="ttl">하비 <small>下邳</small></div><div class="dim" style="font-size:11px;margin-top:2px">태수 유비 · 군사 진등</div></div><div style="display:flex;align-items:center;gap:6px;font-size:11px" class="dim">내정 위임<span class="toggle"></span></div></div>' +
+        '<div class="trio"><div><span>병력</span><b>18,000</b></div><div><span>병량</span><b>9,400</b></div><div><span>금</span><b>860</b></div></div>' +
+        '<div style="display:grid;gap:5px"><div class="bar"><span>민심</span><span class="trk"><i class="g" style="width:72%"></i></span><span>72</span></div><div class="bar"><span>치안</span><span class="trk"><i class="w" style="width:41%"></i></span><span>41 ▼</span></div><div class="bar"><span>농업</span><span class="trk"><i style="width:46%"></i></span><span>410/900</span></div><div class="bar"><span>성벽</span><span class="trk"><i style="width:68%"></i></span><span>680/1000</span></div></div>' +
+        '<div class="lbl"><span>무장 7</span><span>행동 가능 5</span></div><div class="offs">' + [['劉','유비'],['關','관우'],['張','장비'],['簡','간옹',1],['孫','손건'],['糜','미축',1],['陳','진등']].map(function (o) { return '<span class="off' + (o[2] ? ' done' : '') + '"><i>' + o[0] + '</i>' + o[1] + '</span>'; }).join('') + '</div>' + cmds('政') + '</div>' },
+
+    { g: '전략', id: 'S06', name: '명령 → 장수 선택', note: '세 번째 탭. 장수마다 <b>예상 효과</b>를 미리 보여주고 가장 나은 장수에 추천 표시를 한다. 경로를 눌러 한 단계 뒤로 간다.',
+      canvas: ['map', Object.assign({}, MAINMAP, { dx: -170, dim: .15 })],
+      html: top() + rail() +
+        '<div class="sheet"><span class="grab"></span><div class="crumb">하비 › 내정 › <b>개간</b></div><div class="ttl" style="font-size:22px">누구에게 맡기겠습니까</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 46px 60px;font-size:10px;color:var(--g-text-dim);padding:0 8px"><span>무장</span><span style="text-align:right">정치 ▼</span><span style="text-align:right">농업</span></div>' +
+        '<div style="display:grid;gap:3px">' + [['糜','미축',88,'+31',1],['陳','진등',84,'+29'],['孫','손건',74,'+24'],['劉','유비',73,'+24'],['簡','간옹',70,'+22']].map(function (o) {
+          return '<div style="display:grid;grid-template-columns:1fr 46px 60px;align-items:center;height:44px;padding:0 8px;border-radius:3px;background:' + (o[4] ? 'var(--g-lacquer-3);box-shadow:inset 3px 0 0 var(--g-gold)' : 'var(--g-lacquer-2)') + '"><span style="display:flex;align-items:center;gap:8px">' + sl(o[0], 'liu', 26) + '<span>' + o[1] + (o[4] ? ' <span style="font-size:10px;color:var(--g-ink);background:var(--g-gold);padding:1px 5px;border-radius:2px;margin-left:4px">추천</span>' : '') + '</span></span><span class="num" style="text-align:right">' + o[2] + '</span><span class="num" style="text-align:right;color:var(--g-good);font-weight:600">' + o[3] + '</span></div>';
+        }).join('') + '</div>' +
+        '<div class="btn pri" style="margin-top:auto;height:50px">미축에게 맡긴다 · 금 50</div></div>' },
+
+    { g: '전략', id: 'S07', name: '턴 시작 보고', note: '긴급·중요만 모달로 보여준다. 정보 등급은 접혀 있다. 긴급 항목의 버튼은 <b>그 장소로 바로 이동</b>한다.',
+      canvas: ['map', Object.assign({}, MAINMAP, { dim: .1 })],
+      html: top({ y: '2년 1월', s: '195년 · 봄' }) + '<div class="scrim"></div>' +
+        '<div class="modal" style="width:540px;padding:18px 20px;display:grid;gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="disp" style="font-size:22px">흥평 2년 정월</span><span class="dim" style="font-size:11px">봄 · 세금 +620 금</span></div>' +
+        '<div style="display:grid;grid-template-columns:4px 1fr auto;gap:12px;align-items:center;background:var(--g-lacquer-2);padding:10px 12px 10px 0;border-radius:3px"><i style="background:var(--g-bad);align-self:stretch"></i><span><b style="color:var(--g-bad);font-size:10.5px;letter-spacing:.1em">긴급</b><br>원술군 3만이 우이를 나섰다. 하비까지 약 2개월.</span><span class="btn sm red">우이 보기</span></div>' +
+        '<div style="display:grid;grid-template-columns:4px 1fr auto;gap:12px;align-items:center;background:var(--g-lacquer-2);padding:10px 12px 10px 0;border-radius:3px"><i style="background:var(--g-warn);align-self:stretch"></i><span><b style="color:var(--g-warn);font-size:10.5px;letter-spacing:.1em">중요</b><br>장비가 술을 끊으라는 명에 불만이다. 충성 68 ▼</span><span class="btn sm">장비 보기</span></div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center"><span class="dim" style="font-size:11.5px">정보 5건: 내정 결과 3 · 인재 발견 1 · 외교 1 ▾</span><span class="btn pri" style="width:120px">확인</span></div></div>' },
+
+    { g: '전략', id: 'S08', name: '무장 목록', note: '머리글을 누르면 정렬된다. 위 탭은 도시별 거르기. 한 줄 44pt, 숫자는 막대와 함께 써서 <b>스프레드시트처럼 보이지 않게</b> 한다.',
+      canvas: null,
+      html: top() + '<div class="abs" style="left:var(--sa);right:var(--sa);top:50px;bottom:0;display:grid;grid-template-rows:auto auto 1fr;gap:6px">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center"><div class="tabs" style="border:0"><span class="on">전체 9</span><span>하비 7</span><span>소패 1</span><span>팽성 1</span><span>재야 2</span><span>포로 0</span></div><span class="seg"><span>통솔</span><span class="on">무력</span><span>지력</span><span>정치</span></span></div>' +
+        '<div style="display:grid;grid-template-columns:150px 64px repeat(5, 1fr) 54px 72px;gap:10px;font-size:10px;color:var(--g-text-dim);padding:0 10px"><span>무장</span><span>도시</span><span>통솔</span><span style="color:var(--g-gold)">무력 ▼</span><span>지력</span><span>정치</span><span>매력</span><span>충성</span><span>임무</span></div>' +
+        '<div style="display:grid;gap:3px;align-content:start;overflow:hidden">' +
+        [['張','장비','익덕','하비',[85,98,30,22,45],68,'대기'],['關','관우','운장','하비',[95,97,75,62,93],100,'훈련'],['劉','유비','현덕','하비',[75,73,74,78,99],100,'군주'],['陳','진등','원룡','하비',[72,58,82,84,70],77,'대기'],['孫','손건','공우','소패',[40,32,70,74,82],95,'외교'],['糜','미축','자중','하비',[30,26,66,88,80],92,'개간']].map(function (o, i) {
+          return '<div style="display:grid;grid-template-columns:150px 64px repeat(5, 1fr) 54px 72px;gap:10px;align-items:center;height:44px;padding:0 10px;background:' + (i % 2 ? 'transparent' : 'var(--g-lacquer-2)') + ';border-radius:3px"><span style="display:flex;align-items:center;gap:8px">' + sl(o[0], 'liu', 28) + '<span><span class="disp" style="font-size:15px">' + o[1] + '</span> <span class="dim" style="font-size:10.5px">' + o[2] + '</span></span></span><span class="dim">' + o[3] + '</span>' +
+            o[4].map(function (v, j) { return '<span style="display:grid;gap:2px"><span class="num" style="font-weight:600;font-size:12.5px;' + (v >= 90 ? 'color:var(--g-gold)' : '') + '">' + v + '</span><span class="trk" style="height:3px"><i style="width:' + v + '%;' + (j === 1 ? '' : 'opacity:.55') + '"></i></span></span>'; }).join('') +
+            '<span class="num" style="color:' + (o[5] < 70 ? 'var(--g-bad)' : 'var(--g-text)') + '">' + o[5] + (o[5] < 70 ? ' ▼' : '') + '</span><span class="dim" style="font-size:11.5px">' + o[6] + '</span></div>';
+        }).join('') + '</div></div>' },
+
+    { g: '전략', id: 'S09', name: '무장 상세', note: '왼쪽은 초상(주요 무장은 전신 일러스트), 가운데는 능력, 오른쪽은 <b>열전·관계·이번 판 행적</b> 탭. 열전은 연의 내용을 우리 말로 새로 쓴다.',
+      canvas: null,
+      html: '<div class="abs portrait" style="--fc:#3E7D5A;left:0;top:0;bottom:0;width:250px"><div class="s" style="width:110px;height:110px;font-size:62px">關</div><div class="abs dim" style="bottom:16px;left:var(--sa);right:16px;font-size:11px;color:rgba(238,232,215,.75)">애병 · 청룡언월도<br>애마 · 적토마 (200년 이후)</div><div class="abs" style="left:var(--sa);top:14px;width:36px;height:30px;border:1px solid rgba(238,232,215,.4);border-radius:3px;display:grid;place-items:center;font-size:14px">←</div></div>' +
+        '<div class="abs" style="left:268px;top:16px;width:236px;display:grid;gap:8px"><div><div class="disp" style="font-size:30px;line-height:1">관우 <span style="font-size:16px" class="dim">운장</span></div><div style="font-family:var(--font-hanja);font-weight:600;color:var(--g-gold);font-size:13px;margin-top:2px">關羽 雲長 · 하동 해현</div><div class="dim" style="font-size:11px;margin-top:2px">유비군 · 하비 · 34세 · 충성 100</div></div>' +
+        '<div style="display:grid;gap:5px">' + [['통솔',95],['무력',97],['지력',75],['정치',62],['매력',93]].map(function (s) { return '<div class="bar" style="grid-template-columns:30px 1fr 26px"><span>' + s[0] + '</span><span class="trk"><i style="width:' + s[1] + '%"></i></span><span style="font-weight:600;' + (s[1] >= 90 ? 'color:var(--g-gold)' : '') + '">' + s[1] + '</span></div>'; }).join('') + '</div>' +
+        '<div class="offs">' + ['위압', '일기', '수전', '기병 S'].map(function (t) { return '<span style="font-size:11px;border:1px solid var(--g-gold-dim);padding:2px 8px;border-radius:2px">' + t + '</span>'; }).join('') + '</div></div>' +
+        '<div class="abs" style="left:524px;right:var(--sa);top:10px;bottom:68px;display:grid;grid-template-rows:auto 1fr;gap:8px"><div class="tabs"><span class="on">열전</span><span>관계</span><span>행적</span></div><div style="font-size:12.5px;line-height:1.65"><p>도원에서 유비·장비와 형제의 의를 맺었다. 반동탁 연합 때 화웅의 목을 베고 돌아왔는데, 조조가 따라 둔 술이 아직 식지 않았다고 한다.</p><p class="dim" style="margin-top:6px;font-size:11.5px">관계 · 유비, 장비(의형제) · 조조(은혜)</p></div></div>' +
+        '<div class="abs" style="right:var(--sa);bottom:14px;display:flex;gap:6px"><span class="btn">이동</span><span class="btn">포상</span><span class="btn pri" style="width:110px">임무 주기</span></div>' },
+
+    { g: '전략', id: 'S10', name: '외교', note: '각 세력과의 <b>우호도와 그 이유</b>를 보여준다. AI가 과거 일을 기억하므로 기록을 함께 띄운다. 성공률은 숫자로 미리 공개.',
+      canvas: ['map', { K: 30, lon: 115.5, lat: 34.5, dx: -150, dim: .25 }],
+      html: top() + '<div class="sheet" style="width:430px"><span class="grab"></span><div class="crumb">외교 · 상대 11개 세력</div>' +
+        '<div style="display:grid;gap:3px">' + [['袁','원술','yshu',12,'적대',1],['曹','조조','cao',41,'중립'],['呂','여포','lubu',55,'우호'],['袁','원소','yshao',48,'중립'],['劉','유표','liubiao',50,'중립']].map(function (f) {
+          return '<div style="display:grid;grid-template-columns:auto 1fr 90px 44px;gap:10px;align-items:center;height:44px;padding:0 8px;border-radius:3px;background:' + (f[5] ? 'var(--g-lacquer-3);box-shadow:inset 3px 0 0 var(--g-gold)' : 'var(--g-lacquer-2)') + '">' + sl(f[0], f[2], 26) + '<span class="disp" style="font-size:15px">' + f[1] + '</span><span class="trk"><i class="' + (f[3] < 30 ? 'b' : f[3] > 50 ? 'g' : 'w') + '" style="width:' + f[3] + '%"></i></span><span class="num" style="text-align:right;font-size:11.5px">' + f[3] + '</span></div>';
+        }).join('') + '</div>' +
+        '<div style="background:var(--g-lacquer-2);border-radius:3px;padding:8px 10px;font-size:11.5px;display:grid;gap:3px"><span class="lbl"><span>원술이 기억하는 일</span></span><span>· 194년 서주목을 두고 다툼 <b style="color:var(--g-bad)">−20</b></span><span>· 원소와 유비의 친선 <b style="color:var(--g-bad)">−8</b></span></div>' +
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:auto"><span class="btn sm" style="flex-direction:column;height:48px;gap:0">친선<span class="dim" style="font-size:10px">금 300 · 72%</span></span><span class="btn sm" style="flex-direction:column;height:48px;gap:0">정전<span class="dim" style="font-size:10px">성공 18%</span></span><span class="btn sm" style="flex-direction:column;height:48px;gap:0;opacity:.4">동맹<span class="dim" style="font-size:10px">우호 60 필요</span></span></div></div>' },
+
+    { g: '전략', id: 'S11', name: '이벤트 대화', note: '연의 사건은 지도를 내려놓고 장면으로 보여준다. 오른쪽 위에 <b>자동·건너뛰기·기록</b>. 선택지는 오른쪽 엄지 위치.',
+      canvas: ['ink', { seed: 21, base: '#1A1814' }],
+      html: '<div class="abs portrait" style="--fc:#5a5a4c;left:var(--sa);top:40px;width:170px;height:230px;border:1px solid var(--g-gold-dim)"><div class="s" style="width:76px;height:76px;font-size:42px">陶</div><div class="abs dim" style="bottom:8px;left:0;right:0;text-align:center;font-size:10.5px">도겸 공조 · 서주목</div></div>' +
+        '<div class="abs" style="right:var(--sa);top:12px;display:flex;gap:5px"><span class="btn sm">자동</span><span class="btn sm">기록</span><span class="btn sm">건너뛰기</span></div>' +
+        '<div class="abs" style="left:var(--sa);right:var(--sa);bottom:14px;height:112px;background:var(--g-lacquer);border:1px solid var(--g-gold-dim);border-radius:4px;padding:12px 16px 12px 16px;display:grid;grid-template-columns:1fr 230px;gap:16px"><div><div style="font-size:11px;color:var(--g-gold);letter-spacing:.08em">도겸</div><div class="disp" style="font-size:18px;line-height:1.5;margin-top:3px">“이 늙은이가 죽으면 서주를 지킬 사람은 현덕공뿐이오. 부디 사양하지 마시오.”</div></div>' +
+        '<div style="display:grid;gap:6px;align-content:center"><span class="btn pri" style="height:40px">서주를 맡는다</span><span class="btn" style="height:40px">다시 사양한다 (2/3)</span></div></div>' },
+
+    { g: '전투', id: 'S12', name: '출진 편성 · 전투 예측', note: '부대를 고르면 오른쪽 <b>예측</b>이 바로 바뀐다. 군사의 조언은 지력이 높을수록 정확하다. 출진 버튼은 오른쪽 아래.',
+      canvas: ['map', { K: 70, lon: 117.2, lat: 33.4, dx: -60, sel: '수춘', arrows: [[[118.0, 34.3], [116.9, 32.75], 'rgba(62,125,90,.9)']], dim: .35 }],
+      html: top() + '<div class="abs" style="left:var(--sa);top:52px;width:330px;bottom:14px;background:var(--g-lacquer);border:1px solid var(--g-gold-dim);border-radius:4px;padding:12px;display:grid;gap:6px;align-content:start"><div class="crumb">하비 → <b>수춘</b> · 행군 2개월</div><div class="lbl"><span>부대 3/5</span><span>병량 6,000 · 4개월분</span></div>' +
+        [['關','관우','주장','기병',6000],['張','장비','','보병',5000],['陳','진등','군사','궁병',3000]].map(function (u) {
+          return '<div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:9px;align-items:center;height:46px;padding:0 9px;background:var(--g-lacquer-2);border-radius:3px">' + sl(u[0], 'liu', 30) + '<span><span class="disp" style="font-size:15px">' + u[1] + '</span> ' + (u[2] ? '<span style="font-size:10px;color:var(--g-gold)">' + u[2] + '</span>' : '') + '<br><span class="dim" style="font-size:10.5px">' + u[3] + '</span></span><span class="num" style="font-weight:600">' + u[4].toLocaleString() + '</span><span class="dim" style="font-size:16px">⋮</span></div>';
+        }).join('') + '<div style="height:40px;border:1px dashed var(--g-gold-dim);border-radius:3px;display:grid;place-items:center;font-size:12px" class="dim">+ 부대 추가</div></div>' +
+        '<div class="abs" style="right:var(--sa);top:52px;width:250px;background:var(--g-lacquer);border:1px solid var(--g-gold-dim);border-radius:4px;padding:12px 14px;display:grid;gap:7px"><div class="lbl"><span>전투 예측</span><span>상대 기령 2.2만</span></div><div style="display:flex;align-items:baseline;gap:8px"><span class="disp" style="font-size:36px;line-height:1;color:var(--g-good)">58%</span><span class="dim" style="font-size:11px">예상 승률</span></div>' +
+        '<div style="display:grid;grid-template-columns:1fr auto;font-size:11.5px;gap:2px" class="num"><span class="dim">아군 피해</span><span>−4,100</span><span class="dim">적군 피해</span><span>−7,800</span><span class="dim">병량 유지</span><span>4개월</span></div>' +
+        '<div style="border-top:1px solid var(--g-gold-dim);padding-top:7px;display:flex;gap:8px;font-size:11.5px">' + sl('陳', 'liu', 24) + '<span>“회수가 불어나는 여름 전에 건너셔야 합니다.”</span></div></div>' +
+        '<div class="endturn" style="width:150px"><div><b>출진</b><span>되돌릴 수 없음</span></div></div>' },
+
+    { g: '전투', id: 'S13', name: '전투 HUD (일시정지)', note: '일시정지 상태에서 명령을 넣는다. 부대 선택 → <b>오른쪽 아래 다섯 인장</b>. 파랑=이동 범위, 빨강=공격 대상, 보라=계략 범위(설계노트 17-4), 주황=불. 왼쪽 아래는 부대 목록과 일시정지.',
+      canvas: ['battle', { units: [[6, 5, '關', '#3E7D5A', .92, 0, 1], [5, 7, '張', '#3E7D5A', .8, 0], [3, 6, '陳', '#3E7D5A', .95, 0], [11, 4, '紀', '#DDBE52', .7, 1], [12, 7, '雷', '#DDBE52', .55, 1], [15, 5, '陳', '#DDBE52', .9, 1]],
+        move: [[7,4],[7,5],[8,4],[8,5],[7,6],[6,4],[5,4],[6,6],[8,6],[9,5],[9,4],[8,3],[7,3]], atk: [[11,4]], plot: [[13,6],[13,7],[12,7],[14,7]], path: [[6,5],[7,5],[8,5],[9,4],[10,4]], fire: [[12,8]] }],
+      html: '<div class="abs" style="left:var(--sa);top:10px;width:250px;background:var(--g-lacquer);border:1px solid var(--g-gold-dim);border-radius:4px;padding:7px 10px;display:grid;gap:4px;font-size:10.5px"><div style="display:flex;justify-content:space-between"><span style="color:var(--g-good)">유비군 13,500</span><span style="color:var(--g-warn)">원술군 15,200</span></div><div style="display:flex;height:6px"><i style="flex:13.5;background:var(--f-liu)"></i><i style="flex:15.2;background:var(--f-yshu)"></i></div><div class="dim" style="display:flex;justify-content:space-between"><span>사기 86</span><span>병량 3개월</span><span>사기 64</span></div></div>' +
+        '<div class="abs" style="left:50%;top:10px;transform:translateX(-50%);display:flex;align-items:center;gap:6px"><span style="background:var(--g-cinnabar);color:#F6EEDC;padding:5px 12px;border-radius:3px;font-size:11.5px;font-weight:600">일시정지 · 명령 입력</span><span class="btn sm">▶</span><span class="btn sm">▶▶</span><span class="dim" style="font-size:10.5px;background:var(--g-lacquer);padding:5px 8px;border-radius:3px">맑음 · 동남풍</span></div>' +
+        '<div class="abs" style="right:var(--sa);top:10px;width:212px;background:var(--g-lacquer);border:1px solid var(--g-gold);border-radius:4px;padding:8px 10px;display:grid;gap:3px;font-size:11px"><div style="display:flex;align-items:center;gap:8px">' + sl('關', 'liu', 30) + '<span><span class="disp" style="font-size:16px">관우</span> <span class="dim">기병</span><br><span class="num">5,520 / 6,000 · 사기 92</span></span></div><div class="dim">→ 기령 부대 공격 시 예상 피해 <b style="color:var(--g-text)">−1,240</b> / 반격 −380</div></div>' +
+        '<div class="abs" style="left:var(--sa);bottom:12px;display:flex;gap:6px;align-items:flex-end"><div class="sbtn" style="width:56px;height:56px;border-color:var(--g-cinnabar)"><b>止</b><span>정지 중</span></div>' +
+        [['關',.92,1],['張',.8],['陳',.95]].map(function (u) { return '<div style="width:46px;height:56px;background:var(--g-lacquer);border:1px solid ' + (u[2] ? 'var(--g-gold)' : 'var(--g-gold-dim)') + ';border-radius:4px;display:grid;place-items:center;align-content:center;gap:4px">' + sl(u[0], 'liu', 26) + '<span class="trk" style="width:32px;height:3px"><i class="g" style="width:' + u[1] * 100 + '%"></i></span></div>'; }).join('') + '</div>' +
+        '<div class="abs" style="right:var(--sa);bottom:12px;display:flex;gap:5px">' + [['移','이동'],['攻','공격',1],['計','계략'],['守','대기'],['退','퇴각']].map(function (c) { return '<div class="sbtn' + (c[2] ? ' on' : '') + '" style="width:54px;height:58px' + (c[2] ? ';background:var(--g-cinnabar);border-color:var(--g-cinnabar)' : '') + '"><b style="font-size:20px">' + c[0] + '</b><span' + (c[2] ? ' style="color:#F6EEDC"' : '') + '>' + c[1] + '</span></div>'; }).join('') + '</div>' },
+
+    { g: '전투', id: 'S14', name: '일기토', note: '대각선으로 화면을 가른다. 매 합마다 <b>네 가지 선택</b>과 그 성공률을 보여준다. 연의에서 관우는 기령과 30합을 겨뤘다.',
+      canvas: ['ink', { seed: 33, base: '#14130F', split: ['#3E7D5A', '#DDBE52'] }],
+      html: '<div class="abs" style="left:var(--sa);top:22px;display:flex;gap:12px;align-items:center"><div class="portrait" style="--fc:#3E7D5A;width:92px;height:116px;border:1px solid rgba(238,232,215,.5)"><div class="s" style="width:56px;height:56px;font-size:32px">關</div></div><div><div class="disp" style="font-size:28px">관우</div><div class="dim" style="font-size:11px">무력 97 · 청룡언월도</div><div style="margin-top:6px;width:150px" class="trk"><i class="g" style="width:84%"></i></div><div class="num" style="font-size:10.5px;margin-top:2px">기세 84</div></div></div>' +
+        '<div class="abs" style="right:var(--sa);top:22px;display:flex;gap:12px;align-items:center;flex-direction:row-reverse;text-align:right"><div class="portrait" style="--fc:#DDBE52;width:92px;height:116px;border:1px solid rgba(238,232,215,.5)"><div class="s" style="width:56px;height:56px;font-size:32px">紀</div></div><div><div class="disp" style="font-size:28px">기령</div><div class="dim" style="font-size:11px">무력 82 · 삼첨도</div><div style="margin-top:6px;width:150px;margin-left:auto" class="trk"><i class="b" style="width:58%;left:auto;right:0"></i></div><div class="num" style="font-size:10.5px;margin-top:2px">기세 58</div></div></div>' +
+        '<div class="abs" style="left:50%;top:40px;transform:translateX(-50%);text-align:center"><div style="font-family:var(--font-hanja);font-weight:900;font-size:44px;line-height:1">一騎</div><div class="dim num" style="font-size:12px;margin-top:4px">제 3합 / 5합</div></div>' +
+        '<div class="abs disp" style="left:50%;top:176px;transform:translateX(-50%);width:440px;text-align:center;font-size:17px;background:var(--g-lacquer);padding:8px 14px;border-radius:4px">기령: “삼십 합을 겨루고도 아직 쓰러지지 않다니!”</div>' +
+        '<div class="abs" style="left:var(--sa);right:var(--sa);bottom:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px">' + [['攻','공격','적중 72%'],['必','필살','적중 34% · 기세 −20',1],['防','방어','반격 대기'],['走','물러남','사기 −15']].map(function (c) { return '<div class="btn" style="height:62px;flex-direction:column;gap:0;' + (c[3] ? 'border-color:var(--g-gold);background:var(--g-lacquer-3)' : '') + '"><span style="font-family:var(--font-hanja);font-weight:900;font-size:19px">' + c[0] + ' <span class="disp" style="font-family:var(--font-display);font-weight:400;font-size:15px">' + c[1] + '</span></span><span class="dim" style="font-size:10.5px">' + c[2] + '</span></div>'; }).join('') + '</div>' },
+
+    { g: '전투', id: 'S15', name: '전투 결과', note: '승패 인장을 크게 찍고, 공을 세운 무장과 포로를 보여준다. 이 전투가 <b>연대기에 어떤 문장으로 남는지</b> 미리 보여준다.',
+      canvas: ['battle', { units: [[10, 4, '關', '#3E7D5A', .85, 0], [11, 6, '張', '#3E7D5A', .7, 0]], dim: .6 }],
+      html: '<div class="abs" style="left:var(--sa);top:28px;width:150px;height:150px;border:5px solid var(--g-cinnabar);color:var(--g-cinnabar);display:grid;place-items:center;font-family:var(--font-hanja);font-weight:900;font-size:96px;transform:rotate(-6deg);border-radius:8px;background:rgba(19,18,15,.6)">勝</div>' +
+        '<div class="abs" style="left:240px;top:24px;right:var(--sa);display:grid;gap:10px"><div class="disp" style="font-size:26px">회수 남쪽 싸움 · 승리</div>' +
+        '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--g-gold-dim);border:1px solid var(--g-gold-dim)" class="num">' + [['아군 손실', '3,620'], ['적군 손실', '8,940'], ['포로', '무장 1 · 병 2,100'], ['획득', '병량 3,200 · 금 400']].map(function (s) { return '<div style="background:var(--g-lacquer-solid);padding:7px 10px;display:grid"><span class="dim" style="font-size:10px">' + s[0] + '</span><b style="font-size:13.5px">' + s[1] + '</b></div>'; }).join('') + '</div>' +
+        '<div style="display:flex;gap:10px;align-items:center;background:var(--g-lacquer);padding:8px 10px;border-radius:3px">' + sl('關', 'liu', 34) + '<span><span style="font-size:10px;color:var(--g-gold);letter-spacing:.1em">으뜸 공</span><br><span class="disp" style="font-size:16px">관우</span> <span class="dim" style="font-size:11px">일기토 승리 · 적 4,100 격파 · 공적 +120</span></span></div>' +
+        '<div style="border-left:2px solid var(--g-gold);padding:4px 12px;font-family:var(--font-display);font-size:15px">「흥평 2년 여름, 관우가 회수 남쪽에서 기령을 꺾으니 원술의 군세가 크게 꺾였다.」</div></div>' +
+        '<div class="abs" style="right:var(--sa);bottom:14px;display:flex;gap:6px"><span class="btn">포로 처리</span><span class="btn pri" style="width:120px">계속</span></div>' },
+
+    { g: '연출', id: 'S32', name: '명장 사망', note: '게임에서 가장 무거운 순간. 색을 빼고 소리를 줄인다. <b>건너뛰기 버튼을 2초 동안 숨겨서</b> 실수로 넘기지 않게 한다. 군주와 의형제의 반응이 이어진다.',
+      canvas: ['ink', { seed: 51, base: '#0E0E0C' }],
+      html: '<div class="abs" style="inset:0;background:rgba(0,0,0,.35)"></div>' +
+        '<div class="abs portrait" style="--fc:#3a3a36;left:var(--sa);top:34px;width:200px;height:250px;filter:grayscale(1) contrast(1.1);border:1px solid rgba(238,232,215,.25)"><div class="s" style="width:96px;height:96px;font-size:54px">關</div></div>' +
+        '<div class="abs" style="left:290px;top:30px;writing-mode:vertical-rl;font-family:var(--font-hanja);font-weight:900;font-size:40px;letter-spacing:.2em;line-height:1.1;color:#EEE8D7">關羽 雲長</div>' +
+        '<div class="abs" style="left:380px;top:44px;right:var(--sa);display:grid;gap:10px"><div class="dim" style="font-size:11px;letter-spacing:.12em">건안 24년 12월 · 맥성</div><div class="disp" style="font-size:24px;line-height:1.45">관우가 맥성을 나서다 사로잡혀, 끝내 항복하지 않고 세상을 떠났다.</div><div style="display:flex;gap:10px;align-items:center;margin-top:8px">' + sl('劉', 'liu', 32) + '<span class="disp" style="font-size:16px">유비: “운장이 없는 천하를 얻어 무엇 하겠느냐…”</span></div></div>' +
+        '<div class="abs dim" style="right:var(--sa);bottom:16px;font-size:11px">2초 뒤 계속하기가 나타납니다</div>' },
+    { g: '기록', id: 'S16', name: '연대기', note: '게임 속 사건이 <b>역사서 문체</b>로 쌓인다. 역사와 달라진 일은 주사색 〔if〕 표시. 판이 끝나면 나만의 삼국지가 남는다.',
+      canvas: null,
+      html: '<div class="abs" style="inset:0;background:#D8D6C1"></div><div class="abs" style="left:var(--sa);top:14px;right:var(--sa);display:flex;justify-content:space-between;align-items:center;color:var(--g-ink)"><span class="disp" style="font-size:24px">연대기 <span style="font-family:var(--font-hanja);font-weight:600;font-size:14px;color:#7a6a4a">年代記</span></span><span style="display:flex;gap:5px">' + ['전체', '전쟁', '인물', '〔if〕만'].map(function (t, i) { return '<span style="font-size:11.5px;padding:5px 11px;border:1px solid rgba(26,25,22,.25);border-radius:3px;' + (i === 0 ? 'background:#1A1916;color:#EEE8D7' : '') + '">' + t + '</span>'; }).join('') + '</span></div>' +
+        '<div class="abs" style="left:var(--sa);right:var(--sa);top:62px;bottom:10px;display:grid;grid-template-columns:110px 1fr;gap:6px 18px;align-content:start;color:var(--g-ink)">' +
+        [['흥평 원년', '12월', '도겸이 죽으며 서주를 유비에게 맡기니, 유비가 세 번 사양한 끝에 받다.', 0], ['흥평 2년', '1월', '원술이 대군을 일으켜 서주를 치다.', 0], ['흥평 2년', '6월', '관우가 회수 남쪽에서 기령을 꺾으니 원술의 군세가 크게 꺾이다.', 1], ['흥평 2년', '8월', '유비가 여포를 받아들이지 않고 소패의 문을 닫다.', 1]].map(function (e) {
+          return '<div style="border-top:1px solid rgba(26,25,22,.2);padding-top:8px"><div class="disp" style="font-size:16px">' + e[0] + '</div><div style="font-size:11px;color:#6a6350">' + e[1] + '</div></div><div style="border-top:1px solid rgba(26,25,22,.2);padding-top:8px;font-family:var(--font-display);font-size:16px;line-height:1.55">' + (e[3] ? '<span style="color:#A93526;font-family:var(--font-ui);font-size:11px;font-weight:600;margin-right:6px">〔if〕</span>' : '') + e[2] + '</div>';
+        }).join('') + '</div>' },
+
+    { g: '기록', id: 'S17', name: '설정', note: '접근성 옵션을 맨 앞에. 글자 크기, <b>색약 모드(세력에 무늬 추가)</b>, 연출 줄이기. 바꾸면 뒤 화면에 바로 반영된다.',
+      canvas: null,
+      html: '<div class="abs" style="left:0;top:0;bottom:0;width:200px;padding:16px 12px 16px var(--sa);background:var(--g-lacquer-2);display:grid;gap:4px;align-content:start"><div class="disp" style="font-size:22px;margin-bottom:8px">설정</div>' + ['보기 · 접근성', '소리', '게임 진행', '조작', '저장'].map(function (t, i) { return '<div style="height:42px;display:flex;align-items:center;padding:0 10px;border-radius:3px;font-size:13px;' + (i === 0 ? 'background:var(--g-lacquer-3);box-shadow:inset 3px 0 0 var(--g-gold)' : 'color:var(--g-text-dim)') + '">' + t + '</div>'; }).join('') + '</div>' +
+        '<div class="abs" style="left:222px;right:var(--sa);top:14px;bottom:14px;display:grid;gap:2px;align-content:start">' +
+        [['글자 크기', '<span class="seg"><span>작게</span><span class="on">보통</span><span>크게</span></span>'], ['색약 모드', '<span style="display:flex;align-items:center;gap:10px"><span style="display:flex;gap:3px"><i style="width:18px;height:18px;background:repeating-linear-gradient(45deg,#3E7D5A 0 3px,#2c5a40 3px 6px);border-radius:2px"></i><i style="width:18px;height:18px;background:radial-gradient(circle,#1d3a57 1.5px,#2F5D8A 2px) 0 0/6px 6px;border-radius:2px"></i></span><span class="toggle on"></span></span>'], ['연출', '<span class="seg"><span>전부</span><span class="on">명장면만</span><span>끄기</span></span>'], ['한자 병기', '<span class="toggle on"></span>'], ['연호에 서기 함께 표시', '<span class="toggle on"></span>'], ['전투 기본 속도', '<span class="seg"><span>느리게</span><span class="on">보통</span><span>빠르게</span></span>'], ['진동', '<span class="toggle"></span>']].map(function (r) {
+          return '<div style="height:46px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px"><span>' + r[0] + '</span>' + r[1] + '</div>';
+        }).join('') + '</div>' }
+  ];
+
+  var SPECS = [
+    ['S18', '세력 개요판', '내 도시 전부를 한 표로. 병력·병량·민심·담당·위협도로 정렬. 줄을 누르면 지도에서 그 도시로 이동.', [[6,10,88,10],[6,26,88,8],[6,38,88,8],[6,50,88,8],[6,62,88,8]]],
+    ['S19', '인물 관계도', '고른 무장을 가운데 두고 관계를 선으로. 금색 실 = 의형제, 붉은 실 = 원수, 회색 = 주종. 두 손가락으로 확대.', [[44,40,12,20],[14,14,10,16],[76,14,10,16],[14,66,10,16],[76,66,10,16]]],
+    ['S20', '계략', '대상 도시 → 계략 종류 → 실행 무장. 성공률과 들켰을 때의 대가를 함께 보여준다. 유언비어·이간·내응·매수.', [[56,0,44,100],[60,12,36,8],[60,26,36,8],[60,40,36,8],[60,80,36,14]]],
+    ['S21', '인재 탐색 · 등용', '탐색 결과 카드를 뒤집어 공개하는 연출. 등용은 설득 대사와 성공률. 와룡·봉추 같은 재야 명사는 특별 연출.', [[10,16,24,68],[38,16,24,68],[66,16,24,68]]],
+    ['S22', '포로 처리', '포로 카드 한 장씩: 등용 / 석방 / 처형. 처형은 확인 모달과 명성 변화 경고. 한 번에 여러 명이면 넘기기.', [[30,10,40,60],[30,76,12,14],[44,76,12,14],[58,76,12,14]]],
+    ['S23', '도시 상세', '시설·인구·특산물·재해 위험 등 4단계 정보. 시트에서 위로 쓸어 올리면 열린다.', [[56,0,44,100],[60,8,36,20],[60,34,17,26],[79,34,17,26],[60,66,36,26]]],
+    ['S24', '군단 · 위임', '도시가 8개를 넘으면 열림. 군단장과 방침(공격·방어·내정)을 정하면 AI가 대신 굴린다.', [[6,10,40,80],[52,10,42,36],[52,52,42,38]]],
+    ['S25', '설전', '전투 중 지력·매력 대결. 논점 카드 세 장 중 하나를 고르는 3라운드. 이기면 적 사기 하락.', [[6,20,26,50],[68,20,26,50],[20,76,18,16],[41,76,18,16],[62,76,18,16]]],
+    ['S26', '저장 · 불러오기', '슬롯 카드에 날짜·군주·도시 수·작은 세력도 썸네일. 자동 저장 3칸은 따로. 덮어쓰기는 확인 모달.', [[6,10,28,36],[36,10,28,36],[66,10,28,36],[6,54,28,36],[36,54,28,36]]],
+    ['S27', '백과', '인물·지명·용어·시스템 도움말. 검색창과 가나다 색인. 열전과 이번 판 행적이 함께 보인다.', [[6,8,88,12],[6,26,26,66],[36,26,58,66]]],
+    ['S28', '명장면 컷인', '도원결의·삼고초려·적벽 같은 최상급 사건. 화면 전체 일러스트 + 세로쓰기 제목 + 한 줄 대사. 3~6초, 누르면 넘어감.', [[0,0,100,100],[82,10,8,60]]],
+    ['S29', '엔딩 · 군주 평가', '통일 또는 멸망. 연대기 요약, 군주 평가(인덕·패도·지략 등 칭호), 플레이 통계, 다시 하기.', [[6,10,40,80],[52,10,42,22],[52,38,42,22],[52,66,42,24]]],
+    ['S30', '튜토리얼 코치마크', '처음 하는 동작만 짚어준다. 화면을 어둡게 하고 누를 곳만 뚫어서 관우·장비의 대사로 안내.', [[0,0,100,100],[70,62,22,30]]],
+    ['S33', '명령 응답 대사', '명령을 내리면 장수 초상(44pt)과 성격에 맞는 한 줄 대사가 화면 위에 1.5초. 장비는 호탕하게, 조운은 짧게. 설정에서 끌 수 있다.', [[30,4,40,22],[31,6,8,18]]],
+    ['S34', '지도 확대 3단계', '천하(세력 색과 수도만) → 주(도시 이름·도로·부대) → 도시(병력 숫자·무장 낙관). 두 번 누르면 한 단계 확대. 단계마다 글자 크기는 그대로.', [[4,10,28,80],[36,10,28,80],[68,10,28,80]]],
+    ['S35', '계절·전쟁 흔적 표현', '지도 바탕색이 계절마다 바뀌고 겨울엔 북쪽 강이 얼어 붙는다. 최근 전투 자리에 불탄 먹 얼룩이 6개월 동안 남는다. 비주얼 바이블의 계절 규칙을 따른다.', [[0,0,100,100],[60,30,16,22]]],
+    ['S31', '로딩 · 시스템 알림', '로딩에는 연의 고사 한 줄. 토스트는 화면 위 가운데에 2.5초. 오류는 원인과 해결 방법을 함께.', [[20,40,60,20],[30,6,40,12]]]
+  ];
+
+  /* ---------- 렌더 ---------- */
+  var gal = document.getElementById('gallery'), lastG = '', drawers = [];
+  var GDESC = { '연출': '연의의 무게를 싣는 장면', '시작': '처음 켰을 때 거치는 화면', '전략': '게임 시간의 대부분을 보내는 곳', '전투': '출진부터 결과까지', '기록': '기록과 설정' };
+  S.forEach(function (s) {
+    if (s.g !== lastG) { lastG = s.g; var gt = document.createElement('div'); gt.className = 'group-title'; gt.innerHTML = '<h3>' + s.g + '</h3><span>' + GDESC[s.g] + '</span>'; gal.appendChild(gt); }
+    var el = document.createElement('figure'); el.className = 'shot'; el.style.margin = '0'; el.tabIndex = 0; el.setAttribute('role', 'button'); el.setAttribute('aria-label', s.id + ' ' + s.name + ' 크게 보기');
+    el.innerHTML = '<div class="ph-box"><div class="ph"><div class="scr">' + (s.canvas ? '<canvas></canvas>' : '') + s.html + '</div><div class="island"></div></div></div>' +
+      '<figcaption style="display:grid;gap:4px"><div class="meta"><span class="id">' + s.id + '</span><span class="name">' + s.name + '</span></div><p class="note">' + s.note + '</p></figcaption>';
+    gal.appendChild(el);
+    if (s.canvas) {
+      var cv = el.querySelector('canvas'), kind = s.canvas[0], opt = s.canvas[1];
+      drawers.push(function () { kind === 'map' ? drawMap(cv, opt) : kind === 'battle' ? drawBattle(cv, opt) : drawInk(cv, opt); });
+    }
+    function toggle() { el.classList.toggle('big'); fitAll(); if (el.classList.contains('big')) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+    el.addEventListener('click', toggle);
+    el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+  });
+
+  var sp = document.getElementById('specs');
+  SPECS.forEach(function (s) {
+    var d = document.createElement('div'); d.className = 'spec';
+    d.innerHTML = '<div class="wire">' + s[3].map(function (r) { return '<i style="left:' + r[0] + '%;top:' + r[1] + '%;width:' + r[2] + '%;height:' + r[3] + '%"></i>'; }).join('') + '</div><div class="id">' + s[0] + '</div><h3>' + s[1] + '</h3><p>' + s[2] + '</p>';
+    sp.appendChild(d);
+  });
+
+  function fitAll() { document.querySelectorAll('.ph-box').forEach(function (b) { b.firstElementChild.style.setProperty('--s', b.clientWidth / 900); }); }
+  fitAll();
+  if (window.ResizeObserver) { var ro = new ResizeObserver(fitAll); document.querySelectorAll('.ph-box').forEach(function (b) { ro.observe(b); }); }
+  else window.addEventListener('resize', fitAll);
+
+  function drawAll() { drawers.forEach(function (f) { try { f(); } catch (e) { console.error(e); } }); }
+  drawAll();
+  if (document.fonts && document.fonts.load) {
+    Promise.all([document.fonts.load('15px "Song Myung"'), document.fonts.load('900 13px "Noto Serif KR"'), document.fonts.load('600 12px "IBM Plex Sans KR"')]).catch(function () {}).then(drawAll);
+  }
+})();
+</script>

@@ -1,0 +1,6 @@
+supabase
+tests
+scripts
+*.md
+.claude
+.env.local

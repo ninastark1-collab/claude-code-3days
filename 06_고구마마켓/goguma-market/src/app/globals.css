@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+/* ───────── 고구마마켓 색상표 ─────────
+   한지 / 흙 / 고구마 껍질 / 군고구마 속살 / 짚 / 잎사귀 */
+@theme {
+  --color-hanji: #f6eedd;        /* 배경: 한지 */
+  --color-hanji-deep: #ede0c6;   /* 카드 안쪽, 입력칸 */
+  --color-straw: #d8b878;        /* 짚, 테두리 */
+  --color-soil: #4a2f22;         /* 글자: 흙 */
+  --color-soil-soft: #7a5a45;    /* 보조 글자 */
+  --color-skin: #8c3b5e;         /* 고구마 껍질 (주 색) */
+  --color-skin-dark: #6b2a47;
+  --color-flesh: #f2a93b;        /* 군고구마 속살 (강조) */
+  --color-flesh-soft: #fbe2b4;
+  --color-leaf: #5e7d3a;         /* 고구마 잎 */
+  --color-ember: #c4502f;        /* 화롯불 (에러) */
+
+  --font-display: var(--font-jua), "Jua", sans-serif;
+  --font-sans: var(--font-gowun), "Gowun Dodum", system-ui, sans-serif;
+
+  --radius-sweet: 1.25rem 1.6rem 1.15rem 1.5rem; /* 살짝 삐뚤빼뚤한 모서리 */
+}
+
+html { background: var(--color-hanji); }
+
+body {
+  color: var(--color-soil);
+  font-family: var(--font-sans);
+  /* 한지 결 느낌: 아주 옅은 점무늬 두 겹 */
+  background-color: var(--color-hanji);
+  background-image:
+    radial-gradient(rgba(122, 90, 69, 0.07) 1px, transparent 1px),
+    radial-gradient(rgba(122, 90, 69, 0.05) 1px, transparent 1px);
+  background-size: 22px 22px, 37px 37px;
+  background-position: 0 0, 11px 17px;
+}
+
+::selection { background: var(--color-flesh-soft); color: var(--color-soil); }
+
+/* 바느질(새끼줄) 느낌 점선 테두리 카드 */
+@utility card-sack {
+  background: #fffaf0;
+  border: 2px solid var(--color-soil);
+  border-radius: var(--radius-sweet);
+  box-shadow: 5px 6px 0 var(--color-soil);
+  position: relative;
+}
+@utility stitch {
+  border: 2px dashed var(--color-straw);
+  border-radius: var(--radius-sweet);
+}
+
+/* 도장처럼 눌리는 버튼 */
+@utility btn-goguma {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: #fff8ec;
+  background: var(--color-skin);
+  border: 2px solid var(--color-soil);
+  border-radius: 999px;
+  padding: 0.7rem 1.4rem;
+  box-shadow: 3px 4px 0 var(--color-soil);
+  transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+  &:hover { background: var(--color-skin-dark); }
+  &:active { transform: translate(3px, 4px); box-shadow: 0 0 0 var(--color-soil); }
+  &:disabled { opacity: 0.6; cursor: wait; }
+}
+@utility btn-straw {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  color: var(--color-soil);
+  background: var(--color-flesh-soft);
+  border: 2px solid var(--color-soil);
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  box-shadow: 2px 3px 0 var(--color-soil);
+  transition: transform 0.12s, box-shadow 0.12s;
+  &:hover { background: var(--color-flesh); }
+  &:active { transform: translate(2px, 3px); box-shadow: 0 0 0 var(--color-soil); }
+}
+
+@utility field {
+  width: 100%;
+  background: var(--color-hanji);
+  border: 2px solid var(--color-soil-soft);
+  border-radius: 0.9rem;
+  padding: 0.7rem 0.9rem;
+  font-size: 1rem;
+  color: var(--color-soil);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  &::placeholder { color: #a88d76; }
+  &:focus { border-color: var(--color-skin); box-shadow: 0 0 0 4px rgba(242, 169, 59, 0.35); }
+}
+
+@keyframes steam {
+  0%   { transform: translateY(0) scaleX(1); opacity: 0; }
+  30%  { opacity: 0.7; }
+  100% { transform: translateY(-18px) scaleX(1.3); opacity: 0; }
+}
+@keyframes sway {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+@keyframes twinkle {
+  0%, 100% { transform: scale(0.6); opacity: 0.3; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+.animate-twinkle { animation: twinkle 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.animate-steam { animation: steam 2.6s ease-out infinite; }
+.animate-sway { animation: sway 3.2s ease-in-out infinite; transform-origin: bottom center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-steam, .animate-sway, .animate-twinkle { animation: none; }
+}
+
+/* 토스트 안내: 아래에서 톡 올라왔다가 스르르 사라져요 */
+@keyframes toast {
+  0% { opacity: 0; transform: translateY(12px); }
+  10%, 85% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(6px); }
+}
+
+/* 키보드(Tab)로 움직일 때 지금 어디에 있는지 잘 보이게: 군고구마 속살색 테두리 */
+:focus-visible {
+  outline: 3px solid var(--color-flesh);
+  outline-offset: 2px;
+  border-radius: 6px;
+}

@@ -1,0 +1,208 @@
+/* =========================================================
+   온라인 대전: 좌석 색 · 오른쪽 참가자 칸 · 첫 화면 · 대기실
+   ========================================================= */
+:root { --seat-0: #e9c867; --seat-1: #8fb8d8; --seat-2: #ee93a6; --seat-3: #8fd6ad; }
+.seat-0 { --seat: var(--seat-0); }
+.seat-1 { --seat: var(--seat-1); }
+.seat-2 { --seat: var(--seat-2); }
+.seat-3 { --seat: var(--seat-3); }
+
+/* 게임판(왼쪽) + 참가자(오른쪽) */
+.table-row { display: flex; gap: 10px; }
+.main-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.felt-rim .felt-label { margin: 2px 0 10px; }
+
+.players { flex: 0 0 64px; display: flex; flex-direction: column; gap: 6px; }
+.pl {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 7px 3px 6px; border-radius: 12px;
+  background: linear-gradient(180deg, rgba(22,27,30,.92), rgba(10,12,13,.92));
+  border: 1px solid rgba(255,255,255,.07);
+  transition: opacity .3s, border-color .3s;
+}
+.pl.me { border-color: rgba(247,227,163,.75); box-shadow: 0 0 12px rgba(212,175,55,.18); }
+.pl.offline { opacity: .4; }
+.pl.first { border-color: var(--gold-hi); background: linear-gradient(180deg, rgba(212,175,55,.2), rgba(10,12,13,.92)); }
+.pl-av {
+  position: relative;
+  width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--seat); color: #14100a;
+  font-weight: 900; font-size: 14px;
+  box-shadow: inset 0 -2px 0 rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.4);
+}
+.pl-crown { position: absolute; top: -6px; right: -6px; font-size: 11px; color: var(--gold-hi); text-shadow: 0 0 4px #000; }
+.pl-name { font-size: 11px; font-weight: 700; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pl-wins { font-family: var(--display); font-size: 10.5px; font-weight: 700; color: var(--gold); }
+.pl-picks { display: flex; gap: 3px; margin-top: 1px; }
+.pl-picks i { width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--seat); }
+.pl-picks i.on { background: var(--seat); }
+.pl-place { position: absolute; top: 3px; left: 3px; font-size: 9px; font-weight: 900; color: #14100a; background: var(--gold-hi); border-radius: 5px; padding: 0 3px; }
+
+/* 카드판 이름표: 그 사람 색 */
+.grid .card.taken { opacity: .42; }
+.grid .card.taken .face, .grid .card.taken .back { box-shadow: 0 0 0 2px var(--seat); }
+.taken .who-tag { background: var(--seat); color: #14100a; }
+.g-tag[class*="seat-"] { background: var(--seat); color: #14100a; }
+.pick-tag[class*="seat-"] { background: var(--seat); color: #14100a; }
+.guide li.hit { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.25); }
+.guide li.me { background: rgba(212,175,55,.14); border-color: rgba(247,227,163,.7); }
+
+/* 게임판 버튼 비활성(기다림) */
+.play-btn.disabled {
+  background: rgba(14,18,20,.92); color: var(--gold-hi); border: 1px solid var(--hair);
+  box-shadow: 0 10px 30px rgba(0,0,0,.6); font-size: 14px; cursor: default;
+}
+.play-btn.disabled::after { display: none; }
+
+/* 결과: 여러 명 */
+.result-hands { display: flex; flex-direction: column; }
+.hand-who .place { font-family: var(--display); font-weight: 900; font-size: 13px; color: var(--muted); min-width: 26px; }
+.hand-block.winner .place { color: var(--gold-hi); }
+.hand-block .who { background: var(--seat); color: #14100a; }
+.hand-block.me .who { background: var(--foil); }
+.result.many .hand .card { width: min(10.5vw, 42px); }
+.result.many .hand-block { padding: 6px 8px 7px; margin-bottom: 6px; }
+.result.many .hand-name { font-size: 14px; }
+.result.many .hand-who { margin-bottom: 5px; }
+
+/* 나가기 버튼은 게임 중에만 */
+.exit-btn { display: none; font-family: inherit; font-size: 14px; }
+body.online .exit-btn, body.practice .exit-btn { display: grid; }
+
+/* 첫 화면 · 대기실 */
+.home, .lobby { background: radial-gradient(ellipse at 50% 30%, #0b3326, #030504 75%); backdrop-filter: none; }
+.field { display: block; text-align: left; margin: 0 0 12px; }
+.field span { display: block; font-size: 12px; color: var(--muted); margin: 0 0 6px 2px; }
+.field input, .join-row input {
+  width: 100%; height: 48px; padding: 0 14px;
+  border-radius: 12px; border: 1px solid var(--hair);
+  background: rgba(0,0,0,.35); color: var(--text);
+  font: inherit; font-size: 16px; font-weight: 700;
+  outline: none;
+}
+.field input:focus, .join-row input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+.join-row { display: flex; gap: 8px; }
+.join-row input { flex: 1; min-width: 0; text-transform: uppercase; letter-spacing: 6px; font-family: var(--display); text-align: center; }
+.join-row .btn { width: 92px; flex: 0 0 92px; }
+.btn-outline { background: transparent; color: var(--gold-hi); border: 1px solid var(--gold); box-shadow: none; }
+.btn-outline::after { display: none; }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn.loading { opacity: .6; }
+.or { display: flex; align-items: center; gap: 10px; margin: 16px 0 10px; color: var(--muted); font-size: 12px; }
+.or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--hair); }
+.form-error { min-height: 18px; margin: 10px 0 0; font-size: 13px; color: #ff9aa8; }
+.form-error:empty { min-height: 0; margin: 0; }
+
+.room-code-label { margin-top: 10px; font-size: 12px; color: var(--muted); }
+.room-code {
+  font-family: var(--display); font-weight: 900; font-size: 52px; letter-spacing: 10px; line-height: 1.1;
+  background: var(--foil); -webkit-background-clip: text; background-clip: text; color: transparent;
+  margin: 2px 0 12px; padding-left: 10px;
+}
+.share-msg { font-size: 12px; color: var(--gold-hi); margin: 8px 0 0; word-break: break-all; }
+.share-msg:empty { margin: 0; }
+.lobby-title { margin: 16px 0 8px; font-size: 13px; color: var(--muted); text-align: left; display: flex; justify-content: space-between; }
+.lobby-title span { font-family: var(--display); color: var(--gold); font-weight: 700; }
+.lobby-list { list-style: none; margin: 0 0 14px; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.lobby-list li {
+  display: flex; align-items: center; gap: 8px; padding: 9px 10px; border-radius: 12px;
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); text-align: left;
+}
+.lobby-list li.me { border-color: rgba(247,227,163,.6); }
+.lobby-list li.offline { opacity: .45; }
+.lobby-list li.empty { border-style: dashed; color: var(--muted); }
+.lobby-list li.empty .pl-av { background: transparent; border: 1px dashed var(--hair); color: var(--muted); box-shadow: none; }
+.lb-name { flex: 1; min-width: 0; font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb-host { font-size: 10px; font-weight: 800; color: #14100a; background: var(--foil); padding: 1px 6px; border-radius: 5px; }
+.lobby-wait { margin: 10px 0 0; font-size: 13px; color: var(--gold-hi); }
+.lobby-wait:empty { margin: 0; }
+
+/* 알림 */
+.toast {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 50;
+  transform: translateX(-50%);
+  padding: 10px 16px; border-radius: 999px;
+  background: rgba(10,12,13,.95); border: 1px solid var(--gold);
+  color: var(--gold-hi); font-size: 13px; font-weight: 700; white-space: nowrap;
+  box-shadow: 0 10px 30px rgba(0,0,0,.6);
+  animation: fade .2s ease;
+}
+
+/* 넓은 화면: 참가자 칸 포함해서 조금 넓게 */
+@media (min-width: 820px) {
+  #app { max-width: 580px; }
+  .players { flex-basis: 76px; }
+}
+
+/* 핸드폰: 게임판 줄이 남는 높이를 전부 쓰고, 카드판은 그 안에서 최대 크기 */
+@media (max-width: 819px) {
+  .table-row { flex: 1 1 0; min-height: 0; gap: 8px; }
+  .main-col { gap: calc(8px + var(--spare, 0px)); }
+  .players { flex-basis: 58px; gap: 5px; }
+  .pl-av { width: 28px; height: 28px; font-size: 13px; }
+}
+
+/* 게임판(3D 카드)과 위에 뜨는 창의 겹침 순서를 분명히 */
+.layout { isolation: isolate; position: relative; z-index: 0; }
+
+/* 결과: 이번 판 최고 이름표 · 시간 초과 표시 · 여러 명일 때 더 촘촘하게 */
+.hand-block.best .who { background: transparent; color: var(--gold-hi); border: 1px solid rgba(212,175,55,.6); }
+.auto-badge { font-size: 10px; font-weight: 800; color: #ff9aa8; border: 1px solid rgba(255,154,168,.5); border-radius: 5px; padding: 0 5px; }
+.result.many h2 { font-size: 22px; margin-bottom: 8px; }
+.result.many .hand-block.best { padding-bottom: 6px; }
+.result.many .best-note { margin-top: 4px; }
+.result.many .verdict { margin: 0 0 8px; padding: 6px 10px; }
+.result.many .verdict-headline { font-size: 13px; }
+.result.many .verdict-detail { font-size: 12px; }
+.result.many .btn { padding: 12px; }
+.result.many .link-btn { margin-top: 4px; }
+.result.many .pick-tag { font-size: 8.5px; padding: 0 4px; bottom: -6px; }
+
+/* ---------- 승리 연출 ---------- */
+.confetti { position: fixed; inset: 0; z-index: 40; pointer-events: none; overflow: hidden; }
+.confetti i {
+  position: absolute; top: -12px; width: 7px; height: 12px; border-radius: 2px; opacity: 0;
+  animation: confetti-fall linear forwards;
+}
+@keyframes confetti-fall {
+  0% { transform: translate(0, 0) rotate(0); opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translate(var(--drift), 105vh) rotate(var(--spin)); opacity: 0; }
+}
+
+/* 최고 족보를 직접 만든 경우: 같은 패를 또 그리지 않고 한 줄 축하 */
+.hand-block.best.made .hand { display: none; }
+.hand-block.best.made .best-note { margin-top: 2px; }
+.hand-block.best.made { border-style: solid; border-color: rgba(247,227,163,.6); }
+
+/* 첫 화면 아래 링크 */
+.home-links { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 12px; color: var(--muted); }
+.home-links .link-btn { margin-top: 0; }
+
+/* 헤더 버튼: 좁은 폰에서도 한 줄에 */
+.sound-btn { font-family: inherit; font-size: 15px; }
+@media (max-width: 400px) {
+  .top { gap: 6px; }
+  .top-actions { gap: 5px; }
+  .icon-btn { width: 33px; height: 33px; }
+  .chip-btn { height: 33px; padding: 0 10px 0 8px; font-size: 12px; }
+  .brand { gap: 7px; }
+  .brand-name { font-size: 16px; }
+}
+@media (max-width: 370px) { .brand-name { display: none; } }
+
+/* 폰에서: 아래로 당겨 새로고침·두 번 탭 확대 방지 */
+html, body { overscroll-behavior: none; }
+button, .card, .pl { touch-action: manipulation; }
+
+/* 앱 설치 */
+.install-btn { margin-top: 14px; font-size: 15px; padding: 13px; }
+#install-steps .ico { display: inline-block; padding: 0 4px; border: 1px solid var(--gold); border-radius: 4px; font-size: 12px; }
+#install-steps em { font-style: normal; font-weight: 900; color: var(--gold-hi); }
+
+.install-btn.pending { opacity: .75; }
+.install-btn.ready { background: var(--foil); color: #1a1406; border: 0; animation: install-pulse 1.4s ease-in-out infinite; }
+@keyframes install-pulse { 50% { box-shadow: 0 0 0 6px rgba(212,175,55,.25), 0 8px 24px rgba(212,175,55,.35); } }
+#install-lead { line-height: 1.5; }

@@ -1,0 +1,214 @@
+{
+  "note": "모든 PNG는 표시 크기의 2배(TEX_SCALE 2)입니다. 스프라이트 시트는 가로로 프레임이 이어져 있습니다.",
+  "units": {
+    "spearman": {
+      "frameSize": 126,
+      "frames": [
+        "walk1",
+        "walk2",
+        "attack1",
+        "attack2"
+      ],
+      "displaySize": 63,
+      "files": {
+        "blue": "units/spearman_blue.png",
+        "red": "units/spearman_red.png"
+      }
+    },
+    "crossbow": {
+      "frameSize": 112,
+      "frames": [
+        "walk1",
+        "walk2",
+        "attack1",
+        "attack2"
+      ],
+      "displaySize": 56,
+      "files": {
+        "blue": "units/crossbow_blue.png",
+        "red": "units/crossbow_red.png"
+      }
+    },
+    "shieldGiant": {
+      "frameSize": 224,
+      "frames": [
+        "walk1",
+        "walk2",
+        "attack1",
+        "attack2"
+      ],
+      "displaySize": 112,
+      "files": {
+        "blue": "units/shieldGiant_blue.png",
+        "red": "units/shieldGiant_red.png"
+      }
+    },
+    "bats": {
+      "frameSize": 84,
+      "frames": [
+        "walk1",
+        "walk2",
+        "attack1",
+        "attack2"
+      ],
+      "displaySize": 42,
+      "files": {
+        "blue": "units/bats_blue.png",
+        "red": "units/bats_red.png"
+      }
+    },
+    "bombGoblin": {
+      "frameSize": 126,
+      "frames": [
+        "walk1",
+        "walk2",
+        "attack1",
+        "attack2"
+      ],
+      "displaySize": 63,
+      "files": {
+        "blue": "units/bombGoblin_blue.png",
+        "red": "units/bombGoblin_red.png"
+      }
+    },
+    "knights": {
+      "frameSize": 126,
+      "frames": [
+        "walk1",
+        "walk2",
+        "attack1",
+        "attack2"
+      ],
+      "displaySize": 63,
+      "files": {
+        "blue": "units/knights_blue.png",
+        "red": "units/knights_red.png"
+      }
+    },
+    "catapult": {
+      "frameSize": 216,
+      "frames": [
+        "idle"
+      ],
+      "displaySize": 108,
+      "files": {
+        "blue": "units/catapult_blue.png",
+        "red": "units/catapult_red.png"
+      }
+    }
+  },
+  "towers": {
+    "main": {
+      "size": 272,
+      "displaySize": 136,
+      "files": {
+        "blue": "towers/tower_main_blue.png",
+        "red": "towers/tower_main_red.png"
+      }
+    },
+    "side": {
+      "size": 208,
+      "displaySize": 104,
+      "files": {
+        "blue": "towers/tower_side_blue.png",
+        "red": "towers/tower_side_red.png"
+      }
+    }
+  },
+  "cards": {
+    "spearman": "cards/card_spearman.png",
+    "crossbow": "cards/card_crossbow.png",
+    "shieldGiant": "cards/card_shieldGiant.png",
+    "bats": "cards/card_bats.png",
+    "bombGoblin": "cards/card_bombGoblin.png",
+    "knights": "cards/card_knights.png",
+    "fireball": "cards/card_fireball.png",
+    "catapult": "cards/card_catapult.png",
+    "apprenticeCat": "cards/card_apprenticeCat.png",
+    "broomOwl": "cards/card_broomOwl.png",
+    "candleGhost": "cards/card_candleGhost.png",
+    "mimic": "cards/card_mimic.png",
+    "mandrake": "cards/card_mandrake.png",
+    "jellyBear": "cards/card_jellyBear.png",
+    "cottonSheep": "cards/card_cottonSheep.png",
+    "scrollPenguin": "cards/card_scrollPenguin.png",
+    "spiderLibrarian": "cards/card_spiderLibrarian.png",
+    "starBunny": "cards/card_starBunny.png",
+    "crystalTurtle": "cards/card_crystalTurtle.png",
+    "mushroomTrio": "cards/card_mushroomTrio.png",
+    "hippoPresident": "cards/card_hippoPresident.png",
+    "salamander": "cards/card_salamander.png",
+    "frostFairy": "cards/card_frostFairy.png",
+    "tomeGolem": "cards/card_tomeGolem.png",
+    "sleepyDragon": "cards/card_sleepyDragon.png",
+    "werewolfCoach": "cards/card_werewolfCoach.png",
+    "vampirePrefect": "cards/card_vampirePrefect.png",
+    "pumpkinKnight": "cards/card_pumpkinKnight.png",
+    "mummyNurse": "cards/card_mummyNurse.png",
+    "gumiho": "cards/card_gumiho.png",
+    "frogPrince": "cards/card_frogPrince.png",
+    "shadowCat": "cards/card_shadowCat.png",
+    "beeMail": "cards/card_beeMail.png",
+    "headOwl": "cards/card_headOwl.png",
+    "freeze": "cards/card_freeze.png",
+    "lightningRoll": "cards/card_lightningRoll.png",
+    "heartRain": "cards/card_heartRain.png",
+    "starShower": "cards/card_starShower.png",
+    "poisonSpill": "cards/card_poisonSpill.png",
+    "homeworkTornado": "cards/card_homeworkTornado.png",
+    "timeStop": "cards/card_timeStop.png",
+    "frogify": "cards/card_frogify.png",
+    "quillRain": "cards/card_quillRain.png",
+    "bubbleCauldron": "cards/card_bubbleCauldron.png",
+    "spireTower": "cards/card_spireTower.png",
+    "candleWatch": "cards/card_candleWatch.png",
+    "mushroomDorm": "cards/card_mushroomDorm.png",
+    "talkingTree": "cards/card_talkingTree.png",
+    "manaCrystal": "cards/card_manaCrystal.png",
+    "mirrorMaze": "cards/card_mirrorMaze.png"
+  },
+  "ui": {
+    "frame_c": "ui/card_frame_c.png",
+    "frame_r": "ui/card_frame_r.png",
+    "frame_e": "ui/card_frame_e.png",
+    "frame_l": "ui/card_frame_l.png",
+    "cardNote": "카드 PNG 272x350 = 슬롯 136x175의 2배. 코스트 숫자는 왼쪽 위 잉크 방울(중심 약 19,31 / 원본 좌표) 위에, 이름은 아래 리본(y 128~150)에 게임에서 글자로 올려 주세요.",
+    "button_gold": "ui/button_gold.png",
+    "button_gold_pressed": "ui/button_gold_pressed.png",
+    "button_blue": "ui/button_blue.png",
+    "button_blue_pressed": "ui/button_blue_pressed.png",
+    "button_parchment": "ui/button_parchment.png",
+    "button_parchment_pressed": "ui/button_parchment_pressed.png",
+    "button_red": "ui/button_red.png",
+    "button_red_pressed": "ui/button_red_pressed.png",
+    "panel": "ui/panel.png"
+  },
+  "fx": {
+    "explosion": {
+      "frameSize": 160,
+      "frames": 6,
+      "file": "fx/explosion.png"
+    },
+    "deployCircle": {
+      "frameSize": 160,
+      "frames": 4,
+      "file": "fx/deploy_circle.png"
+    },
+    "projectile_star": "fx/projectile_star.png",
+    "projectile_potion": "fx/projectile_potion.png",
+    "projectile_pudding": "fx/projectile_pudding.png",
+    "projectile_wisp": "fx/projectile_wisp.png",
+    "projectile_fireball": "fx/projectile_fireball.png"
+  },
+  "bg": {
+    "arena": "bg/arena.png",
+    "menu": "bg/menu.png"
+  },
+  "icons": {
+    "fireball": "units/spell_fireball.png",
+    "app512": "icons/icon-512.png",
+    "app192": "icons/icon-192.png",
+    "maskable": "icons/icon-maskable-512.png",
+    "apple": "icons/apple-touch-icon.png"
+  }
+}

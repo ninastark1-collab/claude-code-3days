@@ -1,0 +1,2848 @@
+{
+  "id": "s190",
+  "name": "반동탁연합",
+  "year": 190,
+  "month": 1,
+  "description": "소제를 폐하고 헌제를 세운 동탁이 낙양에서 폭정을 일삼는다. 조조의 격문에 호응한 제후들이 원소를 맹주로 받들어 사수관으로 진군하니, 천하의 영웅이 한자리에 모였다.",
+  "factions": [
+    {
+      "id": "dong_zhuo",
+      "name": "동탁군",
+      "ruler": "dong_zhuo",
+      "color": "#5a1e1e",
+      "capital": "luoyang",
+      "personality": "aggressive"
+    },
+    {
+      "id": "yuan_shao",
+      "name": "원소군",
+      "ruler": "yuan_shao",
+      "color": "#c9a227",
+      "capital": "nanpi",
+      "personality": "aggressive"
+    },
+    {
+      "id": "han_fu",
+      "name": "한복군",
+      "ruler": "han_fu",
+      "color": "#8c8c3c",
+      "capital": "ye",
+      "personality": "defensive"
+    },
+    {
+      "id": "cao",
+      "name": "조조군",
+      "ruler": "cao_cao",
+      "color": "#2f5fa8",
+      "capital": "chenliu",
+      "personality": "aggressive"
+    },
+    {
+      "id": "yuan_shu",
+      "name": "원술군",
+      "ruler": "yuan_shu",
+      "color": "#b0782a",
+      "capital": "wan",
+      "personality": "aggressive"
+    },
+    {
+      "id": "sun_jian",
+      "name": "손견군",
+      "ruler": "sun_jian",
+      "color": "#c23b22",
+      "capital": "changsha",
+      "personality": "aggressive"
+    },
+    {
+      "id": "kong_rong",
+      "name": "공융군",
+      "ruler": "kong_rong",
+      "color": "#d98cb3",
+      "capital": "beihai",
+      "personality": "diplomatic"
+    },
+    {
+      "id": "tao_qian",
+      "name": "도겸군",
+      "ruler": "tao_qian",
+      "color": "#5d8aa8",
+      "capital": "xiapi",
+      "personality": "defensive"
+    },
+    {
+      "id": "gongsun_zan",
+      "name": "공손찬군",
+      "ruler": "gongsun_zan",
+      "color": "#e8e8e8",
+      "capital": "beiping",
+      "personality": "aggressive"
+    },
+    {
+      "id": "liu_bei",
+      "name": "유비군",
+      "ruler": "liu_bei",
+      "color": "#3c8d4a",
+      "capital": "pingyuan",
+      "personality": "diplomatic"
+    },
+    {
+      "id": "liu_yu",
+      "name": "유우군",
+      "ruler": "liu_yu",
+      "color": "#6a8caf",
+      "capital": "ji",
+      "personality": "diplomatic"
+    },
+    {
+      "id": "gongsun_du",
+      "name": "공손도군",
+      "ruler": "gongsun_du",
+      "color": "#5b7f86",
+      "capital": "xiangping",
+      "personality": "defensive"
+    },
+    {
+      "id": "zhang_miao",
+      "name": "장막군",
+      "ruler": "zhang_miao",
+      "color": "#9c6b4e",
+      "capital": "puyang",
+      "personality": "balanced"
+    },
+    {
+      "id": "kong_zhou",
+      "name": "공주군",
+      "ruler": "kong_zhou",
+      "color": "#b38f6a",
+      "capital": "xuchang",
+      "personality": "defensive"
+    },
+    {
+      "id": "wang_kuang",
+      "name": "왕광군",
+      "ruler": "wang_kuang",
+      "color": "#6e6e9e",
+      "capital": "shangdang",
+      "personality": "balanced"
+    },
+    {
+      "id": "zhang_yang",
+      "name": "장양군",
+      "ruler": "zhang_yang",
+      "color": "#556b2f",
+      "capital": "jinyang",
+      "personality": "balanced"
+    },
+    {
+      "id": "ma_teng",
+      "name": "마등군",
+      "ruler": "ma_teng",
+      "color": "#d1d16b",
+      "capital": "wuwei",
+      "personality": "balanced"
+    },
+    {
+      "id": "liu_biao",
+      "name": "유표군",
+      "ruler": "liu_biao",
+      "color": "#2aa198",
+      "capital": "xiangyang",
+      "personality": "defensive"
+    },
+    {
+      "id": "liu_yan",
+      "name": "유언군",
+      "ruler": "liu_yan",
+      "color": "#c4603c",
+      "capital": "chengdu",
+      "personality": "defensive"
+    },
+    {
+      "id": "zhang_lu",
+      "name": "장로군",
+      "ruler": "zhang_lu",
+      "color": "#9a9a5a",
+      "capital": "hanzhong",
+      "personality": "defensive"
+    },
+    {
+      "id": "liu_yao",
+      "name": "유요군",
+      "ruler": "liu_yao",
+      "color": "#6c8fd6",
+      "capital": "jianye",
+      "personality": "defensive"
+    },
+    {
+      "id": "yan_baihu",
+      "name": "엄백호군",
+      "ruler": "yan_baihu",
+      "color": "#8a7f5a",
+      "capital": "wu",
+      "personality": "aggressive"
+    },
+    {
+      "id": "wang_lang",
+      "name": "왕랑군",
+      "ruler": "wang_lang",
+      "color": "#7aa6a0",
+      "capital": "kuaiji",
+      "personality": "defensive"
+    }
+  ],
+  "cities": [
+    {
+      "city": "xiangping",
+      "faction": "gongsun_du",
+      "population": 260000,
+      "gold": 1800,
+      "food": 35000,
+      "agriculture": 416,
+      "commerce": 416,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "beiping",
+      "faction": "gongsun_zan",
+      "population": 390000,
+      "gold": 2200,
+      "food": 45000,
+      "agriculture": 494,
+      "commerce": 494,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "ji",
+      "faction": "liu_yu",
+      "population": 390000,
+      "gold": 2200,
+      "food": 45000,
+      "agriculture": 494,
+      "commerce": 494,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "nanpi",
+      "faction": "yuan_shao",
+      "population": 390000,
+      "gold": 2200,
+      "food": 45000,
+      "agriculture": 494,
+      "commerce": 494,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "ye",
+      "faction": "han_fu",
+      "population": 650000,
+      "gold": 3000,
+      "food": 65000,
+      "agriculture": 650,
+      "commerce": 650,
+      "walls": 700,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "pingyuan",
+      "faction": "liu_bei",
+      "population": 260000,
+      "gold": 1800,
+      "food": 35000,
+      "agriculture": 416,
+      "commerce": 416,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "jinyang",
+      "faction": "zhang_yang",
+      "population": 390000,
+      "gold": 2200,
+      "food": 45000,
+      "agriculture": 494,
+      "commerce": 494,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "shangdang",
+      "faction": "wang_kuang",
+      "population": 260000,
+      "gold": 1800,
+      "food": 35000,
+      "agriculture": 416,
+      "commerce": 416,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "beihai",
+      "faction": "kong_rong",
+      "population": 390000,
+      "gold": 2200,
+      "food": 45000,
+      "agriculture": 494,
+      "commerce": 494,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "puyang",
+      "faction": "zhang_miao",
+      "population": 390000,
+      "gold": 2200,
+      "food": 45000,
+      "agriculture": 494,
+      "commerce": 494,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "chenliu",
+      "faction": "cao",
+      "population": 390000,
+      "gold": 2200,
+      "food": 45000,
+      "agriculture": 494,
+      "commerce": 494,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "xuchang",
+      "faction": "kong_zhou",
+      "population": 520000,
+      "gold": 2600,
+      "food": 55000,
+      "agriculture": 572,
+      "commerce": 572,
+      "walls": 616,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "xiaopei",
+      "faction": "tao_qian",
+      "population": 200000,
+      "gold": 800,
+      "food": 20000,
+      "agriculture": 320,
+      "commerce": 320,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "xiapi",
+      "faction": "tao_qian",
+      "population": 520000,
+      "gold": 2600,
+      "food": 55000,
+      "agriculture": 572,
+      "commerce": 572,
+      "walls": 616,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "langya",
+      "faction": "tao_qian",
+      "population": 200000,
+      "gold": 800,
+      "food": 20000,
+      "agriculture": 320,
+      "commerce": 320,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "runan",
+      "faction": "yuan_shu",
+      "population": 300000,
+      "gold": 1200,
+      "food": 30000,
+      "agriculture": 380,
+      "commerce": 380,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "qiao",
+      "faction": null,
+      "population": 120000,
+      "gold": 200,
+      "food": 3000,
+      "agriculture": 192,
+      "commerce": 192,
+      "walls": 256,
+      "order": 30,
+      "support": 35
+    },
+    {
+      "city": "luoyang",
+      "faction": "dong_zhuo",
+      "population": 650000,
+      "gold": 3000,
+      "food": 65000,
+      "agriculture": 650,
+      "commerce": 650,
+      "walls": 700,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "hongnong",
+      "faction": "dong_zhuo",
+      "population": 200000,
+      "gold": 800,
+      "food": 20000,
+      "agriculture": 320,
+      "commerce": 320,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "changan",
+      "faction": "dong_zhuo",
+      "population": 500000,
+      "gold": 2000,
+      "food": 50000,
+      "agriculture": 500,
+      "commerce": 500,
+      "walls": 700,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "tianshui",
+      "faction": "dong_zhuo",
+      "population": 200000,
+      "gold": 800,
+      "food": 20000,
+      "agriculture": 320,
+      "commerce": 320,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "anding",
+      "faction": "dong_zhuo",
+      "population": 200000,
+      "gold": 800,
+      "food": 20000,
+      "agriculture": 320,
+      "commerce": 320,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "wuwei",
+      "faction": "ma_teng",
+      "population": 260000,
+      "gold": 1800,
+      "food": 35000,
+      "agriculture": 416,
+      "commerce": 416,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "xiliang",
+      "faction": "ma_teng",
+      "population": 200000,
+      "gold": 800,
+      "food": 20000,
+      "agriculture": 320,
+      "commerce": 320,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "hanzhong",
+      "faction": "zhang_lu",
+      "population": 390000,
+      "gold": 2200,
+      "food": 45000,
+      "agriculture": 494,
+      "commerce": 494,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "wan",
+      "faction": "yuan_shu",
+      "population": 390000,
+      "gold": 2200,
+      "food": 45000,
+      "agriculture": 494,
+      "commerce": 494,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "xinye",
+      "faction": "liu_biao",
+      "population": 100000,
+      "gold": 400,
+      "food": 10000,
+      "agriculture": 260,
+      "commerce": 260,
+      "walls": 364,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "xiangyang",
+      "faction": "liu_biao",
+      "population": 520000,
+      "gold": 2600,
+      "food": 55000,
+      "agriculture": 572,
+      "commerce": 572,
+      "walls": 616,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "jiangling",
+      "faction": "liu_biao",
+      "population": 400000,
+      "gold": 1600,
+      "food": 40000,
+      "agriculture": 440,
+      "commerce": 440,
+      "walls": 616,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "jiangxia",
+      "faction": "liu_biao",
+      "population": 300000,
+      "gold": 1200,
+      "food": 30000,
+      "agriculture": 380,
+      "commerce": 380,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "changsha",
+      "faction": "sun_jian",
+      "population": 390000,
+      "gold": 2200,
+      "food": 45000,
+      "agriculture": 494,
+      "commerce": 494,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "wuling",
+      "faction": "liu_biao",
+      "population": 200000,
+      "gold": 800,
+      "food": 20000,
+      "agriculture": 320,
+      "commerce": 320,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "lingling",
+      "faction": "liu_biao",
+      "population": 200000,
+      "gold": 800,
+      "food": 20000,
+      "agriculture": 320,
+      "commerce": 320,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "guiyang",
+      "faction": "liu_biao",
+      "population": 200000,
+      "gold": 800,
+      "food": 20000,
+      "agriculture": 320,
+      "commerce": 320,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "shouchun",
+      "faction": null,
+      "population": 240000,
+      "gold": 200,
+      "food": 3000,
+      "agriculture": 264,
+      "commerce": 264,
+      "walls": 352,
+      "order": 30,
+      "support": 35
+    },
+    {
+      "city": "lujiang",
+      "faction": null,
+      "population": 120000,
+      "gold": 200,
+      "food": 3000,
+      "agriculture": 192,
+      "commerce": 192,
+      "walls": 256,
+      "order": 30,
+      "support": 35
+    },
+    {
+      "city": "jianye",
+      "faction": "liu_yao",
+      "population": 520000,
+      "gold": 2600,
+      "food": 55000,
+      "agriculture": 572,
+      "commerce": 572,
+      "walls": 616,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "wu",
+      "faction": "yan_baihu",
+      "population": 390000,
+      "gold": 2200,
+      "food": 45000,
+      "agriculture": 494,
+      "commerce": 494,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "kuaiji",
+      "faction": "wang_lang",
+      "population": 390000,
+      "gold": 2200,
+      "food": 45000,
+      "agriculture": 494,
+      "commerce": 494,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "chaisang",
+      "faction": null,
+      "population": 120000,
+      "gold": 200,
+      "food": 3000,
+      "agriculture": 192,
+      "commerce": 192,
+      "walls": 256,
+      "order": 30,
+      "support": 35
+    },
+    {
+      "city": "zitong",
+      "faction": "liu_yan",
+      "population": 200000,
+      "gold": 800,
+      "food": 20000,
+      "agriculture": 320,
+      "commerce": 320,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "chengdu",
+      "faction": "liu_yan",
+      "population": 650000,
+      "gold": 3000,
+      "food": 65000,
+      "agriculture": 650,
+      "commerce": 650,
+      "walls": 700,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "jiangzhou",
+      "faction": "liu_yan",
+      "population": 300000,
+      "gold": 1200,
+      "food": 30000,
+      "agriculture": 380,
+      "commerce": 380,
+      "walls": 532,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "yongan",
+      "faction": "liu_yan",
+      "population": 200000,
+      "gold": 800,
+      "food": 20000,
+      "agriculture": 320,
+      "commerce": 320,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "jianning",
+      "faction": "liu_yan",
+      "population": 200000,
+      "gold": 800,
+      "food": 20000,
+      "agriculture": 320,
+      "commerce": 320,
+      "walls": 448,
+      "order": 60,
+      "support": 55
+    },
+    {
+      "city": "yunnan",
+      "faction": null,
+      "population": 120000,
+      "gold": 200,
+      "food": 3000,
+      "agriculture": 192,
+      "commerce": 192,
+      "walls": 256,
+      "order": 30,
+      "support": 35
+    }
+  ],
+  "officers": [
+    {
+      "officer": "dong_zhuo",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 11000,
+      "loyalty": 100
+    },
+    {
+      "officer": "li_ru",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 0,
+      "loyalty": 83
+    },
+    {
+      "officer": "lu_bu",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 8000,
+      "loyalty": 63
+    },
+    {
+      "officer": "hua_xiong",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 6000,
+      "loyalty": 88
+    },
+    {
+      "officer": "li_su",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 0,
+      "loyalty": 75
+    },
+    {
+      "officer": "hu_zhen",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 4000,
+      "loyalty": 78
+    },
+    {
+      "officer": "zhang_liao",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 9000,
+      "loyalty": 90
+    },
+    {
+      "officer": "gao_shun",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 7000,
+      "loyalty": 98
+    },
+    {
+      "officer": "xu_rong",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 7000,
+      "loyalty": 85
+    },
+    {
+      "officer": "cao_xing",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 4000,
+      "loyalty": 83
+    },
+    {
+      "officer": "cheng_lian",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 3000,
+      "loyalty": 83
+    },
+    {
+      "officer": "hao_meng",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 0,
+      "loyalty": 65
+    },
+    {
+      "officer": "song_xian",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 3000,
+      "loyalty": 68
+    },
+    {
+      "officer": "wei_xu",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 3000,
+      "loyalty": 68
+    },
+    {
+      "officer": "hou_cheng",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 0,
+      "loyalty": 68
+    },
+    {
+      "officer": "diao_chan",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 0,
+      "loyalty": 85
+    },
+    {
+      "officer": "wang_yun",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 0,
+      "loyalty": 90
+    },
+    {
+      "officer": "cai_yong",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 0,
+      "loyalty": 88
+    },
+    {
+      "officer": "yang_biao",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 0,
+      "loyalty": 93
+    },
+    {
+      "officer": "dong_cheng",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 4000,
+      "loyalty": 95
+    },
+    {
+      "officer": "fu_wan",
+      "faction": "dong_zhuo",
+      "city": "luoyang",
+      "troops": 0,
+      "loyalty": 93
+    },
+    {
+      "officer": "niu_fu",
+      "faction": "dong_zhuo",
+      "city": "hongnong",
+      "troops": 4000,
+      "loyalty": 80
+    },
+    {
+      "officer": "li_jue",
+      "faction": "dong_zhuo",
+      "city": "hongnong",
+      "troops": 6000,
+      "loyalty": 68
+    },
+    {
+      "officer": "guo_si",
+      "faction": "dong_zhuo",
+      "city": "hongnong",
+      "troops": 5000,
+      "loyalty": 68
+    },
+    {
+      "officer": "jia_xu",
+      "faction": "dong_zhuo",
+      "city": "hongnong",
+      "troops": 7000,
+      "loyalty": 75
+    },
+    {
+      "officer": "duan_wei",
+      "faction": "dong_zhuo",
+      "city": "hongnong",
+      "troops": 5000,
+      "loyalty": 83
+    },
+    {
+      "officer": "dong_min",
+      "faction": "dong_zhuo",
+      "city": "changan",
+      "troops": 0,
+      "loyalty": 75
+    },
+    {
+      "officer": "fan_chou",
+      "faction": "dong_zhuo",
+      "city": "anding",
+      "troops": 5000,
+      "loyalty": 75
+    },
+    {
+      "officer": "li_meng",
+      "faction": "dong_zhuo",
+      "city": "anding",
+      "troops": 3000,
+      "loyalty": 73
+    },
+    {
+      "officer": "wang_fang",
+      "faction": "dong_zhuo",
+      "city": "anding",
+      "troops": 0,
+      "loyalty": 73
+    },
+    {
+      "officer": "zhang_ji",
+      "faction": "dong_zhuo",
+      "city": "tianshui",
+      "troops": 5000,
+      "loyalty": 75
+    },
+    {
+      "officer": "zhang_xiu",
+      "faction": "dong_zhuo",
+      "city": "tianshui",
+      "troops": 6000,
+      "loyalty": 78
+    },
+    {
+      "officer": "hu_cheer",
+      "faction": "dong_zhuo",
+      "city": "tianshui",
+      "troops": 0,
+      "loyalty": 78
+    },
+    {
+      "officer": "yuan_shao",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 11000,
+      "loyalty": 100
+    },
+    {
+      "officer": "yan_liang",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 6000,
+      "loyalty": 88
+    },
+    {
+      "officer": "wen_chou",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 6000,
+      "loyalty": 88
+    },
+    {
+      "officer": "xu_you",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 0,
+      "loyalty": 68
+    },
+    {
+      "officer": "feng_ji",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 3000,
+      "loyalty": 83
+    },
+    {
+      "officer": "chunyu_qiong",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 4000,
+      "loyalty": 83
+    },
+    {
+      "officer": "yuan_tan",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 4000,
+      "loyalty": 78
+    },
+    {
+      "officer": "gao_gan",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 5000,
+      "loyalty": 83
+    },
+    {
+      "officer": "yuan_yi",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 0,
+      "loyalty": 83
+    },
+    {
+      "officer": "guo_tu",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 0,
+      "loyalty": 78
+    },
+    {
+      "officer": "chen_lin",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 0,
+      "loyalty": 80
+    },
+    {
+      "officer": "lu_kuang",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 3000,
+      "loyalty": 75
+    },
+    {
+      "officer": "lu_xiang",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 3000,
+      "loyalty": 75
+    },
+    {
+      "officer": "jiao_chu",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 3000,
+      "loyalty": 70
+    },
+    {
+      "officer": "zhang_nan",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 3000,
+      "loyalty": 73
+    },
+    {
+      "officer": "ma_yan",
+      "faction": "yuan_shao",
+      "city": "nanpi",
+      "troops": 3000,
+      "loyalty": 75
+    },
+    {
+      "officer": "han_fu",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "pan_feng",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 4000,
+      "loyalty": 85
+    },
+    {
+      "officer": "geng_wu",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 0,
+      "loyalty": 98
+    },
+    {
+      "officer": "ju_shou",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 6000,
+      "loyalty": 95
+    },
+    {
+      "officer": "shen_pei",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 5000,
+      "loyalty": 98
+    },
+    {
+      "officer": "tian_feng",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 5000,
+      "loyalty": 93
+    },
+    {
+      "officer": "xin_ping",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 0,
+      "loyalty": 85
+    },
+    {
+      "officer": "xin_pi",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 0,
+      "loyalty": 90
+    },
+    {
+      "officer": "xun_chen",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 0,
+      "loyalty": 85
+    },
+    {
+      "officer": "zhang_he",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 8000,
+      "loyalty": 83
+    },
+    {
+      "officer": "gao_lan",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 6000,
+      "loyalty": 83
+    },
+    {
+      "officer": "qu_yi",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 7000,
+      "loyalty": 73
+    },
+    {
+      "officer": "han_meng",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 4000,
+      "loyalty": 83
+    },
+    {
+      "officer": "jiang_qi",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 4000,
+      "loyalty": 83
+    },
+    {
+      "officer": "sui_yuanjin",
+      "faction": "han_fu",
+      "city": "ye",
+      "troops": 3000,
+      "loyalty": 80
+    },
+    {
+      "officer": "cao_cao",
+      "faction": "cao",
+      "city": "chenliu",
+      "troops": 14000,
+      "loyalty": 100
+    },
+    {
+      "officer": "xiahou_dun",
+      "faction": "cao",
+      "city": "chenliu",
+      "troops": 8000,
+      "loyalty": 98
+    },
+    {
+      "officer": "xiahou_yuan",
+      "faction": "cao",
+      "city": "chenliu",
+      "troops": 8000,
+      "loyalty": 95
+    },
+    {
+      "officer": "cao_ren",
+      "faction": "cao",
+      "city": "chenliu",
+      "troops": 8000,
+      "loyalty": 98
+    },
+    {
+      "officer": "cao_hong",
+      "faction": "cao",
+      "city": "chenliu",
+      "troops": 5000,
+      "loyalty": 93
+    },
+    {
+      "officer": "cao_chun",
+      "faction": "cao",
+      "city": "chenliu",
+      "troops": 7000,
+      "loyalty": 95
+    },
+    {
+      "officer": "cao_xiu",
+      "faction": "cao",
+      "city": "chenliu",
+      "troops": 6000,
+      "loyalty": 93
+    },
+    {
+      "officer": "le_jin",
+      "faction": "cao",
+      "city": "chenliu",
+      "troops": 6000,
+      "loyalty": 93
+    },
+    {
+      "officer": "bao_xin",
+      "faction": "cao",
+      "city": "chenliu",
+      "troops": 6000,
+      "loyalty": 93
+    },
+    {
+      "officer": "yuan_shu",
+      "faction": "yuan_shu",
+      "city": "wan",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "ji_ling",
+      "faction": "yuan_shu",
+      "city": "wan",
+      "troops": 5000,
+      "loyalty": 90
+    },
+    {
+      "officer": "zhang_xun",
+      "faction": "yuan_shu",
+      "city": "wan",
+      "troops": 4000,
+      "loyalty": 78
+    },
+    {
+      "officer": "yu_she",
+      "faction": "yuan_shu",
+      "city": "wan",
+      "troops": 0,
+      "loyalty": 80
+    },
+    {
+      "officer": "qiao_rui",
+      "faction": "yuan_shu",
+      "city": "wan",
+      "troops": 4000,
+      "loyalty": 80
+    },
+    {
+      "officer": "li_feng",
+      "faction": "yuan_shu",
+      "city": "wan",
+      "troops": 3000,
+      "loyalty": 78
+    },
+    {
+      "officer": "yue_jiu",
+      "faction": "yuan_shu",
+      "city": "wan",
+      "troops": 0,
+      "loyalty": 78
+    },
+    {
+      "officer": "yuan_yin",
+      "faction": "yuan_shu",
+      "city": "wan",
+      "troops": 0,
+      "loyalty": 83
+    },
+    {
+      "officer": "yan_xiang",
+      "faction": "yuan_shu",
+      "city": "wan",
+      "troops": 0,
+      "loyalty": 83
+    },
+    {
+      "officer": "yang_hong",
+      "faction": "yuan_shu",
+      "city": "wan",
+      "troops": 0,
+      "loyalty": 80
+    },
+    {
+      "officer": "lei_bo",
+      "faction": "yuan_shu",
+      "city": "runan",
+      "troops": 3000,
+      "loyalty": 70
+    },
+    {
+      "officer": "chen_lan",
+      "faction": "yuan_shu",
+      "city": "runan",
+      "troops": 3000,
+      "loyalty": 70
+    },
+    {
+      "officer": "sun_jian",
+      "faction": "sun_jian",
+      "city": "changsha",
+      "troops": 14000,
+      "loyalty": 100
+    },
+    {
+      "officer": "cheng_pu",
+      "faction": "sun_jian",
+      "city": "changsha",
+      "troops": 7000,
+      "loyalty": 95
+    },
+    {
+      "officer": "huang_gai",
+      "faction": "sun_jian",
+      "city": "changsha",
+      "troops": 6000,
+      "loyalty": 98
+    },
+    {
+      "officer": "han_dang",
+      "faction": "sun_jian",
+      "city": "changsha",
+      "troops": 6000,
+      "loyalty": 95
+    },
+    {
+      "officer": "zu_mao",
+      "faction": "sun_jian",
+      "city": "changsha",
+      "troops": 4000,
+      "loyalty": 98
+    },
+    {
+      "officer": "sun_ce",
+      "faction": "sun_jian",
+      "city": "changsha",
+      "troops": 8000,
+      "loyalty": 85
+    },
+    {
+      "officer": "sun_jing",
+      "faction": "sun_jian",
+      "city": "changsha",
+      "troops": 4000,
+      "loyalty": 95
+    },
+    {
+      "officer": "sun_ben",
+      "faction": "sun_jian",
+      "city": "changsha",
+      "troops": 5000,
+      "loyalty": 90
+    },
+    {
+      "officer": "wu_jing",
+      "faction": "sun_jian",
+      "city": "changsha",
+      "troops": 4000,
+      "loyalty": 93
+    },
+    {
+      "officer": "zhu_zhi",
+      "faction": "sun_jian",
+      "city": "changsha",
+      "troops": 5000,
+      "loyalty": 95
+    },
+    {
+      "officer": "kong_rong",
+      "faction": "kong_rong",
+      "city": "beihai",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "wu_anguo",
+      "faction": "kong_rong",
+      "city": "beihai",
+      "troops": 3000,
+      "loyalty": 90
+    },
+    {
+      "officer": "wang_xiu",
+      "faction": "kong_rong",
+      "city": "beihai",
+      "troops": 0,
+      "loyalty": 95
+    },
+    {
+      "officer": "tao_qian",
+      "faction": "tao_qian",
+      "city": "xiapi",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "mi_zhu",
+      "faction": "tao_qian",
+      "city": "xiapi",
+      "troops": 0,
+      "loyalty": 95
+    },
+    {
+      "officer": "mi_fang",
+      "faction": "tao_qian",
+      "city": "xiapi",
+      "troops": 0,
+      "loyalty": 70
+    },
+    {
+      "officer": "chen_gui",
+      "faction": "tao_qian",
+      "city": "xiapi",
+      "troops": 0,
+      "loyalty": 75
+    },
+    {
+      "officer": "chen_deng",
+      "faction": "tao_qian",
+      "city": "xiapi",
+      "troops": 5000,
+      "loyalty": 78
+    },
+    {
+      "officer": "zhang_kai",
+      "faction": "tao_qian",
+      "city": "xiapi",
+      "troops": 0,
+      "loyalty": 65
+    },
+    {
+      "officer": "cao_bao",
+      "faction": "tao_qian",
+      "city": "xiaopei",
+      "troops": 3000,
+      "loyalty": 73
+    },
+    {
+      "officer": "zang_ba",
+      "faction": "tao_qian",
+      "city": "langya",
+      "troops": 6000,
+      "loyalty": 85
+    },
+    {
+      "officer": "ze_rong",
+      "faction": "tao_qian",
+      "city": "langya",
+      "troops": 0,
+      "loyalty": 63
+    },
+    {
+      "officer": "gongsun_zan",
+      "faction": "gongsun_zan",
+      "city": "beiping",
+      "troops": 11000,
+      "loyalty": 100
+    },
+    {
+      "officer": "gongsun_yue",
+      "faction": "gongsun_zan",
+      "city": "beiping",
+      "troops": 4000,
+      "loyalty": 88
+    },
+    {
+      "officer": "gongsun_xu",
+      "faction": "gongsun_zan",
+      "city": "beiping",
+      "troops": 3000,
+      "loyalty": 90
+    },
+    {
+      "officer": "yan_gang",
+      "faction": "gongsun_zan",
+      "city": "beiping",
+      "troops": 4000,
+      "loyalty": 85
+    },
+    {
+      "officer": "shan_jing",
+      "faction": "gongsun_zan",
+      "city": "beiping",
+      "troops": 4000,
+      "loyalty": 83
+    },
+    {
+      "officer": "tian_kai",
+      "faction": "gongsun_zan",
+      "city": "beiping",
+      "troops": 4000,
+      "loyalty": 88
+    },
+    {
+      "officer": "guan_jing",
+      "faction": "gongsun_zan",
+      "city": "beiping",
+      "troops": 0,
+      "loyalty": 88
+    },
+    {
+      "officer": "tian_yu",
+      "faction": "gongsun_zan",
+      "city": "beiping",
+      "troops": 6000,
+      "loyalty": 90
+    },
+    {
+      "officer": "liu_bei",
+      "faction": "liu_bei",
+      "city": "pingyuan",
+      "troops": 9000,
+      "loyalty": 100
+    },
+    {
+      "officer": "guan_yu",
+      "faction": "liu_bei",
+      "city": "pingyuan",
+      "troops": 9000,
+      "loyalty": 98
+    },
+    {
+      "officer": "zhang_fei",
+      "faction": "liu_bei",
+      "city": "pingyuan",
+      "troops": 7000,
+      "loyalty": 98
+    },
+    {
+      "officer": "jian_yong",
+      "faction": "liu_bei",
+      "city": "pingyuan",
+      "troops": 0,
+      "loyalty": 95
+    },
+    {
+      "officer": "liu_yu",
+      "faction": "liu_yu",
+      "city": "ji",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "xianyu_fu",
+      "faction": "liu_yu",
+      "city": "ji",
+      "troops": 4000,
+      "loyalty": 90
+    },
+    {
+      "officer": "zou_jing",
+      "faction": "liu_yu",
+      "city": "ji",
+      "troops": 4000,
+      "loyalty": 85
+    },
+    {
+      "officer": "gongsun_du",
+      "faction": "gongsun_du",
+      "city": "xiangping",
+      "troops": 8000,
+      "loyalty": 100
+    },
+    {
+      "officer": "gongsun_kang",
+      "faction": "gongsun_du",
+      "city": "xiangping",
+      "troops": 4000,
+      "loyalty": 75
+    },
+    {
+      "officer": "zhang_miao",
+      "faction": "zhang_miao",
+      "city": "puyang",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "zhang_chao",
+      "faction": "zhang_miao",
+      "city": "puyang",
+      "troops": 3000,
+      "loyalty": 85
+    },
+    {
+      "officer": "liu_dai",
+      "faction": "zhang_miao",
+      "city": "puyang",
+      "troops": 0,
+      "loyalty": 78
+    },
+    {
+      "officer": "qiao_mao",
+      "faction": "zhang_miao",
+      "city": "puyang",
+      "troops": 0,
+      "loyalty": 83
+    },
+    {
+      "officer": "chen_gong",
+      "faction": "zhang_miao",
+      "city": "puyang",
+      "troops": 5000,
+      "loyalty": 90
+    },
+    {
+      "officer": "kong_zhou",
+      "faction": "kong_zhou",
+      "city": "xuchang",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "wang_kuang",
+      "faction": "wang_kuang",
+      "city": "shangdang",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "fang_yue",
+      "faction": "wang_kuang",
+      "city": "shangdang",
+      "troops": 3000,
+      "loyalty": 80
+    },
+    {
+      "officer": "zhang_yang",
+      "faction": "zhang_yang",
+      "city": "jinyang",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "sui_gu",
+      "faction": "zhang_yang",
+      "city": "jinyang",
+      "troops": 3000,
+      "loyalty": 73
+    },
+    {
+      "officer": "yang_chou",
+      "faction": "zhang_yang",
+      "city": "jinyang",
+      "troops": 0,
+      "loyalty": 65
+    },
+    {
+      "officer": "mu_shun",
+      "faction": "zhang_yang",
+      "city": "jinyang",
+      "troops": 0,
+      "loyalty": 80
+    },
+    {
+      "officer": "ma_teng",
+      "faction": "ma_teng",
+      "city": "wuwei",
+      "troops": 11000,
+      "loyalty": 100
+    },
+    {
+      "officer": "pang_de",
+      "faction": "ma_teng",
+      "city": "wuwei",
+      "troops": 6000,
+      "loyalty": 98
+    },
+    {
+      "officer": "han_sui",
+      "faction": "ma_teng",
+      "city": "xiliang",
+      "troops": 6000,
+      "loyalty": 68
+    },
+    {
+      "officer": "cheng_yi",
+      "faction": "ma_teng",
+      "city": "xiliang",
+      "troops": 0,
+      "loyalty": 80
+    },
+    {
+      "officer": "yan_xing",
+      "faction": "ma_teng",
+      "city": "xiliang",
+      "troops": 5000,
+      "loyalty": 80
+    },
+    {
+      "officer": "liu_biao",
+      "faction": "liu_biao",
+      "city": "xiangyang",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "kuai_liang",
+      "faction": "liu_biao",
+      "city": "xiangyang",
+      "troops": 0,
+      "loyalty": 88
+    },
+    {
+      "officer": "kuai_yue",
+      "faction": "liu_biao",
+      "city": "xiangyang",
+      "troops": 4000,
+      "loyalty": 85
+    },
+    {
+      "officer": "cai_mao",
+      "faction": "liu_biao",
+      "city": "xiangyang",
+      "troops": 6000,
+      "loyalty": 73
+    },
+    {
+      "officer": "zhang_yun",
+      "faction": "liu_biao",
+      "city": "xiangyang",
+      "troops": 4000,
+      "loyalty": 75
+    },
+    {
+      "officer": "yi_ji",
+      "faction": "liu_biao",
+      "city": "xiangyang",
+      "troops": 0,
+      "loyalty": 90
+    },
+    {
+      "officer": "liu_qi",
+      "faction": "liu_biao",
+      "city": "xiangyang",
+      "troops": 0,
+      "loyalty": 90
+    },
+    {
+      "officer": "han_song",
+      "faction": "liu_biao",
+      "city": "xiangyang",
+      "troops": 0,
+      "loyalty": 90
+    },
+    {
+      "officer": "wen_pin",
+      "faction": "liu_biao",
+      "city": "xinye",
+      "troops": 6000,
+      "loyalty": 93
+    },
+    {
+      "officer": "wang_wei",
+      "faction": "liu_biao",
+      "city": "jiangling",
+      "troops": 4000,
+      "loyalty": 93
+    },
+    {
+      "officer": "huang_zhong",
+      "faction": "liu_biao",
+      "city": "jiangling",
+      "troops": 8000,
+      "loyalty": 93
+    },
+    {
+      "officer": "huang_zu",
+      "faction": "liu_biao",
+      "city": "jiangxia",
+      "troops": 4000,
+      "loyalty": 83
+    },
+    {
+      "officer": "su_fei",
+      "faction": "liu_biao",
+      "city": "jiangxia",
+      "troops": 4000,
+      "loyalty": 90
+    },
+    {
+      "officer": "jin_xuan",
+      "faction": "liu_biao",
+      "city": "wuling",
+      "troops": 0,
+      "loyalty": 75
+    },
+    {
+      "officer": "liu_du",
+      "faction": "liu_biao",
+      "city": "lingling",
+      "troops": 0,
+      "loyalty": 78
+    },
+    {
+      "officer": "xing_daorong",
+      "faction": "liu_biao",
+      "city": "lingling",
+      "troops": 0,
+      "loyalty": 83
+    },
+    {
+      "officer": "zhao_fan",
+      "faction": "liu_biao",
+      "city": "guiyang",
+      "troops": 0,
+      "loyalty": 75
+    },
+    {
+      "officer": "liu_yan",
+      "faction": "liu_yan",
+      "city": "chengdu",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "huang_quan",
+      "faction": "liu_yan",
+      "city": "chengdu",
+      "troops": 5000,
+      "loyalty": 93
+    },
+    {
+      "officer": "zhang_song",
+      "faction": "liu_yan",
+      "city": "chengdu",
+      "troops": 0,
+      "loyalty": 70
+    },
+    {
+      "officer": "wu_yi",
+      "faction": "liu_yan",
+      "city": "chengdu",
+      "troops": 6000,
+      "loyalty": 83
+    },
+    {
+      "officer": "wang_lei",
+      "faction": "liu_yan",
+      "city": "chengdu",
+      "troops": 0,
+      "loyalty": 98
+    },
+    {
+      "officer": "zhang_su",
+      "faction": "liu_yan",
+      "city": "chengdu",
+      "troops": 0,
+      "loyalty": 90
+    },
+    {
+      "officer": "zhang_ren",
+      "faction": "liu_yan",
+      "city": "zitong",
+      "troops": 8000,
+      "loyalty": 98
+    },
+    {
+      "officer": "leng_bao",
+      "faction": "liu_yan",
+      "city": "zitong",
+      "troops": 5000,
+      "loyalty": 85
+    },
+    {
+      "officer": "yan_yan",
+      "faction": "liu_yan",
+      "city": "jiangzhou",
+      "troops": 6000,
+      "loyalty": 95
+    },
+    {
+      "officer": "liu_gui",
+      "faction": "liu_yan",
+      "city": "yongan",
+      "troops": 5000,
+      "loyalty": 90
+    },
+    {
+      "officer": "deng_xian",
+      "faction": "liu_yan",
+      "city": "jianning",
+      "troops": 4000,
+      "loyalty": 85
+    },
+    {
+      "officer": "zhang_lu",
+      "faction": "zhang_lu",
+      "city": "hanzhong",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "zhang_wei",
+      "faction": "zhang_lu",
+      "city": "hanzhong",
+      "troops": 5000,
+      "loyalty": 83
+    },
+    {
+      "officer": "yan_pu",
+      "faction": "zhang_lu",
+      "city": "hanzhong",
+      "troops": 0,
+      "loyalty": 90
+    },
+    {
+      "officer": "yang_ren",
+      "faction": "zhang_lu",
+      "city": "hanzhong",
+      "troops": 5000,
+      "loyalty": 83
+    },
+    {
+      "officer": "yang_ang",
+      "faction": "zhang_lu",
+      "city": "hanzhong",
+      "troops": 4000,
+      "loyalty": 80
+    },
+    {
+      "officer": "yang_song",
+      "faction": "zhang_lu",
+      "city": "hanzhong",
+      "troops": 0,
+      "loyalty": 63
+    },
+    {
+      "officer": "liu_yao",
+      "faction": "liu_yao",
+      "city": "jianye",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "zhang_ying",
+      "faction": "liu_yao",
+      "city": "jianye",
+      "troops": 3000,
+      "loyalty": 80
+    },
+    {
+      "officer": "xue_li",
+      "faction": "liu_yao",
+      "city": "jianye",
+      "troops": 0,
+      "loyalty": 75
+    },
+    {
+      "officer": "yan_baihu",
+      "faction": "yan_baihu",
+      "city": "wu",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "wang_lang",
+      "faction": "wang_lang",
+      "city": "kuaiji",
+      "troops": 6000,
+      "loyalty": 100
+    },
+    {
+      "officer": "yu_fan",
+      "faction": "wang_lang",
+      "city": "kuaiji",
+      "troops": 0,
+      "loyalty": 85
+    },
+    {
+      "officer": "zhou_yu",
+      "faction": null,
+      "city": "lujiang",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "lu_su",
+      "faction": null,
+      "city": "lujiang",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "zhang_zhao",
+      "faction": null,
+      "city": "xiapi",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "zhang_hong",
+      "faction": null,
+      "city": "xiapi",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "hua_tuo",
+      "faction": null,
+      "city": "qiao",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "taishi_ci",
+      "faction": null,
+      "city": "beihai",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "sun_qian",
+      "faction": null,
+      "city": "beihai",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "guan_hai",
+      "faction": null,
+      "city": "beihai",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "gan_ning",
+      "faction": null,
+      "city": "jiangzhou",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "ji_ping",
+      "faction": null,
+      "city": "luoyang",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "wang_zifu",
+      "faction": null,
+      "city": "luoyang",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "chong_ji",
+      "faction": null,
+      "city": "luoyang",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "zhang_yan",
+      "faction": null,
+      "city": "shangdang",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "zhou_cang",
+      "faction": null,
+      "city": "runan",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "liao_hua",
+      "faction": null,
+      "city": "runan",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "liu_pi",
+      "faction": null,
+      "city": "runan",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "gong_du",
+      "faction": null,
+      "city": "runan",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "he_yi",
+      "faction": null,
+      "city": "runan",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "huang_shao",
+      "faction": null,
+      "city": "runan",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "he_man",
+      "faction": null,
+      "city": "runan",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "pei_yuanshao",
+      "faction": null,
+      "city": "runan",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "yang_feng",
+      "faction": null,
+      "city": "hongnong",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "han_xian",
+      "faction": null,
+      "city": "hongnong",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "li_le",
+      "faction": null,
+      "city": "hongnong",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "hu_cai",
+      "faction": null,
+      "city": "hongnong",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "xu_huang",
+      "faction": null,
+      "city": "hongnong",
+      "troops": 0,
+      "loyalty": 0
+    },
+    {
+      "officer": "yu_ji",
+      "faction": null,
+      "city": "kuaiji",
+      "troops": 0,
+      "loyalty": 0
+    }
+  ],
+  "relations": [
+    {
+      "a": "dong_zhuo",
+      "b": "yuan_shao",
+      "friendship": 5
+    },
+    {
+      "a": "dong_zhuo",
+      "b": "han_fu",
+      "friendship": 5
+    },
+    {
+      "a": "dong_zhuo",
+      "b": "cao",
+      "friendship": 5
+    },
+    {
+      "a": "dong_zhuo",
+      "b": "yuan_shu",
+      "friendship": 5
+    },
+    {
+      "a": "dong_zhuo",
+      "b": "sun_jian",
+      "friendship": 5
+    },
+    {
+      "a": "dong_zhuo",
+      "b": "kong_rong",
+      "friendship": 5
+    },
+    {
+      "a": "dong_zhuo",
+      "b": "tao_qian",
+      "friendship": 5
+    },
+    {
+      "a": "dong_zhuo",
+      "b": "gongsun_zan",
+      "friendship": 5
+    },
+    {
+      "a": "dong_zhuo",
+      "b": "liu_bei",
+      "friendship": 5
+    },
+    {
+      "a": "dong_zhuo",
+      "b": "zhang_miao",
+      "friendship": 5
+    },
+    {
+      "a": "dong_zhuo",
+      "b": "kong_zhou",
+      "friendship": 5
+    },
+    {
+      "a": "dong_zhuo",
+      "b": "wang_kuang",
+      "friendship": 5
+    },
+    {
+      "a": "dong_zhuo",
+      "b": "zhang_yang",
+      "friendship": 5
+    },
+    {
+      "a": "dong_zhuo",
+      "b": "ma_teng",
+      "friendship": 5
+    },
+    {
+      "a": "liu_bei",
+      "b": "gongsun_zan",
+      "friendship": 85,
+      "treaty": "alliance"
+    },
+    {
+      "a": "gongsun_zan",
+      "b": "liu_yu",
+      "friendship": 20
+    },
+    {
+      "a": "liu_biao",
+      "b": "sun_jian",
+      "friendship": 15
+    },
+    {
+      "a": "liu_biao",
+      "b": "dong_zhuo",
+      "friendship": 40
+    },
+    {
+      "a": "liu_yan",
+      "b": "zhang_lu",
+      "friendship": 60
+    },
+    {
+      "a": "liu_yao",
+      "b": "yan_baihu",
+      "friendship": 20
+    },
+    {
+      "a": "yuan_shao",
+      "b": "gongsun_zan",
+      "friendship": 40,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shao",
+      "b": "han_fu",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shao",
+      "b": "cao",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shao",
+      "b": "yuan_shu",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shao",
+      "b": "sun_jian",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shao",
+      "b": "kong_rong",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shao",
+      "b": "tao_qian",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shao",
+      "b": "liu_bei",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shao",
+      "b": "zhang_miao",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shao",
+      "b": "kong_zhou",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shao",
+      "b": "wang_kuang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shao",
+      "b": "zhang_yang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shao",
+      "b": "ma_teng",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "han_fu",
+      "b": "cao",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "han_fu",
+      "b": "yuan_shu",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "han_fu",
+      "b": "sun_jian",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "han_fu",
+      "b": "kong_rong",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "han_fu",
+      "b": "tao_qian",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "han_fu",
+      "b": "gongsun_zan",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "han_fu",
+      "b": "liu_bei",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "han_fu",
+      "b": "zhang_miao",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "han_fu",
+      "b": "kong_zhou",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "han_fu",
+      "b": "wang_kuang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "han_fu",
+      "b": "zhang_yang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "han_fu",
+      "b": "ma_teng",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "cao",
+      "b": "yuan_shu",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "cao",
+      "b": "sun_jian",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "cao",
+      "b": "kong_rong",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "cao",
+      "b": "tao_qian",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "cao",
+      "b": "gongsun_zan",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "cao",
+      "b": "liu_bei",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "cao",
+      "b": "zhang_miao",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "cao",
+      "b": "kong_zhou",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "cao",
+      "b": "wang_kuang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "cao",
+      "b": "zhang_yang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "cao",
+      "b": "ma_teng",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shu",
+      "b": "sun_jian",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shu",
+      "b": "kong_rong",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shu",
+      "b": "tao_qian",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shu",
+      "b": "gongsun_zan",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shu",
+      "b": "liu_bei",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shu",
+      "b": "zhang_miao",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shu",
+      "b": "kong_zhou",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shu",
+      "b": "wang_kuang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shu",
+      "b": "zhang_yang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "yuan_shu",
+      "b": "ma_teng",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "sun_jian",
+      "b": "kong_rong",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "sun_jian",
+      "b": "tao_qian",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "sun_jian",
+      "b": "gongsun_zan",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "sun_jian",
+      "b": "liu_bei",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "sun_jian",
+      "b": "zhang_miao",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "sun_jian",
+      "b": "kong_zhou",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "sun_jian",
+      "b": "wang_kuang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "sun_jian",
+      "b": "zhang_yang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "sun_jian",
+      "b": "ma_teng",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "kong_rong",
+      "b": "tao_qian",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "kong_rong",
+      "b": "gongsun_zan",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "kong_rong",
+      "b": "liu_bei",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "kong_rong",
+      "b": "zhang_miao",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "kong_rong",
+      "b": "kong_zhou",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "kong_rong",
+      "b": "wang_kuang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "kong_rong",
+      "b": "zhang_yang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "kong_rong",
+      "b": "ma_teng",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "tao_qian",
+      "b": "gongsun_zan",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "tao_qian",
+      "b": "liu_bei",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "tao_qian",
+      "b": "zhang_miao",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "tao_qian",
+      "b": "kong_zhou",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "tao_qian",
+      "b": "wang_kuang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "tao_qian",
+      "b": "zhang_yang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "tao_qian",
+      "b": "ma_teng",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "gongsun_zan",
+      "b": "zhang_miao",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "gongsun_zan",
+      "b": "kong_zhou",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "gongsun_zan",
+      "b": "wang_kuang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "gongsun_zan",
+      "b": "zhang_yang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "gongsun_zan",
+      "b": "ma_teng",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "liu_bei",
+      "b": "zhang_miao",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "liu_bei",
+      "b": "kong_zhou",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "liu_bei",
+      "b": "wang_kuang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "liu_bei",
+      "b": "zhang_yang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "liu_bei",
+      "b": "ma_teng",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "zhang_miao",
+      "b": "kong_zhou",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "zhang_miao",
+      "b": "wang_kuang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "zhang_miao",
+      "b": "zhang_yang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "zhang_miao",
+      "b": "ma_teng",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "kong_zhou",
+      "b": "wang_kuang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "kong_zhou",
+      "b": "zhang_yang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "kong_zhou",
+      "b": "ma_teng",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "wang_kuang",
+      "b": "zhang_yang",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "wang_kuang",
+      "b": "ma_teng",
+      "friendship": 70,
+      "treaty": "alliance"
+    },
+    {
+      "a": "zhang_yang",
+      "b": "ma_teng",
+      "friendship": 70,
+      "treaty": "alliance"
+    }
+  ]
+}

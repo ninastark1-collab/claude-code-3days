@@ -1,0 +1,12 @@
+{
+  "appId": "local.samgukji.strategy",
+  "appName": "삼국지 천하쟁패",
+  "webDir": "dist",
+  "android": {
+    "backgroundColor": "#13120f"
+  },
+  "ios": {
+    "backgroundColor": "#13120f",
+    "contentInset": "never"
+  }
+}

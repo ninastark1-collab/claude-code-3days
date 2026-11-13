@@ -1,0 +1,52 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "client",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "-w",
+        "client"
+      ],
+      "port": 5173
+    },
+    {
+      "name": "server",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "start",
+        "-w",
+        "server"
+      ],
+      "port": 2567
+    },
+    {
+      "name": "design",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "-e",
+        "const h=require('http'),f=require('fs'),p=require('path'),d=p.join(process.cwd(),'design');h.createServer((q,s)=>{const u=decodeURIComponent(q.url.split('?')[0]);const fp=p.join(d,u==='/'?'monster-class-v2.html':u);if(!fp.startsWith(d)||!f.existsSync(fp)){s.writeHead(404);return s.end();}const t={'.html':'text/html; charset=utf-8','.js':'text/javascript','.png':'image/png','.json':'application/json'}[p.extname(fp)]||'application/octet-stream';s.writeHead(200,{'Content-Type':t});f.createReadStream(fp).pipe(s);}).listen(5180)"
+      ],
+      "port": 5180
+    },
+    {
+      "name": "client-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "preview",
+        "-w",
+        "client"
+      ],
+      "port": 4173
+    },
+    {
+      "name": "prod-local",
+      "url": "http://localhost:3000",
+      "port": 3000
+    }
+  ]
+}

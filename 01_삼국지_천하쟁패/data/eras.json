@@ -1,0 +1,11 @@
+[
+  { "name": "중평", "hanja": "中平", "start": 184, "from": 184, "note": "황건적의 난" },
+  { "name": "광희·소녕·영한", "hanja": "光熹·昭寧·永漢", "start": 189, "from": 189, "note": "영제 붕어, 동탁 상경 (한 해에 연호가 세 번 바뀌고 연말에 중평으로 환원)" },
+  { "name": "초평", "hanja": "初平", "start": 190, "from": 190, "note": "반동탁 연합, 장안 천도" },
+  { "name": "흥평", "hanja": "興平", "start": 194, "from": 194, "note": "군웅할거, 여포·유비 서주 쟁탈" },
+  { "name": "건안", "hanja": "建安", "start": 196, "from": 196, "note": "헌제 허도 이주 ~ 관도·적벽·형주" },
+  { "name": "연강", "hanja": "延康", "start": 220, "from": 220, "note": "조조 사망" },
+  { "name": "황초", "hanja": "黃初", "start": 220, "from": 221, "camp": "wei", "note": "위 연호 (220년 말 개원)" },
+  { "name": "장무", "hanja": "章武", "start": 221, "from": 221, "camp": "shu", "note": "촉 연호" },
+  { "name": "황무", "hanja": "黃武", "start": 222, "from": 222, "camp": "wu", "note": "오 연호" }
+]

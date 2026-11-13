@@ -1,0 +1,13 @@
+# Render blueprint: one web service runs the battle server and serves the web client (same URL).
+# Free plan sleeps after ~15 min without traffic; the first visit after that takes ~1 min to wake up.
+services:
+  - type: web
+    name: monster-class
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm run start -w server
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "22"

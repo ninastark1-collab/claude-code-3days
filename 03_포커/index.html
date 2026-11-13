@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#050607" />
+    <title>기억력 포커</title>
+    <meta name="description" content="외우고, 고르고, 족보로 승리하라 — 친구와 2~4명이 각자 폰으로 하는 포커" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="기억력 포커" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/ui/style.css" />
+    <link rel="stylesheet" href="/src/ui/online.css" />
+  </head>
+  <body>
+    <div class="ambient" aria-hidden="true"></div>
+
+    <div class="layout">
+      <!-- 족보표: 넓은 화면에서는 게임판 왼쪽 패널(높이 = 게임판), 핸드폰에서는 아래에서 올라오는 패널 -->
+      <aside id="guide" class="guide" aria-label="족보표">
+        <div class="guide-inner">
+        <div class="guide-head">
+          <div>
+            <div class="guide-title">족보</div>
+            <div class="guide-sub">HAND RANKINGS</div>
+          </div>
+          <button id="guide-close" class="icon-btn guide-close" aria-label="족보 닫기">✕</button>
+        </div>
+        <div class="guide-hint">I이 가장 강해요 · <b>밝은 카드</b>가 족보를 만드는 카드</div>
+        <ol id="guide-list"></ol>
+        </div>
+      </aside>
+      <div id="guide-backdrop" class="guide-backdrop"></div>
+
+      <main id="app">
+        <header class="top">
+          <div class="brand">
+            <span class="emblem"></span>
+            <div>
+              <div class="brand-name">기억력 포커</div>
+              <div class="brand-sub">MEMORY POKER</div>
+            </div>
+          </div>
+          <div class="top-actions">
+            <button id="guide-btn" class="chip-btn" aria-label="족보 보기"><span class="chip-icon"></span>족보</button>
+            <button id="sound-btn" class="icon-btn sound-btn" aria-label="소리 끄기">🔊</button>
+            <button id="help-btn" class="icon-btn" aria-label="게임 방법">?</button>
+            <button id="exit-btn" class="icon-btn exit-btn" aria-label="나가기" title="나가기">⏻</button>
+          </div>
+        </header>
+
+        <!-- 왼쪽: 테이블·타이머·카드판 / 오른쪽: 참가자 칸 -->
+        <div class="table-row">
+        <div class="main-col">
+        <section class="rim felt-rim">
+          <div class="felt">
+            <div class="felt-label">COMMUNITY · 공개 카드</div>
+            <div id="community" class="row community"></div>
+          </div>
+        </section>
+
+        <section class="status">
+          <div>
+            <div id="phase-step" class="phase-step">READY</div>
+            <div id="phase-text" class="phase-text">준비</div>
+          </div>
+          <div class="ring">
+            <svg viewBox="0 0 44 44" aria-hidden="true">
+              <circle class="ring-bg" cx="22" cy="22" r="19" />
+              <circle id="ring-fg" class="ring-fg" cx="22" cy="22" r="19" />
+            </svg>
+            <span id="timer-num" class="timer-num">–</span>
+          </div>
+        </section>
+
+        <!-- grid-area: 남은 세로 공간을 전부 차지하고, 그 안에서 카드판이 최대 크기로 맞춰짐 -->
+        <section class="grid-area">
+          <div class="rim grid-rim">
+            <div id="grid" class="grid"></div>
+            <button id="play-btn" class="btn play-btn">게임 시작</button>
+            <!-- 시작 전 3초 카운트다운 -->
+            <div id="countdown" class="countdown hidden" aria-live="assertive">
+              <span id="countdown-num" class="countdown-num">3</span>
+              <span class="countdown-text">카드가 곧 공개돼요</span>
+            </div>
+          </div>
+        </section>
+        </div>
+        <aside id="players" class="players" aria-label="참가자"></aside>
+        </div>
+
+        <section class="picks">
+          <div class="picks-label">내 카드<span id="pick-count">0 / 2</span></div>
+          <div id="my-picks" class="row slots"></div>
+        </section>
+      </main>
+    </div>
+
+    <!-- 게임 방법: 처음엔 안 뜨고, 오른쪽 위 ? 버튼을 눌렀을 때만 열림 -->
+    <div id="intro" class="overlay hidden">
+      <div class="sheet">
+        <div class="sheet-crest"></div>
+        <div class="sheet-eyebrow">MEMORY POKER</div>
+        <h2>기억력 포커</h2>
+        <p class="sheet-lead">외우고 · 고르고 · 족보로 승리하라</p>
+        <ol class="steps">
+          <li><span class="step-no">I</span><div><b>외우기</b><span id="step1"></span></div></li>
+          <li><span class="step-no">II</span><div><b>공개</b><span>카드가 뒤집히면 공개 카드 3장이 열려요</span></div></li>
+          <li><span class="step-no">III</span><div><b>선택</b><span id="step3"></span></div></li>
+          <li><span class="step-no">IV</span><div><b>승부</b><span>공개 3장 + 내 2장, 더 높은 족보가 승리</span></div></li>
+        </ol>
+        <p class="sheet-tip">상대가 먼저 고른 카드는 가져갈 수 없어요</p>
+        <button id="start-btn" class="btn">확인</button>
+      </div>
+    </div>
+
+    <!-- 결과 -->
+    <div id="result" class="overlay hidden">
+      <div class="sheet result">
+        <div id="result-eyebrow" class="result-eyebrow"></div>
+        <h2 id="result-title"></h2>
+
+        <!-- 참가자 순위대로 (1등부터) -->
+        <div id="result-hands" class="result-hands"></div>
+
+        <div class="hand-block best">
+          <div class="hand-who"><span class="who">이번 판 최고</span><span id="best-hand-name" class="hand-name"></span></div>
+          <div id="best-hand" class="row hand"></div>
+          <div id="best-note" class="best-note"></div>
+        </div>
+
+        <div id="verdict" class="verdict">
+          <div class="verdict-label">판정</div>
+          <div id="verdict-headline" class="verdict-headline"></div>
+          <div id="verdict-detail" class="verdict-detail"></div>
+        </div>
+
+        <button id="next-btn" class="btn">확인</button>
+        <button id="result-guide-btn" class="link-btn">족보표 보기</button>
+      </div>
+    </div>
+
+    <!-- 첫 화면 -->
+    <div id="home" class="overlay home">
+      <div class="sheet">
+        <div class="sheet-crest"></div>
+        <div class="sheet-eyebrow">MEMORY POKER</div>
+        <h2>기억력 포커</h2>
+        <p class="sheet-lead">친구와 2~4명이 각자 폰으로 대결</p>
+        <label class="field">
+          <span>닉네임</span>
+          <input id="nickname" maxlength="12" autocomplete="nickname" placeholder="예: 민수" />
+        </label>
+        <button id="create-btn" class="btn">방 만들기</button>
+        <div class="or"><span>또는 친구 방에 참가</span></div>
+        <div class="join-row">
+          <input id="join-code" maxlength="4" autocapitalize="characters" autocomplete="off" placeholder="방 코드 4자리" />
+          <button id="join-btn" class="btn btn-outline">참가</button>
+        </div>
+        <p id="home-error" class="form-error" role="alert"></p>
+        <button id="install-btn" class="btn btn-outline install-btn hidden">📲 앱으로 설치하기</button>
+        <div class="home-links">
+          <button id="practice-btn" class="link-btn">혼자 연습하기</button>
+          <span aria-hidden="true">·</span>
+          <button id="home-help" class="link-btn">게임 방법</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 대기실 -->
+    <div id="lobby" class="overlay lobby hidden">
+      <div class="sheet">
+        <div class="sheet-eyebrow">WAITING ROOM</div>
+        <div class="room-code-label">방 코드</div>
+        <div id="room-code" class="room-code">----</div>
+        <button id="share-btn" class="btn btn-outline">초대 링크 보내기</button>
+        <p id="share-msg" class="share-msg"></p>
+        <div class="lobby-title">참가자 <span id="lobby-count">0 / 4</span></div>
+        <ul id="lobby-list" class="lobby-list"></ul>
+        <button id="lobby-start" class="btn">게임 시작</button>
+        <p id="lobby-wait" class="lobby-wait"></p>
+        <p id="lobby-error" class="form-error" role="alert"></p>
+        <button id="lobby-leave" class="link-btn">방 나가기</button>
+      </div>
+    </div>
+
+    <!-- 앱 설치 방법 -->
+    <div id="install-guide" class="overlay hidden">
+      <div class="sheet">
+        <div class="sheet-eyebrow">INSTALL</div>
+        <h2 id="install-title">앱으로 설치하기</h2>
+        <p id="install-lead" class="sheet-lead">한 번만 해두면 홈 화면 아이콘으로 바로 실행돼요</p>
+        <ol id="install-steps" class="steps"></ol>
+        <button id="install-close" class="btn">확인</button>
+      </div>
+    </div>
+
+    <!-- 잠깐 뜨는 알림 -->
+    <div id="toast" class="toast hidden" role="status"></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

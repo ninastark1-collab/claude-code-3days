@@ -1,0 +1,14 @@
+node_modules/
+.venv/
+dist/
+release/
+.next/
+.vercel/
+.gradle/
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+.claude/settings.local.json
+**/.claude/settings.local.json
+*.log

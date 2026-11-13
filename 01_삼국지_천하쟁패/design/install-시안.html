@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>삼국지 천하쟁패 설치</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./icon-512.png" />
+    <meta name="theme-color" content="#13120f" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="천하쟁패" />
+    <style>
+      :root {
+        --bg: #13120f; --panel: #1f1c17; --panel-2: #2a261f; --gold: #e3c27a; --gold-ink: #1b1612; --line: rgba(227, 194, 122, .24);
+        --text: #f3ebdd; --dim: #b9ae98; --green: #3e7d5a; --blue: #2f5d8a; --red: #b5382a;
+        --serif: 'Noto Serif KR', 'Nanum Myeongjo', 'AppleMyungjo', 'Batang', serif;
+        --sans: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+      }
+      * { box-sizing: border-box; }
+      html { background: var(--bg); }
+      body {
+        margin: 0; min-height: 100vh; color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.6;
+        background: radial-gradient(120% 60% at 50% 0%, #2c271e 0%, var(--bg) 62%);
+        padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+      }
+      main { width: 100%; max-width: 440px; margin: 0 auto; display: grid; gap: 16px; }
+      [hidden] { display: none !important; }
+      /* 첫인상: 가로 폰 안의 전장 */
+      .hero { display: grid; justify-items: center; gap: 14px; padding-top: 6px; }
+      .phone { width: 100%; max-width: 360px; aspect-ratio: 844 / 390; border-radius: 26px; padding: 7px; background: linear-gradient(160deg, #3a3a40, #121214 60%); box-shadow: 0 18px 40px -14px rgba(0,0,0,.7); }
+      .scr { position: relative; width: 100%; height: 100%; border-radius: 20px; overflow: hidden; background: linear-gradient(180deg, #a9c7d4 0%, #d9e2d6 34%, #8fb267 35%, #6e9a45 100%); }
+      .scr::before { content: ''; position: absolute; left: -10%; right: -10%; top: 35%; height: 30%; background: radial-gradient(60% 60% at 30% 40%, rgba(255,255,255,.18), transparent 70%); }
+      .road { position: absolute; left: -5%; right: -5%; top: 64%; height: 9%; background: #b49a6a; transform: rotate(-3deg); opacity: .8; border-radius: 40%; }
+      .hill { position: absolute; bottom: 62%; border-radius: 50% 50% 0 0; background: #5f8a4a; }
+      .unit { position: absolute; display: grid; grid-template-columns: repeat(5, 7px); gap: 3px; }
+      .unit i { width: 7px; height: 9px; border-radius: 4px 4px 2px 2px; background: var(--c); box-shadow: inset 0 3px 0 #f3d2ae; }
+      .flag { position: absolute; width: 14px; height: 18px; border-radius: 2px; background: var(--c); color: #fff7e6; font: 900 10px/18px var(--serif); text-align: center; }
+      .flag::after { content: ''; position: absolute; left: -2px; top: 0; width: 2px; height: 30px; background: #6b4a2b; }
+      .spark { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: radial-gradient(circle, #fff3c4, rgba(255,170,60,.7) 40%, transparent 70%); }
+      .hud { position: absolute; left: 50%; top: 5%; transform: translateX(-50%); width: 46%; height: 10%; border-radius: 5px; background: rgba(20,18,15,.7); border: 1px solid var(--line); }
+      .cards { position: absolute; left: 50%; bottom: 4%; transform: translateX(-50%); display: flex; gap: 4px; }
+      .cards b { width: 18px; height: 16px; border-radius: 4px; background: rgba(20,18,15,.75); border: 1px solid var(--line); color: var(--gold); font: 900 9px/14px var(--serif); text-align: center; }
+      h1 { margin: 0; font-family: var(--serif); font-weight: 900; font-size: 30px; letter-spacing: .04em; line-height: 1.2; text-align: center; }
+      h1 small { display: block; font-size: 13px; font-weight: 600; letter-spacing: .5em; color: var(--gold); margin-bottom: 4px; }
+      .sub { margin: 0; color: var(--dim); text-align: center; font-size: 14px; }
+      .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .facts div { padding: 10px 6px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line); text-align: center; }
+      .facts b { display: block; font-family: var(--serif); font-size: 19px; color: var(--gold); line-height: 1.2; }
+      .facts span { font-size: 12px; color: var(--dim); }
+      /* 버튼 */
+      .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 56px; padding: 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel-2); color: var(--text); font: 700 17px var(--sans); text-decoration: none; cursor: pointer; }
+      .btn.pri { background: var(--gold); color: var(--gold-ink); border-color: var(--gold); box-shadow: 0 8px 22px -10px rgba(227,194,122,.7); }
+      .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+      .btn svg { width: 20px; height: 20px; }
+      .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; text-align: left; }
+      .card b { color: var(--gold); }
+      .card h2 { margin: 0 0 10px; font-family: var(--serif); font-size: 17px; font-weight: 900; }
+      .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+      .steps li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; }
+      .steps li::before { counter-increment: s; content: counter(s); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--gold); color: var(--gold-ink); font-weight: 800; font-size: 14px; }
+      .steps { counter-reset: s; }
+      .ico { display: inline-block; width: 20px; height: 20px; vertical-align: -4px; }
+      .rotate { display: grid; grid-template-columns: 54px 1fr; gap: 12px; align-items: center; color: var(--dim); font-size: 13px; }
+      .rotate svg { width: 54px; height: 40px; }
+      .note { color: var(--dim); font-size: 13px; text-align: center; margin: 0; }
+      .ver { color: rgba(185,174,152,.6); font-size: 12px; text-align: center; margin: 4px 0 0; }
+      @media (prefers-reduced-motion: no-preference) { .spark { animation: blink 1.4s ease-in-out infinite; } }
+      @keyframes blink { 50% { opacity: .2; transform: scale(.7); } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="hero">
+        <div class="phone" aria-hidden="true">
+          <div class="scr">
+            <span class="hill" style="left:-4%;width:38%;height:22%"></span><span class="hill" style="right:-6%;width:44%;height:26%;background:#55804a"></span>
+            <span class="road"></span>
+            <span class="hud"></span>
+            <span class="flag" style="--c:var(--green);left:16%;top:44%">劉</span>
+            <span class="unit" style="--c:var(--green);left:20%;top:52%"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <span class="flag" style="--c:#b678ae;left:76%;top:44%">呂</span>
+            <span class="unit" style="--c:#b678ae;left:58%;top:52%"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <span class="spark" style="left:49%;top:52%"></span>
+            <span class="cards"><b>突</b><b>矢</b><b>騎</b><b>火</b><b>戰</b></span>
+          </div>
+        </div>
+        <h1><small>三國志</small>삼국지 천하쟁패</h1>
+        <p class="sub">나관중 『삼국지연의』 기반 전략 시뮬레이션</p>
+      </div>
+
+      <div class="facts">
+        <div><b>6</b><span>연의 시나리오</span></div>
+        <div><b>726</b><span>등장 무장</span></div>
+        <div><b>3D</b><span>살아 있는 전장</span></div>
+      </div>
+
+      <!-- 카카오톡·인스타 등 앱 안 브라우저: 설치가 안 되므로 기본 브라우저로 넘긴다 -->
+      <section id="inapp" hidden>
+        <div class="card">지금은 메신저 안의 브라우저라 설치할 수 없습니다. 아래 버튼으로 <b id="inapp-browser">Chrome</b>에서 열어 주세요.</div>
+        <p></p>
+        <a class="btn pri" id="open-external" href="#">브라우저에서 열기</a>
+      </section>
+
+      <!-- 안드로이드 (Chrome·삼성 인터넷): 버튼 한 번으로 설치 -->
+      <section id="android" hidden>
+        <button class="btn pri" id="install-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 20h14"/></svg>앱 설치하기</button>
+        <div class="card" id="android-manual" hidden style="margin-top:10px">
+          설치 버튼이 안 보이면 브라우저 오른쪽 위 <b>⋮ 메뉴</b>에서 <b>홈 화면에 추가</b> 또는 <b>앱 설치</b>를 누르세요.
+        </div>
+      </section>
+
+      <!-- 아이폰·아이패드 (Safari): 공유 → 홈 화면에 추가 -->
+      <section id="ios" hidden>
+        <div class="card">
+          <h2>아이폰에 설치하기</h2>
+          <ol class="steps">
+            <li><span>Safari 아래쪽의 <b>공유</b> <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#e3c27a" stroke-width="2"><path d="M12 15V3M7 8l5-5 5 5M5 12v8h14v-8"/></svg> 버튼을 누릅니다.</span></li>
+            <li><span>목록을 내려 <b>홈 화면에 추가</b> <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#e3c27a" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg> 를 누릅니다.</span></li>
+            <li><span>오른쪽 위 <b>추가</b>를 누르면 홈 화면에 <b>천하쟁패</b> 아이콘이 생깁니다.</span></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 이미 설치됨 -->
+      <section id="installed" hidden>
+        <div class="card">설치되었습니다. 홈 화면의 <b>천하쟁패</b> 아이콘으로 실행하세요.</div>
+      </section>
+
+      <a class="btn" id="play" href="./">설치 없이 바로 하기</a>
+
+      <div class="card rotate">
+        <svg viewBox="0 0 54 40" fill="none" stroke="#e3c27a" stroke-width="2" aria-hidden="true"><rect x="16" y="2" width="20" height="34" rx="4" opacity=".4"/><rect x="4" y="12" width="40" height="22" rx="4"/><path d="M40 6c5 2 8 6 8 11M48 17l-3-2M48 17l2-3"/></svg>
+        <span><b style="color:var(--text)">폰을 가로로 돌려서</b> 하는 게임입니다. 설치하면 전체 화면으로 열리고, 한 번 연 뒤에는 인터넷 없이도 할 수 있습니다. 진행은 이 기기에 저장됩니다.</span>
+      </div>
+      <p class="ver">0.6.0</p>
+    </main>
+    <script>
+      (function () {
+        var ua = navigator.userAgent || '';
+        var isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        var isAndroid = /Android/.test(ua);
+        var inApp = /KAKAOTALK|Instagram|FBAN|FBAV|NAVER\(inapp|Line\/|DaumApps|everytimeApp/i.test(ua);
+        var standalone = window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches || navigator.standalone;
+        var show = function (id) { document.getElementById(id).hidden = false; };
+
+        if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('./sw.js').catch(function () {});
+
+        // 설치된 앱으로 열렸으면 바로 게임으로
+        if (standalone) { location.replace('./'); return; }
+
+        if (inApp) {
+          show('inapp');
+          var target = location.href;
+          var a = document.getElementById('open-external');
+          if (isAndroid) {
+            a.href = 'intent://' + target.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+          } else if (isIOS) {
+            document.getElementById('inapp-browser').textContent = 'Safari';
+            a.href = /KAKAOTALK/i.test(ua) ? 'kakaotalk://web/openExternal?url=' + encodeURIComponent(target) : target;
+            if (!/KAKAOTALK/i.test(ua)) a.textContent = '오른쪽 아래 … 메뉴 → Safari로 열기';
+          }
+          return;
+        }
+
+        if (isIOS) { show('ios'); return; }
+
+        // 안드로이드·PC 크롬: 설치 제안 이벤트를 받아 버튼에 연결
+        var deferred = null;
+        var btn = document.getElementById('install-btn');
+        if (isAndroid) show('android');
+        window.addEventListener('beforeinstallprompt', function (e) {
+          e.preventDefault();
+          deferred = e;
+          show('android');
+          btn.hidden = false;
+          document.getElementById('android-manual').hidden = true;
+        });
+        btn.addEventListener('click', function () {
+          if (!deferred) { document.getElementById('android-manual').hidden = false; return; }
+          deferred.prompt();
+          deferred.userChoice.then(function (r) {
+            if (r.outcome === 'accepted') { document.getElementById('android').hidden = true; show('installed'); }
+            deferred = null;
+          });
+        });
+        window.addEventListener('appinstalled', function () { document.getElementById('android').hidden = true; show('installed'); });
+        // 3초 안에 설치 제안이 안 오면 수동 안내도 같이 보여 준다
+        setTimeout(function () { if (!deferred && isAndroid) document.getElementById('android-manual').hidden = false; }, 3000);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BGM 미리듣기</title>
+    <style>
+      :root {
+        --bg: #f4efe4;
+        --card: #fffaf0;
+        --ink: #2b2118;
+        --sub: #7a6a58;
+        --line: #d9cdb8;
+        --accent: #a8322a;
+        --stinger: #2e6e8e;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1c1814;
+          --card: #26201a;
+          --ink: #efe6d6;
+          --sub: #a89a86;
+          --line: #3d342a;
+          --accent: #e0665a;
+          --stinger: #6fb3d2;
+        }
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 'IBM Plex Sans KR', system-ui, sans-serif; }
+      header { position: sticky; top: 0; z-index: 2; background: var(--bg); border-bottom: 1px solid var(--line); padding: 12px 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+      header h1 { font-size: 17px; margin: 0 8px 0 0; }
+      header button { min-height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+      header label { display: flex; gap: 6px; align-items: center; color: var(--sub); }
+      #status { width: 100%; font-size: 12px; color: var(--sub); }
+      main { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 16px; padding: 16px; max-width: 1200px; margin: 0 auto; }
+      @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+      #list h2 { font-size: 12px; color: var(--sub); margin: 14px 0 6px; letter-spacing: .05em; }
+      .cue { display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto; width: 100%; text-align: left; margin: 0 0 6px; padding: 8px 12px; min-height: 44px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+      .cue .name { font-weight: 600; }
+      .cue .when { grid-column: 1; font-size: 12px; color: var(--sub); }
+      .cue .len { grid-row: 1 / span 2; grid-column: 2; align-self: center; font-size: 12px; color: var(--sub); }
+      .cue.stinger .name::before { content: '♪ '; color: var(--stinger); }
+      .cue.on { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+      .panel { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; position: sticky; top: 92px; align-self: start; }
+      #roll { width: 100%; height: 320px; display: block; margin-top: 8px; }
+      .note { font-size: 12px; color: var(--sub); margin-top: 8px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>삼국지 천하쟁패 · BGM 미리듣기</h1>
+      <button id="stop">배경음 멈춤</button>
+      <label>음량 <input id="vol" type="range" min="0" max="1" step="0.05" value="0.6" /></label>
+      <div id="status">오디오 준비 중…</div>
+    </header>
+    <main>
+      <section id="list"></section>
+      <section class="panel">
+        <div id="roll-title"></div>
+        <canvas id="roll"></canvas>
+        <p class="note">게임과 같은 재생기(src/audio/bgm.ts)로 소리를 낸다. ♪ 표시는 한 번만 나오는 효과 음악이고, "→"가 붙은 건 끝나면 다음 루프곡으로 이어진다. 그림은 악보(가로 = 시간, 세로 = 음높이, 아래 회색 점 = 타악).</p>
+      </section>
+    </main>
+    <script type="module" src="/src/audio/preview.ts"></script>
+  </body>
+</html>

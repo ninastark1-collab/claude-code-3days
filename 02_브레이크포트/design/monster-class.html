@@ -1,0 +1,888 @@
+<title>몬스터 클래스 아트북</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gaegu:wght@400;700&family=Gowun+Dodum&display=swap">
+<style>
+/* Layout: night-school art bible. Hero = live battle mockup; sections are chalkboard notes pinned on a dark ink wall. Single dark world by choice. */
+:root {
+  color-scheme: dark;
+  --bg: #1b1733;        /* 밤 교정 */
+  --bg-2: #241f44;
+  --board: #23453f;     /* 칠판 */
+  --board-2: #1c3833;
+  --wood: #8c5e3c;
+  --chalk: #f3efe6;
+  --chalk-dim: #b8c3bb;
+  --outline: #2a2350;   /* 모든 외곽선 */
+  --ink: #7b4be0;       /* 잉크 (자원) */
+  --ink-river: #5b34c7;
+  --moon: #4f8bff;      /* 달빛관 · 나 */
+  --ember: #ff6b4a;     /* 노을관 · 상대 */
+  --gold: #ffc94a;
+  --lawn: #7dbe5a;
+  --paper: #fbf6ea;
+  --muted: #9a93c4;
+  --font-display: 'Jua', 'Gowun Dodum', 'Malgun Gothic', sans-serif;
+  --font-chalk: 'Gaegu', 'Jua', 'Malgun Gothic', cursive;
+  --font-body: 'Gowun Dodum', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+}
+* { box-sizing: border-box; }
+body {
+  background: radial-gradient(1200px 600px at 80% -10%, #2d2660 0%, transparent 60%), var(--bg);
+  color: var(--chalk);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+}
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-block: 40px 80px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid;
+  gap: 88px;
+}
+h1, h2, h3 { text-wrap: balance; margin: 0; font-weight: 400; }
+p { margin: 0; }
+.eyebrow { font-family: var(--font-chalk); font-size: 20px; color: var(--gold); letter-spacing: .02em; }
+.lead { color: var(--chalk-dim); max-width: 62ch; }
+section > header { display: grid; gap: 8px; margin-bottom: 28px; }
+section > header h2 {
+  font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); line-height: 1.2;
+  background: linear-gradient(transparent 70%, rgba(123,75,224,.45) 70%); justify-self: start; padding-right: 4px;
+}
+
+/* ---------- HERO ---------- */
+.hero { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 48px; align-items: center; }
+.hero-copy { display: grid; gap: 22px; min-width: 0; }
+.logo { font-family: var(--font-display); font-size: clamp(52px, 9vw, 104px); line-height: .95; letter-spacing: -.01em;
+  color: var(--chalk); text-shadow: 0 6px 0 var(--outline), 0 0 40px rgba(123,75,224,.5); }
+.logo small { display: block; font-size: .32em; color: var(--gold); letter-spacing: .04em; text-shadow: 0 3px 0 var(--outline); margin-bottom: 10px; }
+.versus { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.versus .dorm { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: 20px; }
+.versus svg { width: 46px; height: 54px; }
+.versus .vs { font-family: var(--font-chalk); font-weight: 700; font-size: 26px; color: var(--muted); }
+.pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { font-size: 13px; padding: 4px 12px; border-radius: 999px; border: 1.5px solid #3d3670; color: var(--chalk-dim); }
+
+/* phone mockup */
+.phone {
+  position: relative; width: min(340px, 100%); aspect-ratio: 720 / 1560;
+  border: 10px solid #0e0b20; border-radius: 40px; overflow: hidden;
+  background: var(--board); box-shadow: 0 30px 60px rgba(0,0,0,.45), 0 0 0 2px #3d3670;
+  display: grid; grid-template-rows: 1280fr 280fr; justify-self: center;
+}
+.phone > svg { width: 100%; height: 100%; display: block; }
+.hud-top { position: absolute; top: 8px; left: 8px; right: 8px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; }
+.tag { background: rgba(42,35,80,.85); border: 2px solid var(--ember); border-radius: 10px; padding: 3px 8px; font-family: var(--font-display); font-size: 11px; line-height: 1.3; display: grid; gap: 2px; }
+.tag.me { border-color: var(--moon); }
+.tag .stamps { display: flex; gap: 2px; }
+.tag .stamps svg { width: 13px; height: 13px; }
+.timer { background: var(--paper); color: var(--outline); font-family: var(--font-display); font-size: 15px; padding: 2px 10px; border-radius: 6px; transform: rotate(3deg); box-shadow: 0 3px 0 var(--outline); text-align: center; line-height: 1.2; }
+.timer small { display: block; font-size: 9px; color: #6a6390; }
+.hud-me { position: absolute; left: 8px; bottom: calc(280 / 1560 * 100% + 6px); }
+.panel {
+  background: linear-gradient(var(--board), var(--board-2)); border-top: 5px solid var(--wood);
+  padding: 6px 8px 7px; display: grid; grid-template-rows: 1fr auto; gap: 5px; min-height: 0;
+}
+.hand { display: grid; grid-template-columns: .7fr repeat(4, 1fr); gap: 5px; align-items: end; min-height: 0; }
+.hand .next { display: grid; gap: 1px; justify-items: center; font-family: var(--font-chalk); font-size: 11px; color: var(--chalk-dim); align-self: center; }
+.inkbar { display: flex; align-items: center; gap: 5px; }
+.inkbar .drop { position: relative; width: 20px; height: 24px; flex: none; }
+.inkbar .drop svg { width: 100%; height: 100%; }
+.inkbar .drop b { position: absolute; inset: 4px 0 0; display: grid; place-items: center; font-family: var(--font-display); font-weight: 400; font-size: 11px; color: #fff; }
+.inkbar .track { flex: 1; height: 11px; border-radius: 6px; background: #142824; border: 2px solid var(--outline); position: relative; overflow: hidden; }
+.inkbar .fill { position: absolute; inset: 0 auto 0 0; width: 62%; background: linear-gradient(90deg, #6a3dd6, #a179ff); }
+.inkbar .ticks { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 calc(10% - 2px), rgba(42,35,80,.9) calc(10% - 2px) 10%); }
+
+/* ---------- RARITY TOKENS ---------- */
+.r-chalk { --rbg: #d9d4c7; --r2: #eef1ef; --rl: #6e6a60; --rn: '분필'; }
+.r-ink   { --rbg: #3fb7c9; --r2: #cdf2f7; --rl: #1d7e8d; }
+.r-gold  { --rbg: #ffc94a; --r2: #fff0c4; --rl: #a8770a; }
+.r-star  { --rbg: linear-gradient(135deg, #ff9ad5, #ffe08a, #9affc9, #9ad0ff, #c9a0ff, #ff9ad5); --r2: #f1e4ff; --rl: #8a4fd0; }
+.r-star.frame, .r-star.hcard { background-size: 300% 300%; animation: holo 6s linear infinite; }
+@keyframes holo { to { background-position: 300% 0; } }
+@media (prefers-reduced-motion: reduce) { .r-star.frame, .r-star.hcard { animation: none; } }
+
+/* hand card */
+.hcard { position: relative; aspect-ratio: 3 / 4; border-radius: 12px; padding: 3px; background: var(--rbg); box-shadow: 0 4px 0 var(--outline); }
+.hcard .in { height: 100%; border-radius: 9px; overflow: hidden; display: grid; grid-template-rows: 1fr auto;
+  background: radial-gradient(circle at 50% 38%, #fff 0%, var(--r2) 55%, color-mix(in srgb, var(--r2) 70%, #000 8%) 100%); border: 2px solid var(--outline); }
+.hcard .in svg { width: 100%; height: 100%; display: block; padding: 6% 6% 0; min-height: 0; }
+.hcard .nm { background: var(--outline); color: var(--chalk); font-family: var(--font-display); text-align: center; font-size: 12px; line-height: 1.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 3px; }
+.hcard .cost { position: absolute; top: -7px; left: -6px; width: 30%; aspect-ratio: 40/48; }
+.hcard .cost svg { width: 100%; height: 100%; display: block; }
+.hcard .cost b { position: absolute; inset: 14% 0 0; display: grid; place-items: center; font-family: var(--font-display); font-weight: 400; color: #fff; font-size: 15px; text-shadow: 0 1px 0 var(--outline); }
+.hcard.sm .nm { font-size: 8px; line-height: 1.7; }
+.hcard.sm .cost b { font-size: 10px; }
+.hcard.sm { border-radius: 8px; padding: 2px; box-shadow: 0 2px 0 var(--outline); }
+.hcard.sm .in { border-radius: 6px; border-width: 1.5px; }
+.hcard.selected { transform: translateY(-6px); outline: 3px solid var(--gold); outline-offset: 1px; }
+.hcard.dim { filter: saturate(.25) brightness(.7); }
+
+/* ---------- WORLD ---------- */
+.dorms { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.dorm-card { border-radius: 20px; padding: 24px; display: grid; grid-template-columns: 72px minmax(0,1fr); gap: 18px; align-items: start;
+  background: var(--bg-2); border: 2px solid color-mix(in srgb, var(--c) 55%, transparent); }
+.dorm-card svg { width: 72px; height: 84px; }
+.dorm-card h3 { font-family: var(--font-display); font-size: 26px; color: var(--c); }
+.dorm-card .motto { font-family: var(--font-chalk); font-size: 20px; color: var(--chalk); margin: 2px 0 8px; }
+.dorm-card p { color: var(--chalk-dim); font-size: 15px; }
+.lexicon { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 24px; }
+.lexicon div { display: grid; grid-template-columns: 7.5em minmax(0,1fr); gap: 10px; padding: 10px 0; border-bottom: 1px dashed #3d3670; font-size: 15px; }
+.lexicon dt { color: var(--muted); }
+.lexicon dd { margin: 0; }
+.lexicon dd b { font-family: var(--font-display); font-weight: 400; color: var(--chalk); }
+
+/* ---------- PALETTE ---------- */
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.sw { border-radius: 14px; overflow: hidden; background: var(--bg-2); border: 1px solid #3d3670; }
+.sw i { display: block; height: 72px; background: var(--c); border-bottom: 3px solid var(--outline); }
+.sw div { padding: 10px 12px 12px; display: grid; gap: 1px; }
+.sw b { font-family: var(--font-display); font-weight: 400; font-size: 16px; }
+.sw code { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.sw span { font-size: 13px; color: var(--chalk-dim); }
+.type-row { margin-top: 28px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.type-row > div { background: var(--bg-2); border-radius: 14px; padding: 18px; border: 1px solid #3d3670; display: grid; gap: 6px; }
+.type-row .sample { font-size: 34px; line-height: 1.2; }
+.type-row small { color: var(--muted); font-size: 13px; }
+
+/* ---------- RULES (art style) ---------- */
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.rule { background: var(--board); border-radius: 16px; padding: 18px 18px 20px; border: 6px solid var(--wood); display: grid; gap: 6px; box-shadow: inset 0 0 40px rgba(0,0,0,.25); }
+.rule h3 { font-family: var(--font-chalk); font-weight: 700; font-size: 24px; }
+.rule p { color: var(--chalk-dim); font-size: 15px; }
+.rule .do { color: #b6f09a; }
+.rule .dont { color: #ffb3a3; }
+
+/* ---------- ID CARDS ---------- */
+.ids { display: grid; grid-template-columns: repeat(auto-fill, minmax(236px, 1fr)); gap: 22px; }
+.frame { border-radius: 20px; padding: 5px; background: var(--rbg); box-shadow: 0 8px 0 rgba(0,0,0,.35); }
+.idcard { background: var(--paper); color: var(--outline); border-radius: 16px; overflow: hidden; border: 2.5px solid var(--outline); display: grid; height: 100%; grid-template-rows: auto auto 1fr auto; }
+.idcard > header { display: flex; align-items: center; gap: 6px; background: var(--outline); color: var(--chalk); padding: 6px 12px; font-family: var(--font-display); font-size: 13px; }
+.idcard > header svg { width: 16px; height: 19px; }
+.idcard > header span { margin-left: auto; font-family: var(--font-chalk); font-size: 15px; color: var(--gold); }
+.photo { position: relative; aspect-ratio: 5 / 4; background: radial-gradient(circle at 50% 42%, #fff, var(--r2) 70%); border-bottom: 2.5px solid var(--outline); }
+.photo svg.art { width: 100%; height: 100%; display: block; padding: 6px 10%; }
+.photo .cost { position: absolute; top: 8px; left: 8px; width: 38px; height: 46px; }
+.photo .cost svg { width: 100%; height: 100%; }
+.photo .cost b { position: absolute; inset: 7px 0 0; display: grid; place-items: center; font-family: var(--font-display); font-weight: 400; color: #fff; font-size: 20px; text-shadow: 0 1px 0 var(--outline); }
+.photo .count { position: absolute; right: 10px; top: 10px; font-family: var(--font-display); background: var(--outline); color: var(--chalk); padding: 0 8px; border-radius: 999px; font-size: 14px; }
+.photo .grade { position: absolute; right: 10px; bottom: 8px; font-family: var(--font-chalk); font-weight: 700; font-size: 16px; color: var(--outline); background: rgba(255,255,255,.75); padding: 0 8px; border-radius: 6px; }
+.idinfo { padding: 12px 14px 8px; display: grid; gap: 8px; align-content: start; }
+.idinfo h3 { font-family: var(--font-display); font-size: 24px; line-height: 1.1; }
+.idinfo .sp { font-size: 13px; color: #6a6390; margin-top: -4px; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 12px; margin: 0; font-size: 13px; }
+.stats div { display: flex; justify-content: space-between; border-bottom: 1px dotted #cfc6dd; padding: 2px 0; }
+.stats dt { color: #6a6390; }
+.stats dd { margin: 0; font-family: var(--font-display); font-variant-numeric: tabular-nums; }
+.quote { font-family: var(--font-chalk); font-size: 18px; line-height: 1.3; color: #4a4180; }
+.idcard > footer { display: flex; align-items: center; gap: 10px; padding: 8px 14px 10px; border-top: 1.5px dashed #cfc6dd; font-family: var(--font-mono); font-size: 11px; color: #6a6390; }
+.barcode { flex: 1; height: 18px; background: repeating-linear-gradient(90deg, var(--outline) 0 2px, transparent 2px 4px, var(--outline) 4px 5px, transparent 5px 8px, var(--outline) 8px 11px, transparent 11px 13px); opacity: .7; }
+.seal { width: 46px; height: 46px; border-radius: 50%; border: 3px solid var(--rl); color: var(--rl); display: grid; place-items: center; font-family: var(--font-chalk); font-weight: 700; font-size: 15px; transform: rotate(-14deg); flex: none; background: rgba(255,255,255,.4); line-height: 1; text-align: center; }
+
+/* rarity ladder */
+.ladder { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px; align-items: end; }
+.ladder figure { margin: 0; display: grid; gap: 10px; justify-items: center; text-align: center; }
+.ladder .hcard { width: 118px; }
+.ladder figcaption b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 20px; }
+.ladder figcaption span { font-size: 13px; color: var(--chalk-dim); }
+
+/* ---------- ARENA ---------- */
+.arena-grid { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 40px; align-items: start; }
+.arena-grid > svg { width: 100%; height: auto; border-radius: 16px; border: 6px solid var(--wood); box-shadow: 0 16px 40px rgba(0,0,0,.4); display: block; }
+.legend { display: grid; gap: 14px; }
+.legend > div { display: grid; grid-template-columns: 54px minmax(0,1fr); gap: 14px; align-items: center; }
+.legend svg { width: 54px; height: 54px; background: var(--bg-2); border-radius: 12px; border: 1px solid #3d3670; }
+.legend b { font-family: var(--font-display); font-weight: 400; font-size: 18px; display: block; }
+.legend span { font-size: 14px; color: var(--chalk-dim); }
+
+/* ---------- UI KIT ---------- */
+.kit { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.kit > div { background: var(--bg-2); border: 1px solid #3d3670; border-radius: 18px; padding: 22px; display: grid; gap: 14px; align-content: start; }
+.kit h3 { font-family: var(--font-chalk); font-weight: 700; font-size: 22px; color: var(--gold); }
+.btn { font-family: var(--font-display); font-size: 20px; border: 3px solid var(--outline); border-radius: 16px; padding: 10px 18px; box-shadow: 0 6px 0 var(--outline); cursor: pointer; color: var(--outline); width: 100%; transition: transform .08s, box-shadow .08s; }
+.btn:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--outline); }
+.btn:focus-visible { outline: 3px solid var(--chalk); outline-offset: 3px; }
+.btn.gold { background: linear-gradient(#ffd977, var(--gold)); }
+.btn.chalk { background: var(--paper); }
+.btn.moon { background: linear-gradient(#7aa8ff, var(--moon)); color: #fff; text-shadow: 0 2px 0 var(--outline); }
+.btn.ember { background: linear-gradient(#ff8f74, var(--ember)); color: #fff; text-shadow: 0 2px 0 var(--outline); }
+.btn small { display: block; font-family: var(--font-body); font-size: 12px; opacity: .8; }
+.result { background: var(--board); border: 8px solid var(--wood); border-radius: 18px; padding: 22px 18px; text-align: center; display: grid; gap: 10px; justify-items: center; box-shadow: inset 0 0 50px rgba(0,0,0,.3); }
+.result .big { font-family: var(--font-chalk); font-weight: 700; font-size: 44px; line-height: 1; }
+.result .row { display: flex; gap: 6px; }
+.result .row svg { width: 34px; height: 34px; }
+.result p { color: var(--chalk-dim); font-size: 14px; }
+
+/* collection */
+.collect { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.collect > div { background: var(--bg-2); border: 1px solid #3d3670; border-radius: 18px; padding: 22px; display: grid; gap: 12px; align-content: start; }
+.collect h3 { font-family: var(--font-display); font-size: 22px; }
+.collect p { color: var(--chalk-dim); font-size: 15px; }
+.grades { display: flex; gap: 6px; flex-wrap: wrap; }
+.grades span { font-family: var(--font-display); font-size: 14px; padding: 3px 10px; border-radius: 8px; background: #312a5c; color: var(--chalk-dim); }
+.grades span.on { background: var(--gold); color: var(--outline); }
+.attend { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+.attend i { aspect-ratio: 1; border-radius: 50%; border: 2px dashed #4d4588; display: grid; place-items: center; }
+.attend i.on { border: 2px solid #e8574a; background: rgba(232,87,74,.18); }
+.attend i.on::after { content: '출'; font-family: var(--font-chalk); font-weight: 700; color: #ff8f80; font-size: 11px; }
+.dex { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.dex .hcard { box-shadow: 0 3px 0 var(--outline); }
+.dex .locked .in { background: #2f2858; }
+.dex .locked svg { filter: brightness(0) opacity(.55); }
+
+/* motion */
+.motion { display: grid; gap: 0; }
+.motion > div { display: grid; grid-template-columns: 11em minmax(0,1fr); gap: 20px; padding: 14px 0; border-bottom: 1px dashed #3d3670; }
+.motion b { font-family: var(--font-display); font-weight: 400; font-size: 18px; }
+.motion span { color: var(--chalk-dim); font-size: 15px; }
+
+/* handoff */
+.handoff { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+pre { margin: 0; background: #120f26; border: 1px solid #3d3670; border-radius: 14px; padding: 18px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 1.6; color: #d9d3f5; }
+pre .c { color: #7d76a8; }
+pre .n { color: #ffc94a; }
+.tbl { overflow-x: auto; border-radius: 14px; border: 1px solid #3d3670; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 420px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid #312a5c; }
+th { background: #231e42; color: var(--muted); font-weight: 400; font-size: 13px; }
+td code { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+td b { font-family: var(--font-display); font-weight: 400; }
+.assets { margin-top: 24px; }
+
+footer.end { text-align: center; color: var(--muted); font-family: var(--font-chalk); font-size: 18px; }
+
+@media (max-width: 820px) {
+  .hero, .arena-grid, .handoff { grid-template-columns: minmax(0, 1fr); }
+  .arena-grid > svg { max-width: 380px; justify-self: center; }
+  .motion > div { grid-template-columns: minmax(0,1fr); gap: 2px; }
+}
+</style>
+
+<!-- ================= SVG LIBRARY ================= -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="lawn" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#7dbe5a"/><rect width="20" height="20" fill="#74b452"/><rect x="20" y="20" width="20" height="20" fill="#74b452"/>
+    </pattern>
+
+    <symbol id="drop" viewBox="0 0 40 48">
+      <path d="M20 3C20 3 5 20 5 30a15 15 0 0 0 30 0C35 20 20 3 20 3z" fill="#7b4be0" stroke="#2a2350" stroke-width="3.5" stroke-linejoin="round"/>
+      <ellipse cx="13.5" cy="27" rx="3" ry="6" fill="#fff" opacity=".45"/>
+    </symbol>
+
+    <symbol id="stamp" viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="17" fill="#fbf6ea" stroke="#e8574a" stroke-width="3"/>
+      <path d="M20 7l4.1 8.3 9.2 1.3-6.6 6.5 1.6 9.1L20 27.9l-8.3 4.3 1.6-9.1-6.6-6.5 9.2-1.3z" fill="#e8574a"/>
+    </symbol>
+    <symbol id="stamp-empty" viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="17" fill="none" stroke="#9a93c4" stroke-width="3" stroke-dasharray="4 4"/>
+    </symbol>
+
+    <symbol id="crest-moon" viewBox="-34 -36 68 80">
+      <path d="M-28-30h56v20q0 30-28 44q-28-14-28-44z" fill="#4f8bff" stroke="#2a2350" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="-2" cy="4" r="14" fill="#fbf6ea"/>
+      <circle cx="5" cy="-1" r="12" fill="#4f8bff"/>
+      <path d="M14 10l1.8 3.7 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4-2.9-2.8 4-.6z" fill="#ffe08a"/>
+      <path d="M-28-30h56v8h-56z" fill="#2a2350"/>
+    </symbol>
+    <symbol id="crest-ember" viewBox="-34 -36 68 80">
+      <path d="M-28-30h56v20q0 30-28 44q-28-14-28-44z" fill="#ff6b4a" stroke="#2a2350" stroke-width="4" stroke-linejoin="round"/>
+      <g stroke="#fbf6ea" stroke-width="3.5" stroke-linecap="round"><path d="M0-14v-6M-14-2l-5-3M14-2l5-3M-10-11l-3-4M10-11l3-4"/></g>
+      <path d="M-13 12a13 13 0 0 1 26 0z" fill="#fbf6ea"/>
+      <path d="M-18 13h36" stroke="#fbf6ea" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M-28-30h56v8h-56z" fill="#2a2350"/>
+    </symbol>
+
+    <!-- reusable parts -->
+    <g id="imp" stroke="#2a2350" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M-18-6q-22-14-26 6q10-2 12 6q6-6 14-2z" fill="#6b4fc8"/>
+      <path d="M18-6q22-14 26 6q-10-2-12 6q-6-6-14-2z" fill="#6b4fc8"/>
+      <path d="M-12-17l-5-13 11 6zM12-17l5-13-11 6z" fill="#ffe08a"/>
+      <path d="M-14 16q-14 10-6 20" fill="none"/>
+      <path d="M-20 36l-6-2 3 7z" fill="#6b4fc8"/>
+      <circle r="22" fill="#b79cff"/>
+      <circle cy="-3" r="10" fill="#fff"/>
+      <circle cx="1" cy="-2" r="5" fill="#2a2350" stroke="none"/>
+      <circle cx="3" cy="-4" r="1.7" fill="#fff" stroke="none"/>
+      <path d="M-7 11q7 5 14 0" fill="none" stroke-width="3"/>
+      <ellipse cx="-14" cy="7" rx="4" ry="2.5" fill="#ff9db5" stroke="none"/>
+      <ellipse cx="14" cy="7" rx="4" ry="2.5" fill="#ff9db5" stroke="none"/>
+    </g>
+    <g id="bat" stroke="#2a2350" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M-6-6l-4-9 8 5zM6-6l4-9-8 5z" fill="#fbf8ef"/>
+      <path d="M0-6L-30-14L-22 0L-30 10L-8 6L0 14L8 6L30 10L22 0L30-14Z" fill="#fbf8ef"/>
+      <path d="M0-6V14M-22 0L-8 6M22 0L8 6" fill="none" stroke="#c9c2b0" stroke-width="1.5"/>
+      <path d="M-26-9L-12-6M-24 4L-12 2M26-9L12-6M24 4L12 2" fill="none" stroke="#9ad0ff" stroke-width="1.5"/>
+      <circle cx="-4" cy="1" r="2.3" fill="#2a2350" stroke="none"/><circle cx="4" cy="1" r="2.3" fill="#2a2350" stroke="none"/>
+      <path d="M16-5l3 4 6-8" fill="none" stroke="#e8574a" stroke-width="2.5"/>
+    </g>
+    <g id="skelkid" stroke="#2a2350" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M-17 22q17-6 34 0l5 20h-44z" fill="#3a4a8c"/>
+      <path d="M0 22l-3 6 3 10 3-10z" fill="#e8574a" stroke-width="2"/>
+      <path d="M-20 2a20 20 0 1 1 40 0q0 8-6 12v8h-28v-8q-6-4-6-12z" fill="#f7f2e4"/>
+      <ellipse cx="-8" cy="1" rx="6" ry="7" fill="#2a2350" stroke="none"/>
+      <ellipse cx="8" cy="1" rx="6" ry="7" fill="#2a2350" stroke="none"/>
+      <circle cx="-6" cy="-1" r="1.9" fill="#fff" stroke="none"/><circle cx="10" cy="-1" r="1.9" fill="#fff" stroke="none"/>
+      <path d="M0 8l-3 5h6z" fill="#2a2350" stroke="none"/>
+      <path d="M-6 16v5M0 16v5M6 16v5" fill="none" stroke-width="2"/>
+    </g>
+
+    <!-- 1. 포크 도깨비 -->
+    <symbol id="ch-spear" viewBox="0 0 120 120"><g stroke="#2a2350" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="88" y="44" width="8" height="66" rx="4" fill="#b98a5a"/>
+      <path d="M80 12h5v18h4v-18h6v18h4v-18h5v24q0 12-12 12q-12 0-12-12z" fill="#d8dee8"/>
+      <path d="M44 46q4-26 16-4z" fill="#ffe08a"/>
+      <ellipse cx="38" cy="106" rx="10" ry="6" fill="#5fc79c"/>
+      <ellipse cx="64" cy="106" rx="10" ry="6" fill="#5fc79c"/>
+      <ellipse cx="52" cy="74" rx="34" ry="32" fill="#7fd8b4"/>
+      <ellipse cx="52" cy="89" rx="19" ry="12" fill="#b8f0d6" stroke="none"/>
+      <circle cx="40" cy="68" r="9" fill="#fff"/><circle cx="64" cy="68" r="9" fill="#fff"/>
+      <circle cx="42" cy="69" r="4.5" fill="#2a2350" stroke="none"/><circle cx="66" cy="69" r="4.5" fill="#2a2350" stroke="none"/>
+      <circle cx="43.5" cy="67" r="1.6" fill="#fff" stroke="none"/><circle cx="67.5" cy="67" r="1.6" fill="#fff" stroke="none"/>
+      <ellipse cx="29" cy="80" rx="5" ry="3" fill="#ff9db5" stroke="none"/><ellipse cx="75" cy="80" rx="5" ry="3" fill="#ff9db5" stroke="none"/>
+      <path d="M44 84q8 7 16 0" fill="none" stroke-width="3.5"/>
+      <path d="M49 85.5l2.5 4 2.5-4z" fill="#fff" stroke-width="2"/>
+      <circle cx="90" cy="76" r="7.5" fill="#7fd8b4"/>
+    </g></symbol>
+
+    <!-- 2. 새총 쌍둥이 -->
+    <symbol id="ch-imp" viewBox="0 0 120 120"><g stroke="#2a2350" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <use href="#imp" transform="translate(36 52) scale(.88)"/>
+      <use href="#imp" transform="translate(72 80)"/>
+      <path d="M104 108v-22M104 86l-9-13M104 86l9-13" fill="none" stroke-width="10"/>
+      <path d="M104 108v-22M104 86l-9-13M104 86l9-13" fill="none" stroke="#b98a5a" stroke-width="5"/>
+      <path d="M95 73q9 11 18 0" fill="none" stroke="#ff8fb1" stroke-width="3"/>
+      <circle cx="97" cy="94" r="6.5" fill="#b79cff"/>
+    </g></symbol>
+
+    <!-- 3. 책가방 골렘 -->
+    <symbol id="ch-golem" viewBox="0 0 120 120"><g stroke="#2a2350" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="30" y="100" width="22" height="13" rx="5" fill="#7d8baa"/>
+      <rect x="68" y="100" width="22" height="13" rx="5" fill="#7d8baa"/>
+      <rect x="22" y="12" width="76" height="92" rx="24" fill="#9aa8c7"/>
+      <path d="M28 26q14-14 30-6q12-10 28 0q8 4 10 12q-34-10-68-6z" fill="#7cc36a"/>
+      <path d="M32 50l6 5M88 46l-5 7" fill="none" stroke-width="2.5"/>
+      <circle cx="46" cy="44" r="6.5" fill="#ffe08a"/><circle cx="74" cy="44" r="6.5" fill="#ffe08a"/>
+      <circle cx="46" cy="45" r="2.6" fill="#2a2350" stroke="none"/><circle cx="74" cy="45" r="2.6" fill="#2a2350" stroke="none"/>
+      <path d="M37 35l14 3M83 35l-14 3" fill="none" stroke-width="3.5"/>
+      <circle cx="19" cy="80" r="11" fill="#9aa8c7"/><circle cx="101" cy="80" r="11" fill="#9aa8c7"/>
+      <rect x="30" y="56" width="60" height="54" rx="14" fill="#e8574a"/>
+      <path d="M30 72q30 12 60 0v-4q0-12-14-12h-32q-14 0-14 12z" fill="#c9413a"/>
+      <rect x="54" y="69" width="12" height="10" rx="2" fill="#ffc94a"/>
+      <rect x="40" y="87" width="40" height="18" rx="6" fill="#c9413a"/>
+      <rect x="45" y="91" width="18" height="8" rx="2" fill="#fbf6ea" stroke-width="2"/>
+    </g></symbol>
+
+    <!-- 4. 시험지 박쥐 떼 -->
+    <symbol id="ch-bats" viewBox="0 0 120 120">
+      <use href="#bat" transform="translate(38 32)"/>
+      <use href="#bat" transform="translate(86 52) scale(.85)"/>
+      <use href="#bat" transform="translate(38 82) scale(.9)"/>
+      <use href="#bat" transform="translate(88 98) scale(.72)"/>
+    </symbol>
+
+    <!-- 5. 플라스크 슬라임 -->
+    <symbol id="ch-slime" viewBox="0 0 120 120"><g stroke="#2a2350" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M60 18q8 16 26 34q16 18 12 38q-4 20-38 20q-34 0-38-20q-4-20 12-38q18-18 26-34z" fill="#a6e35a"/>
+      <ellipse cx="36" cy="62" rx="4" ry="9" fill="#fff" opacity=".6" stroke="none" transform="rotate(25 36 62)"/>
+      <path d="M21 68h78" fill="none" stroke-width="5"/>
+      <circle cx="47" cy="68" r="12" fill="#cff3ff"/><circle cx="73" cy="68" r="12" fill="#cff3ff"/>
+      <circle cx="48" cy="70" r="5" fill="#2a2350" stroke="none"/><circle cx="74" cy="70" r="5" fill="#2a2350" stroke="none"/>
+      <circle cx="50" cy="68" r="1.7" fill="#fff" stroke="none"/><circle cx="76" cy="68" r="1.7" fill="#fff" stroke="none"/>
+      <path d="M52 88q8 10 16 0z" fill="#2a2350" stroke-width="3"/>
+      <rect x="91" y="68" width="12" height="15" rx="2" fill="#e6f6ff"/>
+      <rect x="89" y="62" width="16" height="7" rx="2" fill="#b98a5a"/>
+      <circle cx="97" cy="95" r="15" fill="#ff7fb8"/>
+      <path d="M86 90q11-6 22 0" fill="none" stroke="#fff" stroke-width="2" opacity=".75"/>
+      <circle cx="91" cy="99" r="2.6" fill="#fff" stroke="none" opacity=".85"/>
+      <circle cx="104" cy="52" r="4" fill="#ffb8da" stroke-width="2"/><circle cx="111" cy="42" r="2.6" fill="#ffb8da" stroke-width="2"/>
+      <ellipse cx="83" cy="97" rx="8" ry="6" fill="#a6e35a"/>
+    </g></symbol>
+
+    <!-- 6. 해골 선도부 -->
+    <symbol id="ch-skel" viewBox="0 0 120 120"><g stroke="#2a2350" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="9" y="38" width="9" height="58" rx="2" fill="#ffd966" transform="rotate(-18 13 67)"/>
+      <use href="#skelkid" transform="translate(28 64) scale(.78)"/>
+      <rect x="102" y="38" width="9" height="58" rx="2" fill="#ffd966" transform="rotate(18 106 67)"/>
+      <use href="#skelkid" transform="translate(92 64) scale(.78)"/>
+      <use href="#skelkid" transform="translate(60 74)"/>
+      <path d="M39 59q21-24 42 0z" fill="#3a4a8c"/>
+      <rect x="35" y="56" width="50" height="7" rx="3.5" fill="#2b3870"/>
+      <circle cx="60" cy="48" r="4.5" fill="#ffc94a" stroke-width="2.5"/>
+      <rect x="70" y="87" width="13" height="7" rx="3" fill="#ffc94a" stroke-width="2.5"/>
+    </g></symbol>
+
+    <!-- 7. 용 선생 재채기 -->
+    <symbol id="ch-dragon" viewBox="0 0 120 120"><g stroke="#2a2350" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M24 46q-12-20 2-32q-2 14 12 22z" fill="#fff0c2"/>
+      <path d="M50 38q0-22 16-28q-8 14-2 28z" fill="#fff0c2"/>
+      <circle cx="42" cy="66" r="28" fill="#ff9a3c"/>
+      <path d="M22 50q-6 4-8 0M30 42q-4-6-8-4" fill="none" stroke-width="3"/>
+      <ellipse cx="66" cy="75" rx="20" ry="14" fill="#ffb566"/>
+      <ellipse cx="78" cy="71" rx="2.5" ry="3.5" fill="#2a2350" stroke="none"/>
+      <path d="M28 88q6 20 16 6q6 14 14 0" fill="#f3efe6"/>
+      <circle cx="33" cy="58" r="9" fill="#e8f6ff" fill-opacity=".55"/><circle cx="53" cy="58" r="9" fill="#e8f6ff" fill-opacity=".55"/>
+      <path d="M42 58h2" fill="none"/>
+      <path d="M28 60q5-5 10 0M48 60q5-5 10 0" fill="none" stroke-width="3"/>
+      <ellipse cx="24" cy="72" rx="5" ry="3" fill="#ff6f8a" stroke="none" opacity=".7"/>
+      <path d="M80 75q8-28 26-24q-4 8 6 10q10 4 4 16q8 8-2 16q-8 10-20 4q-10-4-14-22z" fill="#ff5a3c"/>
+      <path d="M87 75q6-16 16-14q-2 6 4 8q6 4 2 10q4 6-2 10q-6 6-12 2q-6-4-8-16z" fill="#ffc94a" stroke="none"/>
+      <circle cx="97" cy="77" r="5" fill="#fff3c4" stroke="none"/>
+      <path d="M68 42l4 7M80 38l1 8M92 40l-2 7" fill="none" stroke-width="3"/>
+    </g></symbol>
+
+    <!-- 8. 급식 투석기 -->
+    <symbol id="ch-catapult" viewBox="0 0 120 120"><g stroke="#2a2350" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M42 90L58 60L74 90" fill="none" stroke-width="11"/>
+      <path d="M42 90L58 60L74 90" fill="none" stroke="#b98a5a" stroke-width="5"/>
+      <path d="M26 92L86 36" fill="none" stroke-width="11"/>
+      <path d="M26 92L86 36" fill="none" stroke="#c99a66" stroke-width="5"/>
+      <ellipse cx="91" cy="31" rx="16" ry="9" fill="#d8dee8" transform="rotate(-38 91 31)"/>
+      <path d="M81 25l4-16h15l4 16z" fill="#ffd966"/>
+      <path d="M85 9h15l1.3 5q-9 3-17.6 0z" fill="#a0522d" stroke="none"/>
+      <circle cx="89" cy="18" r="1.9" fill="#2a2350" stroke="none"/><circle cx="96" cy="18" r="1.9" fill="#2a2350" stroke="none"/>
+      <path d="M90 21.5q2.5 2 5 0" fill="none" stroke-width="2"/>
+      <circle cx="58" cy="63" r="5" fill="#ffc94a" stroke-width="3"/>
+      <rect x="14" y="86" width="92" height="14" rx="5" fill="#b98a5a"/>
+      <circle cx="31" cy="103" r="10" fill="#8c6239"/><circle cx="89" cy="103" r="10" fill="#8c6239"/>
+      <circle cx="31" cy="103" r="3" fill="#ffc94a" stroke-width="2"/><circle cx="89" cy="103" r="3" fill="#ffc94a" stroke-width="2"/>
+    </g></symbol>
+
+    <!-- towers -->
+    <g id="tw-main" stroke="#2a2350" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
+      <ellipse cy="30" rx="34" ry="8" fill="#000" fill-opacity=".22" stroke="none"/>
+      <rect x="-26" y="-6" width="52" height="34" rx="6" fill="#d6cfe2"/>
+      <path d="M-26 6h52M-26 17h52M-10-6v12M12 6v11M-2 17v11" fill="none" stroke="#a79fbc" stroke-width="2"/>
+      <path d="M-8 28v-9a8 8 0 0 1 16 0v9z" fill="#2a2350"/>
+      <path d="M-32-4L0-42L32-4z" fill="currentColor"/>
+      <circle cy="-16" r="7" fill="#ffc94a"/>
+      <path d="M0-42v-12" fill="none"/><path d="M0-54l12 4-12 4z" fill="currentColor"/>
+    </g>
+    <g id="tw-side" stroke="#2a2350" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+      <ellipse cy="22" rx="24" ry="6" fill="#000" fill-opacity=".22" stroke="none"/>
+      <rect x="-16" y="-4" width="32" height="26" rx="5" fill="#d6cfe2"/>
+      <path d="M-16 9h32" fill="none" stroke="#a79fbc" stroke-width="2"/>
+      <path d="M-22-2L0-30L22-2z" fill="currentColor"/>
+      <circle cy="-12" r="12" fill="#ffe08a" fill-opacity=".35" stroke="none"/>
+      <circle cy="-12" r="5" fill="#ffe08a"/>
+    </g>
+
+    <!-- book bridge -->
+    <g id="book" stroke="#2a2350" stroke-linejoin="round">
+      <rect x="-25" y="-28" width="50" height="56" rx="5" fill="currentColor" stroke-width="3"/>
+      <rect x="-22" y="-25" width="44" height="50" rx="3" fill="#f6e7c8" stroke-width="2"/>
+      <path d="M0-25v50" stroke="#c9b48a" stroke-width="2"/>
+      <path d="M-18-16h12M-18-10h14M-18-4h10M-18 2h13M-18 8h11M-18 14h14M5-16h13M4-10h14M7-4h11M5 2h13M6 8h12M4 14h14" stroke="#b7a57e" stroke-width="1.5"/>
+    </g>
+
+    <!-- arena (360 x 640 = 18 x 32 tiles @20px) -->
+    <symbol id="arena" viewBox="0 0 360 640">
+      <rect width="360" height="640" fill="url(#lawn)"/>
+      <g fill="none" stroke="#f3efe6" stroke-opacity=".5" stroke-width="2" stroke-dasharray="7 6">
+        <rect x="8" y="8" width="344" height="624" rx="8"/>
+        <circle cx="180" cy="570" r="44"/><circle cx="180" cy="70" r="44"/>
+      </g>
+      <rect y="294" width="360" height="52" fill="#5e9a44"/>
+      <rect y="300" width="360" height="40" fill="#5b34c7"/>
+      <path d="M0 311q15-6 30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0" fill="none" stroke="#8b6bf0" stroke-width="3" stroke-linecap="round"/>
+      <path d="M-15 328q15-6 30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0" fill="none" stroke="#7656e4" stroke-width="2.5" stroke-linecap="round"/>
+      <g fill="#d9caff"><circle cx="128" cy="318" r="2"/><circle cx="210" cy="306" r="1.6"/><circle cx="236" cy="332" r="2.2"/><circle cx="160" cy="334" r="1.5"/><circle cx="24" cy="320" r="1.8"/><circle cx="336" cy="314" r="1.8"/></g>
+      <use href="#book" transform="translate(70 320)" color="#e8574a"/>
+      <use href="#book" transform="translate(290 320)" color="#3a4a8c"/>
+      <!-- towers -->
+      <use href="#tw-main" transform="translate(180 70)" color="#ff6b4a"/>
+      <use href="#tw-side" transform="translate(70 130)" color="#ff6b4a"/>
+      <use href="#tw-side" transform="translate(290 130)" color="#ff6b4a"/>
+      <use href="#tw-main" transform="translate(180 570)" color="#4f8bff"/>
+      <use href="#tw-side" transform="translate(70 510)" color="#4f8bff"/>
+      <use href="#tw-side" transform="translate(290 510)" color="#4f8bff"/>
+      <!-- tower hp -->
+      <g stroke="#2a2350" stroke-width="1.5">
+        <rect x="150" y="104" width="60" height="7" rx="3" fill="#2a2350"/><rect x="151" y="105" width="58" height="5" rx="2" fill="#ff8f74" stroke="none"/>
+        <rect x="270" y="157" width="40" height="6" rx="3" fill="#2a2350"/><rect x="271" y="158" width="20" height="4" rx="2" fill="#ff8f74" stroke="none"/>
+        <rect x="50" y="157" width="40" height="6" rx="3" fill="#2a2350"/><rect x="51" y="158" width="38" height="4" rx="2" fill="#ff8f74" stroke="none"/>
+      </g>
+      <!-- units -->
+      <g transform="translate(290 180)"><circle r="34" fill="#ff7a1a" fill-opacity=".3"/><circle r="22" fill="#ffc94a" fill-opacity=".35"/></g>
+      <g transform="translate(70 384)">
+        <ellipse cy="20" rx="17" ry="6" fill="#4f8bff" stroke="#2a2350" stroke-width="2.5"/>
+        <use href="#ch-golem" x="-25" y="-30" width="50" height="50"/>
+      </g>
+      <g transform="translate(86 246)">
+        <ellipse cy="16" rx="14" ry="5" fill="#ff6b4a" stroke="#2a2350" stroke-width="2.5"/>
+        <use href="#ch-spear" x="-20" y="-24" width="40" height="40"/>
+      </g>
+      <g transform="translate(252 444)">
+        <ellipse cy="17" rx="16" ry="5.5" fill="#4f8bff" stroke="#2a2350" stroke-width="2.5"/>
+        <use href="#ch-imp" x="-22" y="-26" width="44" height="44"/>
+        <path d="M14-24L34-118" stroke="#f3efe6" stroke-width="2" stroke-dasharray="3 5" opacity=".7"/>
+      </g>
+      <g transform="translate(300 250)">
+        <ellipse cy="26" rx="14" ry="4.5" fill="#ff6b4a" stroke="#2a2350" stroke-width="2" opacity=".85"/>
+        <ellipse cy="26" rx="10" ry="3" fill="#000" fill-opacity=".2"/>
+        <use href="#ch-bats" x="-22" y="-34" width="44" height="44"/>
+      </g>
+      <g transform="translate(184 466)">
+        <circle r="24" fill="#f3efe6" fill-opacity=".14" stroke="#f3efe6" stroke-width="2.5" stroke-dasharray="5 5"/>
+        <use href="#ch-slime" x="-16" y="-20" width="32" height="32" opacity=".55"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<main class="wrap">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Break Fort 아트 디렉션 v0.1 · 2026.11</p>
+      <h1 class="logo"><small>기숙사 대항 공성전</small>몬스터<br>클래스</h1>
+      <p class="lead">밤에만 문을 여는 몬스터 학교. 두 기숙사가 운동장을 사이에 두고 상대 종탑을 무너뜨립니다. 카드는 전부 <b>학생증</b>이고, 덱은 내가 모은 반 친구들입니다.</p>
+      <div class="versus">
+        <span class="dorm"><svg viewBox="0 0 68 80"><use href="#crest-moon"/></svg>달빛관</span>
+        <span class="vs">vs</span>
+        <span class="dorm"><svg viewBox="0 0 68 80"><use href="#crest-ember"/></svg>노을관</span>
+      </div>
+      <div class="pills">
+        <span class="pill">2등신 몬스터</span><span class="pill">보라 외곽선 스티커 질감</span><span class="pill">칠판 · 분필 · 잉크 UI</span><span class="pill">카드 8종 + 희귀도 4단계</span>
+      </div>
+    </div>
+
+    <div class="phone" aria-label="전투 화면 시안">
+      <svg viewBox="0 0 360 640" preserveAspectRatio="none"><use href="#arena"/></svg>
+      <div class="panel">
+        <div class="hand" id="hud-hand"></div>
+        <div class="inkbar">
+          <span class="drop"><svg viewBox="0 0 40 48"><use href="#drop"/></svg><b>6</b></span>
+          <span class="track"><span class="fill"></span><span class="ticks"></span></span>
+        </div>
+      </div>
+      <div class="hud-top">
+        <div class="tag">노을관 · 상대<span class="stamps"><svg viewBox="0 0 40 40"><use href="#stamp-empty"/></svg><svg viewBox="0 0 40 40"><use href="#stamp-empty"/></svg><svg viewBox="0 0 40 40"><use href="#stamp-empty"/></svg></span></div>
+        <div class="timer"><small>남은 시간</small>2:41</div>
+      </div>
+      <div class="tag me hud-me">달빛관 · 나<span class="stamps"><svg viewBox="0 0 40 40"><use href="#stamp"/></svg><svg viewBox="0 0 40 40"><use href="#stamp-empty"/></svg><svg viewBox="0 0 40 40"><use href="#stamp-empty"/></svg></span></div>
+    </div>
+  </section>
+
+  <!-- ================= WORLD ================= -->
+  <section>
+    <header>
+      <p class="eyebrow">세계관</p>
+      <h2>몬스터 아카데미, 기숙사 대항전</h2>
+      <p class="lead">무섭지 않은 몬스터들이 다니는 기숙학교입니다. 해가 지면 운동장이 전장으로 바뀌고, 상대 기숙사의 종탑을 먼저 무너뜨리는 쪽이 그날 밤 상점을 가져갑니다. 판타지 기사나 왕 대신 <b>학교생활</b>을 모든 디자인의 재료로 씁니다.</p>
+    </header>
+    <div class="dorms">
+      <article class="dorm-card" style="--c: var(--moon)">
+        <svg viewBox="0 0 68 80"><use href="#crest-moon"/></svg>
+        <div>
+          <h3>달빛관</h3>
+          <p class="motto">“조용히, 하지만 확실하게.”</p>
+          <p>야행성 학생이 모인 기숙사. 초승달 문장, 블루 지붕. 전투에서는 언제나 <b>내 팀 색</b>입니다.</p>
+        </div>
+      </article>
+      <article class="dorm-card" style="--c: var(--ember)">
+        <svg viewBox="0 0 68 80"><use href="#crest-ember"/></svg>
+        <div>
+          <h3>노을관</h3>
+          <p class="motto">“일단 부딪히고 본다.”</p>
+          <p>해 질 녘에 깨는 다혈질 기숙사. 노을 문장, 코랄 지붕. 전투에서는 언제나 <b>상대 팀 색</b>입니다.</p>
+        </div>
+      </article>
+    </div>
+    <dl class="lexicon">
+      <div><dt>마나</dt><dd><b>잉크</b> · 보라 잉크 방울로 표시</dd></div>
+      <div><dt>강</dt><dd><b>잉크 개울</b> · 과학실에서 흘러나온 보라 잉크</dd></div>
+      <div><dt>다리</dt><dd><b>책 다리</b> · 펼쳐 놓은 거대 교과서</dd></div>
+      <div><dt>메인 타워</dt><dd><b>기숙사 종탑</b> · 금빛 종이 달린 본관</dd></div>
+      <div><dt>사이드 타워</dt><dd><b>등불 탑</b> · 도깨비불을 쏘는 탑</dd></div>
+      <div><dt>왕관/점수</dt><dd><b>상점 도장</b> · 타워 하나당 1개</dd></div>
+      <div><dt>카드 레벨</dt><dd><b>학년</b> · 1학년부터 6학년까지</dd></div>
+      <div><dt>카드 조각</dt><dd><b>출석 도장</b> · 중복 카드로 모음</dd></div>
+      <div><dt>배치 연출</dt><dd><b>분필 원</b> · 원을 그린 뒤 분필 가루와 함께 등장</dd></div>
+    </dl>
+  </section>
+
+  <!-- ================= PALETTE ================= -->
+  <section>
+    <header>
+      <p class="eyebrow">컬러 & 타이포</p>
+      <h2>밤의 교정 팔레트</h2>
+      <p class="lead">검정은 쓰지 않습니다. 모든 외곽선과 그림자는 짙은 잉크 보라로 칠해서 전체가 한 세계처럼 보이게 합니다. 팀 색 두 개(블루와 코랄)는 유닛과 타워에만 씁니다.</p>
+    </header>
+    <div class="swatches">
+      <div class="sw" style="--c:#2a2350"><i></i><div><b>잉크 외곽선</b><code>#2A2350</code><span>모든 외곽선, 그림자</span></div></div>
+      <div class="sw" style="--c:#23453f"><i></i><div><b>칠판</b><code>#23453F</code><span>UI 패널, 하단 카드 영역</span></div></div>
+      <div class="sw" style="--c:#f3efe6"><i></i><div><b>분필</b><code>#F3EFE6</code><span>UI 글씨, 배치 원</span></div></div>
+      <div class="sw" style="--c:#7b4be0"><i></i><div><b>잉크</b><code>#7B4BE0</code><span>마나 바, 코스트 방울</span></div></div>
+      <div class="sw" style="--c:#4f8bff"><i></i><div><b>달빛 블루</b><code>#4F8BFF</code><span>내 팀 (유닛 발판, 지붕)</span></div></div>
+      <div class="sw" style="--c:#ff6b4a"><i></i><div><b>노을 코랄</b><code>#FF6B4A</code><span>상대 팀</span></div></div>
+      <div class="sw" style="--c:#ffc94a"><i></i><div><b>금박</b><code>#FFC94A</code><span>선택 표시, 주요 버튼</span></div></div>
+      <div class="sw" style="--c:#7dbe5a"><i></i><div><b>운동장 잔디</b><code>#7DBE5A / #74B452</code><span>체크무늬 타일 2색</span></div></div>
+      <div class="sw" style="--c:#5b34c7"><i></i><div><b>잉크 개울</b><code>#5B34C7</code><span>강, 물결은 #8B6BF0</span></div></div>
+    </div>
+    <div class="type-row">
+      <div><small>제목 · 숫자 · 버튼</small><span class="sample" style="font-family:var(--font-display)">주아 Jua 2:41</span><small>둥글고 두꺼운 글씨. 코스트 숫자와 타이머에 씁니다.</small></div>
+      <div><small>분필 손글씨 · 강조</small><span class="sample" style="font-family:var(--font-chalk);font-weight:700">개구 Gaegu 승리!</span><small>칠판 위 문구, 결과 화면, 카드 대사에 씁니다.</small></div>
+      <div><small>본문 · 설명</small><span class="sample" style="font-family:var(--font-body);font-size:26px">고운돋움 Gowun Dodum</span><small>카드 설명과 메뉴 보조 텍스트에 씁니다.</small></div>
+    </div>
+  </section>
+
+  <!-- ================= ART RULES ================= -->
+  <section>
+    <header>
+      <p class="eyebrow">그림 규칙</p>
+      <h2>모든 몬스터가 지키는 다섯 가지</h2>
+    </header>
+    <div class="rules">
+      <div class="rule"><h3>2등신, 큰 눈</h3><p>머리와 몸통이 한 덩어리. 눈은 얼굴 폭의 1/3 이상, 흰자에 하이라이트 점 하나.</p></div>
+      <div class="rule"><h3>보라 외곽선 4px</h3><p>128px 기준 외곽선 4px, 색은 언제나 #2A2350. 음영은 단색 1단계만 넣어서 스티커처럼 보이게 합니다.</p></div>
+      <div class="rule"><h3>학교 소품 하나</h3><p>무기 대신 학교 물건을 듭니다. 포크, 새총, 책가방, 자, 플라스크. 실루엣만 봐도 누군지 알 수 있어야 합니다.</p></div>
+      <div class="rule"><h3>팀 색은 발판으로</h3><p>유닛 그림은 두 팀이 같습니다. 팀은 발밑 타원 발판과 체력 바 색으로만 구분합니다.</p></div>
+      <div class="rule"><h3>차별화</h3><p><span class="do">하기:</span> 평면 벡터, 스티커 질감, 학교 소재.<br><span class="dont">피하기:</span> 광택 있는 3D, 왕·기사·고블린 같은 정통 판타지 외형, 금속 테두리 UI.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= CARDS ================= -->
+  <section>
+    <header>
+      <p class="eyebrow">카드 8종 · 학생증</p>
+      <h2>우리 반 친구들</h2>
+      <p class="lead">카드 하나가 학생증 한 장입니다. 수치는 지금의 <code>cards.json</code> 값을 그대로 썼고, 바뀌는 건 이름과 그림뿐입니다. 테두리 색이 희귀도를 나타냅니다.</p>
+    </header>
+    <div class="ids" id="ids"></div>
+  </section>
+
+  <section>
+    <header>
+      <p class="eyebrow">희귀도</p>
+      <h2>분필 · 잉크 · 금박 · 별빛</h2>
+      <p class="lead">희귀도 이름도 학교 문구류에서 가져왔습니다. 같은 카드라도 테두리만 바꾸면 등급이 달라 보이도록 프레임은 하나로 통일했습니다.</p>
+    </header>
+    <div class="ladder" id="ladder"></div>
+  </section>
+
+  <!-- ================= ARENA ================= -->
+  <section>
+    <header>
+      <p class="eyebrow">전장</p>
+      <h2>밤의 운동장</h2>
+      <p class="lead">18×32 타일 그리드와 강·다리·타워 좌표는 지금 코드 그대로입니다. 바닥에는 분필로 그린 운동장 선을 깔고, 강은 잉크 개울로, 다리는 펼친 책으로 바꿉니다.</p>
+    </header>
+    <div class="arena-grid">
+      <svg viewBox="0 0 360 640" role="img" aria-label="전장 배치도"><use href="#arena"/></svg>
+      <div class="legend">
+        <div><svg viewBox="-40 -60 80 100"><use href="#tw-main" color="#4f8bff"/></svg><div><b>기숙사 종탑 (메인)</b><span>지름 3타일. 지붕은 팀 색, 금빛 종이 공격할 때 흔들립니다. 파괴되면 종이 떨어지며 책 더미로 무너집니다.</span></div></div>
+        <div><svg viewBox="-30 -40 60 70"><use href="#tw-side" color="#ff6b4a"/></svg><div><b>등불 탑 (사이드)</b><span>지름 2.2타일. 등불에서 도깨비불 투사체를 쏩니다.</span></div></div>
+        <div><svg viewBox="-30 -32 60 64"><use href="#book" color="#e8574a"/></svg><div><b>책 다리</b><span>폭 2타일. 왼쪽은 빨간 표지, 오른쪽은 남색 표지로 레인을 구분합니다.</span></div></div>
+        <div><svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#5b34c7"/><path d="M0 24q8-5 15 0t15 0t15 0t15 0" fill="none" stroke="#8b6bf0" stroke-width="3"/><path d="M0 40q8-5 15 0t15 0t15 0t15 0" fill="none" stroke="#7656e4" stroke-width="2.5"/></svg><div><b>잉크 개울</b><span>2타일 폭. 물결 2줄이 천천히 흐르고 반짝이 점이 깜빡입니다.</span></div></div>
+        <div><svg viewBox="-30 -30 60 60"><circle r="22" fill="#f3efe6" fill-opacity=".14" stroke="#f3efe6" stroke-width="2.5" stroke-dasharray="5 5"/></svg><div><b>분필 배치 원</b><span>배치 대기 1초 동안 원이 그려지고, 유닛은 반투명으로 보입니다.</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= UI KIT ================= -->
+  <section>
+    <header>
+      <p class="eyebrow">UI 키트</p>
+      <h2>버튼, 패널, 결과 화면</h2>
+      <p class="lead">버튼은 두꺼운 보라 테두리와 아래쪽 6px 그림자로 눌리는 느낌을 줍니다. 패널은 나무 틀을 두른 칠판입니다.</p>
+    </header>
+    <div class="kit">
+      <div>
+        <h3>메뉴 버튼</h3>
+        <button class="btn gold" type="button" id="btn-quick">대항전 시작<small>빠른 매칭</small></button>
+        <button class="btn moon" type="button" id="btn-room">친구 대전: 방 만들기</button>
+        <button class="btn chalk" type="button" id="btn-code">친구 대전: 코드 입력</button>
+        <button class="btn ember" type="button" id="btn-quit">기권</button>
+      </div>
+      <div>
+        <h3>결과 화면</h3>
+        <div class="result">
+          <span class="big" style="color:var(--gold)">승리!</span>
+          <div class="row"><svg viewBox="0 0 40 40"><use href="#stamp"/></svg><svg viewBox="0 0 40 40"><use href="#stamp"/></svg><svg viewBox="0 0 40 40"><use href="#stamp-empty"/></svg></div>
+          <p>상점 도장 2개 · 달빛관 +30점</p>
+        </div>
+        <div class="result">
+          <span class="big" style="color:#ffb3a3">아쉽다…</span>
+          <p>노을관이 종탑을 먼저 울렸습니다</p>
+        </div>
+      </div>
+      <div>
+        <h3>전투 HUD 규칙</h3>
+        <p style="color:var(--chalk-dim);font-size:15px">손패 4장과 다음 카드 1장. 잉크가 모자란 카드는 채도를 낮춥니다. 선택한 카드는 6px 위로 뜨고 금박 외곽선을 두릅니다. 타이머는 종이 메모처럼 살짝 기울여 붙이고, 남은 1분(잉크 2배 구간)에는 메모가 보라색으로 바뀌며 흔들립니다.</p>
+        <div class="hand" id="kit-hand" style="grid-template-columns:repeat(4,1fr);gap:10px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= COLLECTION ================= -->
+  <section>
+    <header>
+      <p class="eyebrow">수집</p>
+      <h2>학생부를 채우는 재미</h2>
+      <p class="lead">카드 레벨은 학년, 조각은 출석 도장, 도감은 학생부입니다. 학교라는 테마 하나로 수집 시스템 전체를 설명할 수 있습니다.</p>
+    </header>
+    <div class="collect">
+      <div>
+        <h3>학년 = 레벨</h3>
+        <p>1학년에서 6학년까지. 학년이 오를 때마다 학생증 사진 옆 학년 표시가 바뀌고, 6학년이 되면 사진에 졸업 모자가 씌워집니다.</p>
+        <div class="grades"><span class="on">1</span><span class="on">2</span><span class="on">3</span><span>4</span><span>5</span><span>6 · 졸업</span></div>
+      </div>
+      <div>
+        <h3>출석 도장 = 카드 조각</h3>
+        <p>중복 카드는 출석 도장으로 바뀝니다. 도장 칸을 다 채우면 진급할 수 있습니다.</p>
+        <div class="attend"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+        <p style="font-size:13px">포크 도깨비 · 2학년 → 3학년 · 7 / 10</p>
+      </div>
+      <div>
+        <h3>학생부 = 도감</h3>
+        <p>아직 못 만난 학생은 실루엣으로만 보입니다. 다음 업데이트 후보를 미리 보여 주며 수집 욕구를 끌어올립니다.</p>
+        <div class="dex" id="dex"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MOTION ================= -->
+  <section>
+    <header>
+      <p class="eyebrow">연출</p>
+      <h2>움직임 메모</h2>
+    </header>
+    <div class="motion">
+      <div><b>배치</b><span>분필 원이 0.3초 동안 그려지고, 펑 하는 분필 가루와 함께 유닛이 통통 튀며 착지합니다.</span></div>
+      <div><b>대기 모션</b><span>모든 유닛은 1.2초 주기로 몸을 위아래 4% 늘였다 줄입니다. 박쥐는 종이처럼 팔랑입니다.</span></div>
+      <div><b>피격</b><span>흰색으로 0.06초 번쩍인 뒤 좌우로 살짝 흔들립니다. 숫자는 띄우지 않고 체력 바만 줄어듭니다.</span></div>
+      <div><b>용 선생 재채기</b><span>화면이 0.2초 흔들리고 “에취!” 손글씨가 터지며 주황 불꽃 원이 퍼집니다.</span></div>
+      <div><b>타워 파괴</b><span>종이 “땡” 하고 떨어지며 탑이 책 더미로 무너집니다. 화면 위쪽에 상점 도장이 쾅 찍힙니다.</span></div>
+      <div><b>잉크 2배</b><span>잉크 개울이 더 빨리 흐르고 마나 바에 반짝이가 흐릅니다.</span></div>
+    </div>
+  </section>
+
+  <!-- ================= HANDOFF ================= -->
+  <section>
+    <header>
+      <p class="eyebrow">개발자 전달</p>
+      <h2>적용 가이드</h2>
+      <p class="lead">게임 로직과 카드 <code>id</code>는 바꾸지 않습니다. 색 상수와 표시 이름, 그림만 교체하면 됩니다. 희귀도는 <code>cards.json</code>에 <code>rarity</code> 필드를 하나 추가하는 방식을 제안합니다.</p>
+    </header>
+    <div class="handoff">
+      <pre><span class="c">// client/src/layout.ts</span>
+export const COLORS = {
+  me:        <span class="n">0x4f8bff</span>, <span class="c">// 달빛 블루</span>
+  enemy:     <span class="n">0xff6b4a</span>, <span class="c">// 노을 코랄</span>
+  grass:     <span class="n">0x7dbe5a</span>,
+  grassDark: <span class="n">0x74b452</span>,
+  river:     <span class="n">0x5b34c7</span>, <span class="c">// 잉크 개울</span>
+  riverWave: <span class="n">0x8b6bf0</span>,
+  bridge:    <span class="n">0xf6e7c8</span>, <span class="c">// 책 종이</span>
+  ui:        <span class="n">0x23453f</span>, <span class="c">// 칠판</span>
+  uiFrame:   <span class="n">0x8c5e3c</span>, <span class="c">// 나무 틀</span>
+  mana:      <span class="n">0x7b4be0</span>, <span class="c">// 잉크</span>
+  outline:   <span class="n">0x2a2350</span>, <span class="c">// 0x000000 / 0x111111 대체</span>
+  chalk:     <span class="n">0xf3efe6</span>,
+  gold:      <span class="n">0xffc94a</span>, <span class="c">// 선택, 0xffd166 대체</span>
+};
+
+export const RARITY = {
+  chalk: <span class="n">0xd9d4c7</span>, <span class="c">// 분필</span>
+  ink:   <span class="n">0x3fb7c9</span>, <span class="c">// 잉크</span>
+  gold:  <span class="n">0xffc94a</span>, <span class="c">// 금박</span>
+  star:  <span class="n">0xc9a0ff</span>, <span class="c">// 별빛 (홀로그램 셰이더)</span>
+};
+
+export const FONT =
+  "'Jua', 'Gowun Dodum', 'Malgun Gothic', sans-serif";
+<span class="c">// index.html에 Google Fonts: Jua, Gaegu, Gowun Dodum</span></pre>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>id</th><th>지금</th><th>새 이름</th><th>약자</th><th>희귀도</th></tr></thead>
+          <tbody id="maptable"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="tbl assets">
+      <table>
+        <thead><tr><th>에셋</th><th>규격</th><th>메모</th></tr></thead>
+        <tbody>
+          <tr><td><b>유닛 스프라이트</b> × 8</td><td>256×256 PNG, 투명</td><td>대기 2프레임 + 공격 2프레임. 카드 초상화와 같은 그림을 재사용합니다.</td></tr>
+          <tr><td><b>타워</b> × 2</td><td>192×192 / 128×128</td><td>지붕만 흰색으로 그려 팀 색 tint를 입힙니다. 무너진 상태 1장씩.</td></tr>
+          <tr><td><b>전장 타일</b></td><td>40×40 타일</td><td>잔디 2색, 잉크 개울 물결 루프, 책 다리 2색.</td></tr>
+          <tr><td><b>카드 프레임</b> × 4</td><td>144×192 9-slice</td><td>희귀도별 테두리, 코스트 잉크 방울 1장.</td></tr>
+          <tr><td><b>이펙트</b></td><td>스프라이트 시트</td><td>분필 가루, 재채기 불꽃, 푸딩 착탄, 도깨비불, 상점 도장.</td></tr>
+          <tr><td><b>UI</b></td><td>9-slice</td><td>칠판 패널(나무 틀), 버튼 4색, 타이머 메모지.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="end">몬스터 클래스 · Break Fort 아트 디렉션 시안 v0.1</footer>
+</main>
+
+<script>
+const R = { chalk: '분필', ink: '잉크', gold: '금박', star: '별빛' };
+const CARDS = [
+  { id: 'spearman', sym: 'ch-spear', old: '창병', name: '포크 도깨비', short: '포', sp: '외뿔 도깨비 · 급식부', cost: 3, r: 'chalk', n: 1,
+    stats: [['체력', '700'], ['공격', '120'], ['공격 속도', '1.1초'], ['사거리', '근접'], ['이동', '보통'], ['대상', '지상']], quote: '“급식 1등은 양보 못 해!”' },
+  { id: 'crossbow', sym: 'ch-imp', old: '석궁수', name: '새총 쌍둥이', short: '총', sp: '외눈 임프 · 장난꾸러기', cost: 3, r: 'chalk', n: 2,
+    stats: [['체력', '250'], ['공격', '90'], ['공격 속도', '1.2초'], ['사거리', '5.0'], ['이동', '보통'], ['대상', '지상·공중']], quote: '“둘이 쏘면 혼나는 것도 두 배.”' },
+  { id: 'shieldGiant', sym: 'ch-golem', old: '방패 거인', name: '책가방 골렘', short: '골', sp: '돌 골렘 · 모범생', cost: 5, r: 'gold', n: 1,
+    stats: [['체력', '2800'], ['공격', '180'], ['공격 속도', '1.5초'], ['사거리', '근접'], ['이동', '느림'], ['대상', '건물만']], quote: '“가방에 전 과목 교과서 들었음.”' },
+  { id: 'bats', sym: 'ch-bats', old: '박쥐 떼', name: '시험지 박쥐 떼', short: '박', sp: '종이접기 박쥐', cost: 2, r: 'chalk', n: 4,
+    stats: [['체력', '80'], ['공격', '60'], ['공격 속도', '1.0초'], ['사거리', '근접'], ['이동', '매우 빠름'], ['대상', '지상·공중']], quote: '“빵점 시험지는 날려 버리면 그만.”' },
+  { id: 'bombGoblin', sym: 'ch-slime', old: '폭탄 고블린', name: '플라스크 슬라임', short: '슬', sp: '슬라임 · 연금술부', cost: 4, r: 'ink', n: 1,
+    stats: [['체력', '400'], ['공격', '160 범위'], ['공격 속도', '1.8초'], ['사거리', '4.5'], ['이동', '보통'], ['대상', '지상']], quote: '“실험은 원래 터지라고 하는 거야.”' },
+  { id: 'knights', sym: 'ch-skel', old: '기사단', name: '해골 선도부', short: '해', sp: '해골 · 선도부 3인조', cost: 5, r: 'gold', n: 3,
+    stats: [['체력', '550'], ['공격', '110'], ['공격 속도', '1.2초'], ['사거리', '근접'], ['이동', '보통'], ['대상', '지상']], quote: '“복도에서 뛰면 벌점!”' },
+  { id: 'fireball', sym: 'ch-dragon', old: '불덩이', name: '용 선생 재채기', short: '용', sp: '주문 · 담임 선생님', cost: 4, r: 'star', n: 0,
+    stats: [['피해', '500'], ['반경', '2.5'], ['타워 피해', '35%'], ['종류', '주문']], quote: '“에… 에… 에취!”' },
+  { id: 'catapult', sym: 'ch-catapult', old: '투석 포대', name: '급식 투석기', short: '급', sp: '건물 · 매점 비품', cost: 4, r: 'ink', n: 0,
+    stats: [['체력', '900'], ['공격', '140'], ['공격 속도', '2.0초'], ['사거리', '6.5'], ['유지', '30초'], ['대상', '지상']], quote: '“오늘의 메뉴: 날아오는 푸딩.”' },
+];
+const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
+
+function costBadge(cost, cls) {
+  return `<span class="${cls}"><svg viewBox="0 0 40 48"><use href="#drop"/></svg><b>${cost}</b></span>`;
+}
+function handCard(c, extra = '') {
+  return `<div class="hcard r-${c.r} ${extra}"><div class="in"><svg viewBox="0 0 120 120"><use href="#${c.sym}"/></svg><span class="nm">${c.name}</span></div>${costBadge(c.cost, 'cost')}</div>`;
+}
+function idCard(c, i) {
+  const crest = '<svg viewBox="0 0 68 80"><use href="#crest-moon"/></svg>';
+  const count = c.n > 1 ? `<span class="count">×${c.n}</span>` : '';
+  const stats = c.stats.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+  return `<div class="frame r-${c.r}"><article class="idcard">
+    <header>${crest}몬스터 아카데미<span>학생증</span></header>
+    <div class="photo"><svg class="art" viewBox="0 0 120 120"><use href="#${c.sym}"/></svg>${costBadge(c.cost, 'cost')}${count}<span class="grade">1학년</span></div>
+    <div class="idinfo"><h3>${c.name}</h3><p class="sp">${c.sp}</p><dl class="stats">${stats}</dl><p class="quote">${c.quote}</p></div>
+    <footer>BF-${String(i + 1).padStart(3, '0')}<span class="barcode"></span><span class="seal">${R[c.r]}</span></footer>
+  </article></div>`;
+}
+
+document.getElementById('ids').innerHTML = CARDS.map(idCard).join('');
+
+document.getElementById('ladder').innerHTML = ['chalk', 'ink', 'gold', 'star'].map(r => {
+  const c = { ...byId.spearman, r };
+  const desc = { chalk: '기본 카드. 회백색 분필 테두리', ink: '청록 잉크 테두리', gold: '금박 테두리, 은은한 광택', star: '움직이는 홀로그램 테두리' }[r];
+  return `<figure>${handCard(c)}<figcaption><b>${R[r]}</b><span>${desc}</span></figcaption></figure>`;
+}).join('');
+
+const hud = document.getElementById('hud-hand');
+hud.innerHTML = `<div class="next">다음${handCard(byId.bats, 'sm')}</div>` +
+  handCard(byId.shieldGiant, 'sm dim') + handCard(byId.crossbow, 'sm selected') + handCard(byId.fireball, 'sm') + handCard(byId.catapult, 'sm');
+
+document.getElementById('kit-hand').innerHTML =
+  handCard(byId.knights, 'dim') + handCard(byId.spearman, 'selected') + handCard(byId.bombGoblin) + handCard(byId.fireball);
+
+const locked = [{ ...byId.shieldGiant, name: '???', r: 'gold' }, { ...byId.fireball, name: '???' }, { ...byId.spearman, name: '???', r: 'ink', cost: '?' }];
+document.getElementById('dex').innerHTML =
+  handCard(byId.bats, 'sm') + locked.map(c => `<div class="locked">${handCard({ ...c, cost: '?' }, 'sm')}</div>`).join('');
+
+document.getElementById('maptable').innerHTML = CARDS.map(c =>
+  `<tr><td><code>${c.id}</code></td><td>${c.old}</td><td><b>${c.name}</b></td><td>${c.short}</td><td>${R[c.r]}</td></tr>`).join('');
+</script>

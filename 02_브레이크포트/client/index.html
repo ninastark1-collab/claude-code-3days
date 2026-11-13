@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#1d1838" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Break Fort" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- art book fonts: Gowun Batang (titles), Jua (numbers/buttons), Gaegu (speech), Gowun Dodum (body) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gaegu:wght@700&family=Gowun+Dodum&family=Gowun+Batang:wght@700&display=swap" />
+    <link rel="icon" type="image/png" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <title>몬스터 클래스 · Break Fort</title>
+    <style>
+      html, body {
+        margin: 0; height: 100%; background: #141129; overflow: hidden;
+        touch-action: none; overscroll-behavior: none;
+        -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
+      }
+      #game {
+        width: 100vw; height: 100dvh; box-sizing: border-box;
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      }
+      #rotate {
+        display: none; position: fixed; inset: 0; z-index: 20; background: #141129; color: #f4e9d2;
+        font-family: 'Jua', 'Malgun Gothic', sans-serif; font-size: 24px;
+        align-items: center; justify-content: center; flex-direction: column; gap: 16px; text-align: center;
+      }
+      #rotate .phone { width: 46px; height: 78px; border: 4px solid #f2c14e; border-radius: 10px; animation: turn 1.6s ease-in-out infinite; }
+      @keyframes turn { 0%, 30% { transform: rotate(-90deg); } 60%, 100% { transform: rotate(0deg); } }
+      /* phones/tablets held sideways: the game is portrait-only */
+      @media (orientation: landscape) and (pointer: coarse) and (max-height: 600px) {
+        #rotate { display: flex; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game"></div>
+    <div id="rotate"><div class="phone"></div>휴대폰을 세로로 돌려주세요</div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

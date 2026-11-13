@@ -1,0 +1,6 @@
+⚠️ 삭제 예정 - 비밀번호 관리자로 옮길 것
+
+WiFi (사무실): OurCompany2026!
+복합기: 0000
+ERP 테스트서버: admin / test1234
+회의실 예약시스템: booking / room2026
