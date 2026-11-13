@@ -191,18 +191,18 @@ function drawPickGrid() {
     cards: r.grid,
     faceDown: true,
     owners: ownersFrom(r.picks, s.meId, info()),
-    clickable: (i) => !r.picks[i] || r.picks[i].p === s.meId,
+    clickable: () => true, // 같은 카드를 여러 명이 고를 수 있음
     onPick,
   });
   B.drawMyPicks(myCells().map((i) => r.grid[i]));
 }
 
-// 누르는 즉시 화면에 반영(낙관적 업데이트) → 서버 결과로 맞춤. 남이 먼저 가져갔으면 되돌림
+// 누르는 즉시 화면에 반영(낙관적 업데이트) → 서버 결과로 맞춤. 서버가 거부하면 되돌림
 async function onPick(cell) {
   const r = s.room;
   const local = applyPick(r.picks, r.pick_seq ?? 0, s.meId, cell);
   if (!local.ok) return;
-  const picked = local.picks[cell]?.p === s.meId;
+  const picked = (picksByPlayer(local.picks)[s.meId] ?? []).includes(cell);
   play(picked ? 'pick' : 'unpick');
   try { navigator.vibrate?.(15); } catch {}
   s.room = { ...r, picks: local.picks, pick_seq: local.seq };

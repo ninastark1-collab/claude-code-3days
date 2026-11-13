@@ -1,15 +1,23 @@
 // 연습/온라인 공통: 서버(또는 연습 모드)의 판 데이터 → 화면에 그릴 값으로 변환
 import { compareHands } from '../game/handEvaluator.js';
+import { ownersByCell } from '../game/match.js';
 import { bestNote } from '../ui/board.js';
 
 export const initial = (name) => [...(name ?? '?')][0];
 
-/** picks({칸:{p}}) → 카드판 이름표 { 칸: {seat, label, me, name} } */
+/**
+ * picks → 카드판 이름표 { 칸: [{seat, label, me, name}, ...] }
+ * 같은 칸을 여러 명이 고를 수 있으므로 칸마다 이름표가 여러 개일 수 있음 (내 것이 맨 앞)
+ */
 export function ownersFrom(picks, meId, infoById) {
   const out = {};
-  for (const [cell, { p }] of Object.entries(picks ?? {})) {
-    const info = infoById[p] ?? { nickname: '?', seat: 0 };
-    out[cell] = { seat: info.seat, me: p === meId, name: info.nickname, label: p === meId ? '나' : initial(info.nickname) };
+  for (const [cell, ids] of Object.entries(ownersByCell(picks))) {
+    out[cell] = ids
+      .map((p) => {
+        const info = infoById[p] ?? { nickname: '?', seat: 0 };
+        return { seat: info.seat, me: p === meId, name: info.nickname, label: p === meId ? '나' : initial(info.nickname) };
+      })
+      .sort((a, b) => Number(b.me) - Number(a.me));
   }
   return out;
 }

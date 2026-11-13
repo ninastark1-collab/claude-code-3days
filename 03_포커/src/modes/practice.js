@@ -76,7 +76,7 @@ function drawPickGrid() {
     cards: s.grid,
     faceDown: true,
     owners: ownersFrom(s.picks, ME, info()),
-    clickable: (i) => !s.picks[i] || s.picks[i].p === ME,
+    clickable: () => true, // 같은 카드를 여러 명이 고를 수 있음
     onPick: (i) => tryPick(ME, i),
   });
 }
@@ -164,7 +164,7 @@ function tryPick(who, cell) {
   s.picks = r.picks;
   s.seq = r.seq;
   if (who === ME) {
-    play(s.picks[cell]?.p === ME ? 'pick' : 'unpick');
+    play(myCells().includes(cell) ? 'pick' : 'unpick');
     try { navigator.vibrate?.(15); } catch {}
   }
   drawPickGrid();
@@ -185,7 +185,7 @@ function botMove() {
   if (s.phase !== 'PICK') return;
   const held = picksByPlayer(s.picks)[BOT] ?? [];
   if (held.length >= PICKS_PER_PLAYER) return;
-  const free = s.grid.map((_, i) => i).filter((i) => !s.picks[i]);
+  const free = s.grid.map((_, i) => i).filter((i) => !held.includes(i)); // 내가 이미 고른 칸만 빼고 전부 (상대와 같은 카드도 가능)
   const known = free.filter((i) => s.botMemory?.has(i));
   const handOf = (cells) => evaluateHand([...s.community, ...cells.map((i) => s.grid[i])]);
   let choice = null;

@@ -1,6 +1,7 @@
 // 한 판의 규칙 (서버 Edge Function 과 혼자 연습 모드가 똑같이 사용)
 // 모든 값은 JSON 으로 주고받을 수 있는 순수 데이터.
-//   picks: { "칸번호": { p: 플레이어id, t: 고른 순서 } }
+//   picks: { "플레이어id:칸번호": { p: 플레이어id, c: 칸번호, t: 고른 순서 } }
+//   같은 칸을 여러 명이 고를 수 있으므로 키에 플레이어 id 를 함께 넣는다.
 import { evaluateHand, compareHands, describeHand, explainResult } from './handEvaluator.js';
 import { weakestFill } from './autoPick.js';
 import { findBestPick } from './bestPick.js';
@@ -8,32 +9,40 @@ import { findBestPick } from './bestPick.js';
 export const PICKS_PER_PLAYER = 2;
 export const MAX_PLAYERS = 4;
 
+export const pickKey = (playerId, cell) => `${playerId}:${cell}`;
+
 /** 플레이어별로 고른 칸 (고른 순서대로) */
 export function picksByPlayer(picks) {
   const out = {};
-  for (const [cell, { p, t }] of Object.entries(picks)) (out[p] ??= []).push({ cell: Number(cell), t });
+  for (const { p, c, t } of Object.values(picks ?? {})) (out[p] ??= []).push({ cell: c, t });
   for (const p of Object.keys(out)) out[p] = out[p].sort((a, b) => a.t - b.t).map((x) => x.cell);
+  return out;
+}
+
+/** 칸별로 고른 사람들 { 칸: [플레이어id, ...] } (고른 순서대로) */
+export function ownersByCell(picks) {
+  const out = {};
+  const list = Object.values(picks ?? {}).sort((a, b) => a.t - b.t);
+  for (const { p, c } of list) (out[c] ??= []).push(p);
   return out;
 }
 
 /**
  * 카드 고르기 규칙 (DB 함수 poker_pick 과 동일)
- *  - 내 카드를 다시 고르면 취소
- *  - 빈 칸인데 이미 2장이면 가장 먼저 고른 카드를 빼고 교체
- *  - 남의 카드면 실패
+ *  - 내가 고른 카드를 다시 고르면 취소
+ *  - 이미 2장이면 가장 먼저 고른 카드를 빼고 교체
+ *  - 다른 사람이 고른 카드도 고를 수 있음 (같은 카드 중복 선택 가능)
  */
 export function applyPick(picks, seq, playerId, cell) {
-  const key = String(cell);
+  const key = pickKey(playerId, cell);
   const next = { ...picks };
-  const owner = picks[key]?.p;
-  if (owner === playerId) {
+  if (picks[key]) {
     delete next[key];
     return { ok: true, picks: next, seq };
   }
-  if (owner) return { ok: false, error: 'taken', picks, seq };
   const mine = picksByPlayer(picks)[playerId] ?? [];
-  if (mine.length >= PICKS_PER_PLAYER) delete next[String(mine[0])];
-  next[key] = { p: playerId, t: seq + 1 };
+  if (mine.length >= PICKS_PER_PLAYER) delete next[pickKey(playerId, mine[0])];
+  next[key] = { p: playerId, c: cell, t: seq + 1 };
   return { ok: true, picks: next, seq: seq + 1 };
 }
 
@@ -45,13 +54,16 @@ export function finishRound({ community, grid, picks, players }) {
   const filled = { ...picks };
   let seq = Math.max(0, ...Object.values(picks).map((x) => x.t));
   const auto = {};
-  // 자리 순서대로 채움 (공평하게 매번 같은 순서)
+  // 자리 순서대로 채움 (공평하게 매번 같은 순서). 같은 카드를 여러 명이 가질 수 있으므로
+  // 남은 칸은 '내가 아직 안 고른 칸' 전체
   for (const pl of [...players].sort((a, b) => a.seat - b.seat)) {
     const mine = picksByPlayer(filled)[pl.id] ?? [];
     const need = PICKS_PER_PLAYER - mine.length;
     if (need <= 0) continue;
-    const free = grid.map((_, i) => i).filter((i) => !filled[String(i)]);
-    for (const cell of weakestFill(community, grid, mine, free, need)) filled[String(cell)] = { p: pl.id, t: ++seq };
+    const free = grid.map((_, i) => i).filter((i) => !mine.includes(i));
+    for (const cell of weakestFill(community, grid, mine, free, need)) {
+      filled[pickKey(pl.id, cell)] = { p: pl.id, c: cell, t: ++seq };
+    }
     auto[pl.id] = need;
   }
 

@@ -1,7 +1,7 @@
 // 게임 화면 그리기 (연습/온라인 공통). 게임 진행 로직은 없고, 받은 값대로 화면만 바꿈.
 import { HAND_RANK } from '../game/handEvaluator.js';
 import { GUIDE } from '../game/handGuide.js';
-import { GRID_SIZE } from '../game/deck.js';
+import { GRID_SIZE, GRID_COLS } from '../game/deck.js';
 import { PICKS_PER_PLAYER } from '../game/match.js';
 import { cardEl, renderRow, flipAll, suitSvg, isRed, rankHtml, BLANK_CARD, sameCard } from './cards.js';
 import { play, buzz, isMuted, setMuted } from './sound.js';
@@ -129,17 +129,22 @@ export const flipCommunity = (faceDown) => flipAll(el.community, faceDown);
 // ---------- 카드판 ----------
 /**
  * @param {object} v
- *  cards: 20장 (없으면 뒷면 자리만), faceDown, owners: { 칸: {seat, label, me} },
+ *  cards: 16장 (없으면 뒷면 자리만), faceDown, owners: { 칸: [{seat, label, me}, ...] },
+ *  (같은 칸을 여러 명이 고를 수 있어 칸마다 여러 명)
  *  clickable: (칸) => bool, onPick: (칸) => void, best: [칸, 칸]
  */
 export function drawGrid({ cards, faceDown = true, owners = {}, clickable = () => false, onPick = null, best = [] }) {
   const list = cards ?? Array(GRID_SIZE).fill(BLANK_CARD);
   const nodes = list.map((card, i) => {
     const node = cardEl(card, { faceDown: faceDown || !cards });
-    const o = owners[i];
-    if (o) {
-      node.classList.add(o.me ? 'mine' : 'taken', `seat-${o.seat}`);
-      node.insertAdjacentHTML('beforeend', `<span class="who-tag">${o.label}</span>`);
+    const os = owners[i] ?? []; // 내 것이 맨 앞
+    if (os.length) {
+      const first = os[0];
+      node.classList.add(first.me ? 'mine' : 'taken', `seat-${first.seat}`);
+      const tags = os
+        .map((o) => `<span class="who-tag seat-${o.seat}${o.me ? ' me' : ''}">${o.label}</span>`)
+        .join('');
+      node.insertAdjacentHTML('beforeend', `<div class="who-tags">${tags}</div>`);
     }
     if (best.includes(i)) {
       node.classList.add('best');
@@ -307,12 +312,12 @@ export const hideResult = () => el.result.classList.add('hidden');
 
 /** 결과 창의 '이번 판 최고' 안내 문구 */
 export function bestNote(bestCells, myCells, owners, isMeBest) {
-  const pos = (i) => `${Math.floor(i / 5) + 1}행 ${(i % 5) + 1}열`;
+  const pos = (i) => `${Math.floor(i / GRID_COLS) + 1}행 ${(i % GRID_COLS) + 1}열`;
   if (isMeBest) return '<b>최고 족보를 완성했어요!</b>';
   return `골랐어야 할 카드 · ${bestCells
     .map((i) => {
-      const o = owners[i];
-      const who = o && !o.me ? ` (${escapeHtml(o.name)}님이 가져감)` : '';
+      const others = (owners[i] ?? []).filter((o) => !o.me);
+      const who = others.length ? ` (${others.map((o) => escapeHtml(o.name)).join(', ')}님도 고름)` : '';
       return `<b>${pos(i)}</b>${who}`;
     })
     .join(', ')}`;

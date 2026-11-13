@@ -60,12 +60,12 @@ describe('덱 배분', () => {
     const d = createDeck();
     expect(new Set(d.map((c) => c.rank + c.suit)).size).toBe(52);
   });
-  it('공개 3장 + 그리드 20장, 서로 중복 없음', () => {
+  it('공개 3장 + 그리드 16장, 서로 중복 없음', () => {
     const { community, grid } = dealRound();
     expect(community).toHaveLength(3);
-    expect(grid).toHaveLength(20);
+    expect(grid).toHaveLength(16);
     const all = [...community, ...grid].map((c) => c.rank + c.suit);
-    expect(new Set(all).size).toBe(23);
+    expect(new Set(all).size).toBe(19);
   });
 });
 
@@ -142,7 +142,7 @@ describe('이번 판 최고 족보 찾기', () => {
     for (let t = 0; t < 30; t++) {
       const { community, grid } = dealRound();
       const best = findBestPick(community, grid);
-      for (let i = 0; i < 20; i++) for (let j = i + 1; j < 20; j++) {
+      for (let i = 0; i < grid.length; i++) for (let j = i + 1; j < grid.length; j++) {
         expect(compareHands(best.cards, [...community, grid[i], grid[j]])).toBeGreaterThanOrEqual(0);
       }
     }
@@ -159,7 +159,7 @@ describe('시간 초과 자동 선택 (가장 약한 카드)', () => {
       const pick = weakestFill(community, grid, [], free, 2);
       expect(pick).toHaveLength(2);
       const mine = [...community, ...pick.map((i) => grid[i])];
-      for (let i = 0; i < 20; i++) for (let j = i + 1; j < 20; j++) {
+      for (let i = 0; i < grid.length; i++) for (let j = i + 1; j < grid.length; j++) {
         expect(compareHands(mine, [...community, grid[i], grid[j]])).toBeLessThanOrEqual(0);
       }
     }

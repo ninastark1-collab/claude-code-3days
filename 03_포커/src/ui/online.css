@@ -41,9 +41,7 @@
 .pl-place { position: absolute; top: 3px; left: 3px; font-size: 9px; font-weight: 900; color: #14100a; background: var(--gold-hi); border-radius: 5px; padding: 0 3px; }
 
 /* 카드판 이름표: 그 사람 색 */
-.grid .card.taken { opacity: .42; }
 .grid .card.taken .face, .grid .card.taken .back { box-shadow: 0 0 0 2px var(--seat); }
-.taken .who-tag { background: var(--seat); color: #14100a; }
 .g-tag[class*="seat-"] { background: var(--seat); color: #14100a; }
 .pick-tag[class*="seat-"] { background: var(--seat); color: #14100a; }
 .guide li.hit { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.25); }

@@ -213,7 +213,7 @@ html, body {
 
 /* ---------- 그리드 ---------- */
 .grid {
-  display: grid; grid-template-columns: repeat(5, 1fr);
+  display: grid; grid-template-columns: repeat(4, 1fr);
   gap: 7px; padding: 10px;
   border-radius: 16px;
   background:
@@ -229,16 +229,19 @@ html, body {
   box-shadow: 0 0 0 2px var(--gold-hi), 0 0 18px rgba(247,227,163,.75), 0 3px 8px rgba(0,0,0,.5);
 }
 .grid .card.mine { transform: translateY(-3px); }
-.grid .card.taken { opacity: .38; }
+/* 다른 사람이 고른 카드도 고를 수 있으므로 흐리게 하지 않고 테두리만 표시 */
 .grid .card.taken .face, .grid .card.taken .back { box-shadow: 0 0 0 2px var(--opp); }
-.who-tag {
+.who-tags {
   position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%); z-index: 2;
+  display: flex; gap: 2px; justify-content: center; max-width: 100%;
+}
+.who-tag {
   font-size: 9.5px; font-weight: 800; padding: 1px 6px; border-radius: 6px; white-space: nowrap;
+  background: var(--seat, var(--opp)); color: #14100a;
   box-shadow: 0 2px 6px rgba(0,0,0,.5);
 }
-.mine .who-tag { background: var(--foil); color: #1a1406; }
-.taken .who-tag { background: var(--opp); color: #0a1a26; }
-.grid .card.mine.clickable .who-tag::after { content: ' ✕'; }
+.who-tag.me { background: var(--foil); color: #1a1406; }
+.grid .card.clickable .who-tag.me::after { content: ' ✕'; }
 
 /* ---------- 내 카드 ---------- */
 .picks {
@@ -543,8 +546,8 @@ html, body {
     container-type: size;
     display: flex; align-items: center; justify-content: center;
   }
-  /* 세로 기준 최대 폭: 카드 높이 h = (H - 테두리4 - 여백20 - 줄간격21)/4, 폭 = h×5/7 → 판 폭 = (H-45)×0.893 + 52 */
-  .grid-area .grid-rim { width: min(100cqw, calc((100cqh - 45px) * 0.8929 + 52px)); }
+  /* 세로 기준 최대 폭: 카드 높이 h = (H - 테두리4 - 여백20 - 줄간격21)/4, 폭 = h×5/7, 4열 → 판 폭 = (H-45)×0.7143 + 45 */
+  .grid-area .grid-rim { width: min(100cqw, calc((100cqh - 45px) * 0.7143 + 45px)); }
 
   .picks { padding: 8px 12px; }
   .picks-label span { font-size: 18px; }
