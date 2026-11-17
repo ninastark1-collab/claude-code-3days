@@ -1,0 +1,1 @@
+git clone https://github.com/ninastark1-collab/claude-code-3days.git && cd claude-code-3days && git am --keep-cr _patch/poker-4x4-shared-picks.patch && git apply --ignore-whitespace _patch/poker-edge-bundle.diff && git rm -q -r _patch && git add -A && git commit -qm "에지 함수 단일 파일 추가, 패치 파일 정리" && git push origin main
