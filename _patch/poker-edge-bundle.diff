@@ -1,1 +1,722 @@
-git clone https://github.com/ninastark1-collab/claude-code-3days.git && cd claude-code-3days && git am --keep-cr _patch/poker-4x4-shared-picks.patch && git apply --ignore-whitespace _patch/poker-edge-bundle.diff && git rm -q -r _patch && git add -A && git commit -qm "에지 함수 단일 파일 추가, 패치 파일 정리" && git push origin main
+diff --git "a/03_\355\217\254\354\273\244/scripts/bundle-edge.mjs" "b/03_\355\217\254\354\273\244/scripts/bundle-edge.mjs"
+new file mode 100644
+index 0000000..454a4d7
+--- /dev/null
++++ "b/03_\355\217\254\354\273\244/scripts/bundle-edge.mjs"
+@@ -0,0 +1,31 @@
++// Edge Function(index.ts + game/*.js)을 파일 1개로 합침 — Supabase 대시보드 편집기에 한 번에 붙여넣기용.
++// 사용: node scripts/bundle-edge.mjs   → supabase/deploy/poker-single-file.ts
++import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
++
++const dir = 'supabase/functions/poker/';
++const order = ['handEvaluator', 'deck', 'autoPick', 'bestPick', 'dramaDeal', 'match'];
++const strip = (src) =>
++  src
++    .split('\n')
++    .filter((l) => !/^import .* from '\.\/.*';\s*$/.test(l))
++    .map((l) => l.replace(/^export (const|let|function|class) /, '$1 '))
++    .join('\n');
++
++const NL = String.fromCharCode(10);
++const section = (n) =>
++  (n === 'dramaDeal' ? 'const H = HAND_RANK; // dramaDeal.js 의 HAND_RANK as H' + NL : '') +
++  '// ===== game/' + n + '.js =====' + NL +
++  strip(readFileSync(dir + 'game/' + n + '.js', 'utf8'));
++const game = order.map(section).join(NL);
++
++const idx = readFileSync(`${dir}index.ts`, 'utf8').split('\n');
++const importEnd = idx.findLastIndex((l) => /^import /.test(l));
++const head = idx.slice(0, importEnd + 1).filter((l) => !/\.\/game\//.test(l));
++const body = idx.slice(importEnd + 1);
++
++mkdirSync('supabase/deploy', { recursive: true });
++writeFileSync(
++  'supabase/deploy/poker-single-file.ts',
++  ['// @ts-nocheck', '// 자동 생성: node scripts/bundle-edge.mjs (직접 수정하지 말 것)', ...head, '', game, '', ...body].join('\n'),
++);
++console.log('ok');
+diff --git "a/03_\355\217\254\354\273\244/supabase/deploy/poker-single-file.ts" "b/03_\355\217\254\354\273\244/supabase/deploy/poker-single-file.ts"
+new file mode 100644
+index 0000000..6482de5
+--- /dev/null
++++ "b/03_\355\217\254\354\273\244/supabase/deploy/poker-single-file.ts"
+@@ -0,0 +1,679 @@
++// @ts-nocheck
++// 자동 생성: node scripts/bundle-edge.mjs (직접 수정하지 말 것)
++// 기억력 포커 서버: 방 만들기/참가/시작/카드 고르기/단계 진행을 모두 여기서 처리.
++// 폰은 DB 를 읽기만 하고(실시간 구독), 쓰기는 이 함수만 (service_role).
++// game/ 폴더는 src/game 을 scripts/sync-game.mjs 로 복사한 것 — 화면과 똑같은 규칙 사용.
++import { createClient } from 'jsr:@supabase/supabase-js@2';
++
++// ===== game/handEvaluator.js =====
++// 5장 포커 족보 판정 + 비교
++
++const HAND_RANK = {
++  HIGH_CARD: 0,
++  ONE_PAIR: 1,
++  TWO_PAIR: 2,
++  THREE_OF_A_KIND: 3,
++  STRAIGHT: 4,
++  FLUSH: 5,
++  FULL_HOUSE: 6,
++  FOUR_OF_A_KIND: 7,
++  STRAIGHT_FLUSH: 8,
++  ROYAL_FLUSH: 9,
++};
++
++const HAND_NAME_KO = [
++  '하이카드',
++  '원페어',
++  '투페어',
++  '트리플',
++  '스트레이트',
++  '플러시',
++  '풀하우스',
++  '포카드',
++  '스트레이트 플러시',
++  '로열 스트레이트 플러시',
++];
++
++/**
++ * 5장을 평가한다.
++ * @returns {{ rank: number, name: string, tiebreak: number[] }}
++ *   tiebreak: 같은 족보끼리 비교할 숫자 목록 (앞에서부터 비교)
++ */
++function evaluateHand(cards) {
++  if (!Array.isArray(cards) || cards.length !== 5) {
++    throw new Error('evaluateHand는 정확히 5장이 필요합니다');
++  }
++
++  const ranks = cards.map((c) => c.rank).sort((a, b) => b - a);
++  const isFlush = cards.every((c) => c.suit === cards[0].suit);
++
++  // 스트레이트 판정 (A-2-3-4-5 '휠' 포함, 이때 최고 카드는 5)
++  const unique = [...new Set(ranks)];
++  let straightHigh = 0;
++  if (unique.length === 5) {
++    if (unique[0] - unique[4] === 4) straightHigh = unique[0];
++    else if (unique.join() === '14,5,4,3,2') straightHigh = 5;
++  }
++
++  // 같은 숫자 묶기: [개수, 숫자] 를 개수 내림차순 → 숫자 내림차순
++  const counts = new Map();
++  for (const r of ranks) counts.set(r, (counts.get(r) ?? 0) + 1);
++  const groups = [...counts.entries()]
++    .map(([rank, count]) => ({ rank, count }))
++    .sort((a, b) => b.count - a.count || b.rank - a.rank);
++  const pattern = groups.map((g) => g.count).join('');
++  const byGroup = groups.map((g) => g.rank);
++
++  let rank;
++  let tiebreak;
++  if (straightHigh && isFlush) {
++    rank = straightHigh === 14 ? HAND_RANK.ROYAL_FLUSH : HAND_RANK.STRAIGHT_FLUSH;
++    tiebreak = [straightHigh];
++  } else if (pattern === '41') {
++    rank = HAND_RANK.FOUR_OF_A_KIND;
++    tiebreak = byGroup;
++  } else if (pattern === '32') {
++    rank = HAND_RANK.FULL_HOUSE;
++    tiebreak = byGroup;
++  } else if (isFlush) {
++    rank = HAND_RANK.FLUSH;
++    tiebreak = ranks;
++  } else if (straightHigh) {
++    rank = HAND_RANK.STRAIGHT;
++    tiebreak = [straightHigh];
++  } else if (pattern === '311') {
++    rank = HAND_RANK.THREE_OF_A_KIND;
++    tiebreak = byGroup;
++  } else if (pattern === '221') {
++    rank = HAND_RANK.TWO_PAIR;
++    tiebreak = byGroup;
++  } else if (pattern === '2111') {
++    rank = HAND_RANK.ONE_PAIR;
++    tiebreak = byGroup;
++  } else {
++    rank = HAND_RANK.HIGH_CARD;
++    tiebreak = ranks;
++  }
++
++  return { rank, name: HAND_NAME_KO[rank], tiebreak };
++}
++
++/** a가 이기면 양수, b가 이기면 음수, 비기면 0 (무늬는 비교하지 않음) */
++function compareHands(a, b) {
++  const ea = a.rank !== undefined && a.tiebreak ? a : evaluateHand(a);
++  const eb = b.rank !== undefined && b.tiebreak ? b : evaluateHand(b);
++  if (ea.rank !== eb.rank) return ea.rank - eb.rank;
++  for (let i = 0; i < Math.max(ea.tiebreak.length, eb.tiebreak.length); i++) {
++    const d = (ea.tiebreak[i] ?? 0) - (eb.tiebreak[i] ?? 0);
++    if (d !== 0) return d;
++  }
++  return 0;
++}
++
++// ---------- 플레이어에게 보여줄 설명 ----------
++const LABEL = { 11: 'J', 12: 'Q', 13: 'K', 14: 'A' };
++const rl = (r) => LABEL[r] ?? String(r);
++// 받침이 있으면 '이', 없으면 '가'
++const iGa = (word) => {
++  const code = word.charCodeAt(word.length - 1) - 0xac00;
++  return word + (code >= 0 && code <= 11171 && code % 28 !== 0 ? '이' : '가');
++};
++
++/** "8 원페어", "J·4 투페어", "K 하이 플러시" 처럼 어떤 족보인지 구체적으로 */
++function describeHand(ev) {
++  const t = ev.tiebreak;
++  switch (ev.rank) {
++    case HAND_RANK.ROYAL_FLUSH: return '로열 스트레이트 플러시';
++    case HAND_RANK.STRAIGHT_FLUSH: return `${rl(t[0])} 하이 스트레이트 플러시`;
++    case HAND_RANK.FOUR_OF_A_KIND: return `${rl(t[0])} 포카드`;
++    case HAND_RANK.FULL_HOUSE: return `${rl(t[0])}×3 + ${rl(t[1])}×2 풀하우스`;
++    case HAND_RANK.FLUSH: return `${rl(t[0])} 하이 플러시`;
++    case HAND_RANK.STRAIGHT: return `${rl(t[0])} 하이 스트레이트`;
++    case HAND_RANK.THREE_OF_A_KIND: return `${rl(t[0])} 트리플`;
++    case HAND_RANK.TWO_PAIR: return `${rl(t[0])}·${rl(t[1])} 투페어`;
++    case HAND_RANK.ONE_PAIR: return `${rl(t[0])} 원페어`;
++    default: return `${rl(t[0])} 하이카드`;
++  }
++}
++
++// 같은 족보일 때 tiebreak 각 자리가 무엇을 뜻하는지
++const PART_NAMES = {
++  [HAND_RANK.STRAIGHT_FLUSH]: ['가장 높은 카드'],
++  [HAND_RANK.FOUR_OF_A_KIND]: ['포카드 숫자', '키커(남은 카드)'],
++  [HAND_RANK.FULL_HOUSE]: ['트리플 숫자', '페어 숫자'],
++  [HAND_RANK.FLUSH]: ['가장 높은 카드', '두 번째 카드', '세 번째 카드', '네 번째 카드', '다섯 번째 카드'],
++  [HAND_RANK.STRAIGHT]: ['가장 높은 카드'],
++  [HAND_RANK.THREE_OF_A_KIND]: ['트리플 숫자', '키커(남은 카드)', '두 번째 키커'],
++  [HAND_RANK.TWO_PAIR]: ['높은 페어', '낮은 페어', '키커(남은 카드)'],
++  [HAND_RANK.ONE_PAIR]: ['페어 숫자', '키커(남은 카드)', '두 번째 키커', '세 번째 키커'],
++  [HAND_RANK.HIGH_CARD]: ['가장 높은 카드', '두 번째 카드', '세 번째 카드', '네 번째 카드', '다섯 번째 카드'],
++};
++
++/**
++ * 왜 이겼는지/비겼는지 한 줄 설명. a 기준 (a = 나).
++ * @returns {{ headline: string, detail: string }}
++ */
++function explainResult(a, b) {
++  if (a.rank !== b.rank) {
++    const [hi, lo] = a.rank > b.rank ? [a, b] : [b, a];
++    return { headline: '족보 차이', detail: `${iGa(hi.name)} ${lo.name}보다 높은 족보` };
++  }
++  const parts = PART_NAMES[a.rank] ?? [];
++  for (let i = 0; i < a.tiebreak.length; i++) {
++    if (a.tiebreak[i] !== b.tiebreak[i]) {
++      const [hi, lo] = a.tiebreak[i] > b.tiebreak[i] ? [a, b] : [b, a];
++      return {
++        headline: `둘 다 ${a.name}`,
++        detail: `${parts[i] ?? '카드'} 비교 · ${rl(hi.tiebreak[i])} > ${rl(lo.tiebreak[i])}`,
++      };
++    }
++  }
++  return { headline: `둘 다 ${describeHand(a)}`, detail: '숫자가 모두 같아 무승부 (무늬는 비교하지 않아요)' };
++}
++
++// ===== game/deck.js =====
++// 52장 덱 생성 · 셔플 · 배분
++const SUITS = ['S', 'H', 'D', 'C']; // 스페이드, 하트, 다이아, 클로버
++const RANKS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]; // 11=J, 12=Q, 13=K, 14=A
++
++const SUIT_SYMBOL = { S: '♠', H: '♥', D: '♦', C: '♣' };
++const RANK_LABEL = { 11: 'J', 12: 'Q', 13: 'K', 14: 'A' };
++
++function createDeck() {
++  const deck = [];
++  for (const suit of SUITS) {
++    for (const rank of RANKS) deck.push({ rank, suit });
++  }
++  return deck;
++}
++
++// Fisher–Yates 셔플 (원본을 바꾸지 않음). rng는 테스트용으로 주입 가능.
++function shuffle(cards, rng = Math.random) {
++  const a = cards.slice();
++  for (let i = a.length - 1; i > 0; i--) {
++    const j = Math.floor(rng() * (i + 1));
++    [a[i], a[j]] = [a[j], a[i]];
++  }
++  return a;
++}
++
++const COMMUNITY_COUNT = 3;
++const GRID_SIZE = 16; // 4열 × 4행
++
++// 한 판에 필요한 카드 배분: 공개 3장 + 그리드 16장 (중복 없음)
++function dealRound(rng = Math.random) {
++  const deck = shuffle(createDeck(), rng);
++  return {
++    community: deck.slice(0, COMMUNITY_COUNT),
++    grid: deck.slice(COMMUNITY_COUNT, COMMUNITY_COUNT + GRID_SIZE),
++  };
++}
++
++function cardLabel(card) {
++  return `${RANK_LABEL[card.rank] ?? card.rank}${SUIT_SYMBOL[card.suit]}`;
++}
++
++// ===== game/autoPick.js =====
++// 시간 안에 2장을 다 고르지 못했을 때: 남은 칸 중 '가장 약한 패'가 되는 카드로 채움 (불이익)
++
++/**
++ * @param {object[]} community 공개 3장
++ * @param {object[]} grid      그리드 카드
++ * @param {number[]} picked    이미 고른 칸 번호
++ * @param {number[]} free      아직 아무도 안 고른 칸 번호
++ * @param {number} need        더 채워야 할 장수 (1 또는 2)
++ * @returns {number[]} 채울 칸 번호
++ */
++function weakestFill(community, grid, picked, free, need) {
++  if (need <= 0) return [];
++  const base = [...community, ...picked.map((i) => grid[i])];
++  let worst = null;
++  const consider = (idxs) => {
++    const ev = evaluateHand([...base, ...idxs.map((i) => grid[i])]);
++    if (!worst || compareHands(ev, worst.ev) < 0) worst = { idxs, ev };
++  };
++  if (need === 1) {
++    for (const i of free) consider([i]);
++  } else {
++    for (let a = 0; a < free.length; a++) for (let b = a + 1; b < free.length; b++) consider([free[a], free[b]]);
++  }
++  return worst.idxs;
++}
++
++// ===== game/bestPick.js =====
++// 이번 판에서 '무엇을 골랐어야 최고 족보가 되는지' 찾기
++
++/**
++ * 공개 3장 + 그리드 2장으로 만들 수 있는 가장 강한 패.
++ * @returns {{ indices: [number, number], cards: object[], eval: object }}
++ */
++function findBestPick(community, grid) {
++  let best = null;
++  for (let i = 0; i < grid.length; i++) {
++    for (let j = i + 1; j < grid.length; j++) {
++      const cards = [...community, grid[i], grid[j]];
++      const ev = evaluateHand(cards);
++      if (!best || compareHands(ev, best.eval) > 0) best = { indices: [i, j], cards, eval: ev };
++    }
++  }
++  return best;
++}
++
++const H = HAND_RANK; // dramaDeal.js 의 HAND_RANK as H
++// ===== game/dramaDeal.js =====
++// 극적인 판을 위한 배분.
++// 완전 무작위로 나누면 대부분 트리플/투페어/원페어 싸움이 되므로,
++// "이번 판 그리드에서 만들 수 있는 최고 족보"를 목표 확률표에 맞춰 고른다.
++//  - 공개 3장 + 그리드 2장으로 만드는 족보만 대상
++//  - 카드 자체는 여전히 52장 한 덱에서 중복 없이 나오고, 위치도 무작위라 겉보기엔 평범한 배분
++
++// 목표: 이번 판에 '만들 수 있는' 최고 족보의 확률(%)
++// (참고: 완전 무작위일 때 → 로열 0.05, 스티플 0.2, 포카드 3, 풀하우스 9, 플러시 5, 스트레이트 15, 트리플 50, 투페어 15.5, 원페어 3)
++const DRAMA_WEIGHTS = {
++  [H.ROYAL_FLUSH]: 1,
++  [H.STRAIGHT_FLUSH]: 3,
++  [H.FOUR_OF_A_KIND]: 9,
++  [H.FULL_HOUSE]: 17,
++  [H.FLUSH]: 15,
++  [H.STRAIGHT]: 20,
++  [H.THREE_OF_A_KIND]: 25,
++  [H.TWO_PAIR]: 8,
++  [H.ONE_PAIR]: 2,
++};
++
++const MAX_TRIES = 400; // 목표 족보가 나오는 배분을 찾을 때 최대 시도 횟수
++// 조건에 맞는 배분을 이만큼 모은 뒤, 그 족보를 만드는 조합이 가장 많은 것을 고름
++// (그리드 16장 기준: 카드가 줄어 만들 수 있는 조합이 줄어든 만큼 후보를 6 → 10으로 늘려 보정)
++const PICK_FROM = 10;
++
++/** 그리드의 2장 조합(190가지)을 모두 따져, 최고 족보와 족보별 조합 수를 구함 */
++function analyzeDeal(community, grid) {
++  const combos = Array(10).fill(0);
++  let best = 0;
++  for (let i = 0; i < grid.length; i++) {
++    for (let j = i + 1; j < grid.length; j++) {
++      const r = evaluateHand([...community, grid[i], grid[j]]).rank;
++      combos[r]++;
++      if (r > best) best = r;
++    }
++  }
++  return { best, combos };
++}
++
++function pickWeighted(weights, rng) {
++  const entries = Object.entries(weights).map(([k, w]) => [Number(k), w]);
++  const total = entries.reduce((s, [, w]) => s + w, 0);
++  let x = rng() * total;
++  for (const [k, w] of entries) {
++    if ((x -= w) < 0) return k;
++  }
++  return entries[entries.length - 1][0];
++}
++
++const sameCard = (a, b) => a.rank === b.rank && a.suit === b.suit;
++
++// 아주 드문 족보(포카드 이상)는 무작위로 찾기 어려우므로 5장을 먼저 정하고
++// 그중 3장은 공개 카드, 2장은 그리드의 무작위 위치에 섞어 넣는다.
++function buildRareHand(target, rng) {
++  const suits = ['S', 'H', 'D', 'C'];
++  const suit = suits[Math.floor(rng() * 4)];
++  let five;
++  if (target === H.ROYAL_FLUSH) {
++    five = [10, 11, 12, 13, 14].map((rank) => ({ rank, suit }));
++  } else if (target === H.STRAIGHT_FLUSH) {
++    const high = 6 + Math.floor(rng() * 8); // 6~13 하이 (로열 제외)
++    five = [0, 1, 2, 3, 4].map((d) => ({ rank: high - d, suit }));
++  } else {
++    // 포카드: 같은 숫자 4장 + 아무 1장
++    const rank = 2 + Math.floor(rng() * 13);
++    const four = suits.map((s) => ({ rank, suit: s }));
++    const rest = createDeck().filter((c) => c.rank !== rank);
++    five = [...four, rest[Math.floor(rng() * rest.length)]];
++  }
++  const shuffledFive = shuffle(five, rng);
++  const community = shuffledFive.slice(0, COMMUNITY_COUNT);
++  const planted = shuffledFive.slice(COMMUNITY_COUNT);
++  const others = shuffle(
++    createDeck().filter((c) => !five.some((f) => sameCard(f, c))),
++    rng,
++  ).slice(0, GRID_SIZE - planted.length);
++  const grid = shuffle([...others, ...planted], rng);
++  return { community, grid };
++}
++
++function randomDeal(rng) {
++  const deck = shuffle(createDeck(), rng);
++  return {
++    community: deck.slice(0, COMMUNITY_COUNT),
++    grid: deck.slice(COMMUNITY_COUNT, COMMUNITY_COUNT + GRID_SIZE),
++  };
++}
++
++/**
++ * 극적인 판 배분. dealRound()와 같은 모양 { community, grid } 를 돌려줌.
++ * @param {() => number} rng
++ */
++function dealDramaticRound(rng = Math.random, weights = DRAMA_WEIGHTS) {
++  const target = pickWeighted(weights, rng);
++
++  if (target >= H.FOUR_OF_A_KIND) return buildRareHand(target, rng);
++
++  const matches = [];
++  let fallback = null;
++  for (let t = 0; t < MAX_TRIES && matches.length < PICK_FROM; t++) {
++    const deal = randomDeal(rng);
++    const info = analyzeDeal(deal.community, deal.grid);
++    if (info.best === target) {
++      matches.push({ deal, score: info.combos[target] });
++    } else if (!fallback || Math.abs(info.best - target) < Math.abs(fallback.best - target)) {
++      fallback = { deal, best: info.best };
++    }
++  }
++  if (matches.length === 0) return fallback.deal;
++  // 목표 족보를 만드는 조합이 가장 많은 배분 → 기억만 잘하면 실제로 손에 넣을 기회가 커짐
++  matches.sort((a, b) => b.score - a.score);
++  return matches[0].deal;
++}
++
++// ===== game/match.js =====
++// 한 판의 규칙 (서버 Edge Function 과 혼자 연습 모드가 똑같이 사용)
++// 모든 값은 JSON 으로 주고받을 수 있는 순수 데이터.
++//   picks: { "칸번호": [{ p: 플레이어id, t: 고른 순서 }, ...] }  (같은 칸을 여러 명이 고를 수 있음)
++
++const PICKS_PER_PLAYER = 2;
++const MAX_PLAYERS = 4;
++
++/** 플레이어별로 고른 칸 (고른 순서대로) */
++function picksByPlayer(picks) {
++  const out = {};
++  for (const [cell, owners] of Object.entries(picks)) {
++    for (const { p, t } of owners) (out[p] ??= []).push({ cell: Number(cell), t });
++  }
++  for (const p of Object.keys(out)) out[p] = out[p].sort((a, b) => a.t - b.t).map((x) => x.cell);
++  return out;
++}
++
++/** 칸에서 플레이어의 선택만 뺌 (남은 사람이 없으면 칸 자체를 지움) */
++function withoutOwner(picks, cell, playerId) {
++  const key = String(cell);
++  const rest = (picks[key] ?? []).filter((o) => o.p !== playerId);
++  if (rest.length) picks[key] = rest;
++  else delete picks[key];
++}
++
++/**
++ * 카드 고르기 규칙 (DB 함수 poker_pick 과 동일)
++ *  - 내 카드를 다시 고르면 취소
++ *  - 이미 2장이면 가장 먼저 고른 카드를 빼고 교체
++ *  - 다른 사람이 고른 칸도 고를 수 있음 (같은 카드를 여러 명이 가질 수 있음)
++ */
++function applyPick(picks, seq, playerId, cell) {
++  const key = String(cell);
++  const next = { ...picks };
++  if ((picks[key] ?? []).some((o) => o.p === playerId)) {
++    withoutOwner(next, cell, playerId);
++    return { ok: true, picks: next, seq };
++  }
++  const mine = picksByPlayer(picks)[playerId] ?? [];
++  if (mine.length >= PICKS_PER_PLAYER) withoutOwner(next, mine[0], playerId);
++  next[key] = [...(next[key] ?? []), { p: playerId, t: seq + 1 }];
++  return { ok: true, picks: next, seq: seq + 1 };
++}
++
++/**
++ * 선택 시간이 끝났을 때: 못 고른 사람은 가장 약한 카드로 채우고, 순위를 매김
++ * @param {{community, grid, picks, players: {id, seat}[]}} round
++ */
++function finishRound({ community, grid, picks, players }) {
++  const filled = { ...picks };
++  let seq = Math.max(0, ...Object.values(picks).flat().map((x) => x.t));
++  const auto = {};
++  // 자리 순서대로 채움 (공평하게 매번 같은 순서)
++  for (const pl of [...players].sort((a, b) => a.seat - b.seat)) {
++    const mine = picksByPlayer(filled)[pl.id] ?? [];
++    const need = PICKS_PER_PLAYER - mine.length;
++    if (need <= 0) continue;
++    const free = grid.map((_, i) => i).filter((i) => !mine.includes(i)); // 남이 고른 칸도 가능
++    for (const cell of weakestFill(community, grid, mine, free, need)) {
++      filled[String(cell)] = [...(filled[String(cell)] ?? []), { p: pl.id, t: ++seq }];
++    }
++    auto[pl.id] = need;
++  }
++
++  const byPlayer = picksByPlayer(filled);
++  const hands = players.map((pl) => {
++    const cells = byPlayer[pl.id] ?? [];
++    const cards = [...community, ...cells.map((i) => grid[i])];
++    const ev = evaluateHand(cards);
++    return { id: pl.id, cells, cards, eval: ev, desc: describeHand(ev), auto: auto[pl.id] ?? 0 };
++  });
++  hands.sort((a, b) => compareHands(b.eval, a.eval));
++  for (const h of hands) h.place = 1 + hands.filter((o) => compareHands(o.eval, h.eval) > 0).length;
++
++  const winners = hands.filter((h) => h.place === 1).map((h) => h.id);
++  const verdict =
++    hands.length >= 2 ? explainResult(hands[0].eval, hands[1].eval) : null; // 1등 vs 2등(공동 1등이면 무승부 설명)
++
++  const best = findBestPick(community, grid);
++  return {
++    picks: filled,
++    ranking: hands,
++    winners,
++    draw: winners.length > 1,
++    verdict,
++    best: { cells: best.indices, cards: best.cards, eval: best.eval, desc: describeHand(best.eval) },
++  };
++}
++
++
++
++const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {
++  auth: { persistSession: false },
++});
++
++const COUNTDOWN_SEC = 3;
++const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 헷갈리는 0 O 1 I 제외
++
++const cors = {
++  'Access-Control-Allow-Origin': '*',
++  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
++  'Access-Control-Allow-Methods': 'POST, OPTIONS',
++};
++
++class GameError extends Error {}
++const fail = (code: string) => { throw new GameError(code); };
++const nowIso = (plusSec = 0) => new Date(Date.now() + plusSec * 1000).toISOString();
++
++async function sha256(text: string) {
++  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
++  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
++}
++
++function cleanNickname(n: unknown) {
++  const s = String(n ?? '').trim().replace(/\s+/g, ' ').slice(0, 12);
++  if (!s) fail('nickname_required');
++  return s;
++}
++
++async function getRoomById(id: string) {
++  const { data } = await db.from('poker_rooms').select('*').eq('id', id).maybeSingle();
++  if (!data) fail('no_room');
++  return data;
++}
++
++async function getPlayers(roomId: string) {
++  const { data } = await db.from('poker_players').select('id, nickname, seat, wins').eq('room_id', roomId).order('seat');
++  return data ?? [];
++}
++
++// player_id + secret 확인 → 플레이어와 방
++async function auth(body: any) {
++  const { player_id, secret } = body;
++  if (!player_id || !secret) fail('unauthorized');
++  const { data: key } = await db.from('poker_player_keys').select('secret_hash').eq('player_id', player_id).maybeSingle();
++  if (!key || key.secret_hash !== (await sha256(secret))) fail('unauthorized');
++  const { data: player } = await db.from('poker_players').select('*').eq('id', player_id).maybeSingle();
++  if (!player) fail('unauthorized');
++  const room = await getRoomById(player.room_id);
++  return { player, room };
++}
++
++async function addPlayer(roomId: string, nickname: string, seat: number) {
++  const secret = crypto.randomUUID() + crypto.randomUUID();
++  const { data: player, error } = await db
++    .from('poker_players')
++    .insert({ room_id: roomId, nickname, seat })
++    .select()
++    .single();
++  if (error) fail(error.code === '23505' ? 'seat_conflict' : 'db_error');
++  await db.from('poker_player_keys').insert({ player_id: player.id, secret_hash: await sha256(secret) });
++  return { player, secret };
++}
++
++const clampSec = (v: unknown, def: number) => {
++  const n = Number(v);
++  return Number.isFinite(n) && n >= 1 && n <= 120 ? Math.round(n) : def;
++};
++
++// ---------- 액션 ----------
++const actions: Record<string, (body: any) => Promise<any>> = {
++  async create_room(body) {
++    const nickname = cleanNickname(body.nickname);
++    let room = null;
++    for (let tries = 0; tries < 8 && !room; tries++) {
++      const code = Array.from({ length: 4 }, () => CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]).join('');
++      const { data } = await db
++        .from('poker_rooms')
++        .insert({ code, memorize_sec: clampSec(body.memorize_sec, 20), pick_sec: clampSec(body.pick_sec, 15) })
++        .select()
++        .single();
++      room = data;
++    }
++    if (!room) fail('db_error');
++    const { player, secret } = await addPlayer(room.id, nickname, 0);
++    await db.from('poker_rooms').update({ host_id: player.id }).eq('id', room.id);
++    return { room_id: room.id, code: room.code, player_id: player.id, secret };
++  },
++
++  async join_room(body) {
++    const code = String(body.code ?? '').trim().toUpperCase();
++    const { data: room } = await db.from('poker_rooms').select('*').eq('code', code).maybeSingle();
++    if (!room) fail('no_room');
++
++    // 이미 이 방 사람이면 그대로 복귀 (새로고침 등)
++    if (body.player_id && body.secret) {
++      try {
++        const me = await auth(body);
++        if (me.room.id === room.id) return { room_id: room.id, code: room.code, player_id: me.player.id, secret: body.secret, rejoined: true };
++      } catch (_) { /* 새로 참가 */ }
++    }
++    if (!['LOBBY', 'SHOWDOWN'].includes(room.phase)) fail('in_progress');
++    const nickname = cleanNickname(body.nickname);
++    const players = await getPlayers(room.id);
++    if (players.length >= MAX_PLAYERS) fail('full');
++    const taken = new Set(players.map((p: any) => p.seat));
++    const seat = [0, 1, 2, 3].find((s) => !taken.has(s))!;
++    const { player, secret } = await addPlayer(room.id, nickname, seat);
++    return { room_id: room.id, code: room.code, player_id: player.id, secret };
++  },
++
++  async leave(body) {
++    const { player, room } = await auth(body);
++    await db.from('poker_players').delete().eq('id', player.id);
++    const rest = await getPlayers(room.id);
++    if (rest.length === 0) {
++      await db.from('poker_rooms').delete().eq('id', room.id);
++    } else if (room.host_id === player.id) {
++      await db.from('poker_rooms').update({ host_id: rest[0].id, updated_at: nowIso() }).eq('id', room.id);
++    }
++    return { left: true };
++  },
++
++  async start_round(body) {
++    const { player, room } = await auth(body);
++    if (room.host_id !== player.id) fail('not_host');
++    if (!['LOBBY', 'SHOWDOWN'].includes(room.phase)) fail('in_progress');
++    const players = await getPlayers(room.id);
++    if (players.length < 2) fail('need_players');
++
++    const { community, grid } = dealDramaticRound();
++    const round_no = room.round_no + 1;
++    await db.from('poker_secrets').upsert({ room_id: room.id, round_no, grid, community });
++    const { data } = await db
++      .from('poker_rooms')
++      .update({
++        phase: 'COUNTDOWN', phase_ends_at: nowIso(COUNTDOWN_SEC), round_no,
++        grid: null, community: null, picks: {}, pick_seq: 0, result: null, updated_at: nowIso(),
++      })
++      .eq('id', room.id)
++      .in('phase', ['LOBBY', 'SHOWDOWN'])
++      .select('id');
++    if (!data?.length) fail('in_progress');
++    return { started: true };
++  },
++
++  async pick(body) {
++    const { player, room } = await auth(body);
++    const { data, error } = await db.rpc('poker_pick', { p_room: room.id, p_player: player.id, p_cell: Number(body.cell) });
++    if (error) fail('db_error');
++    if (!data.ok) fail(data.error);
++    return { picks: data.picks };
++  },
++
++  // 타이머가 끝나면 아무 폰이나 호출. 서버가 시각을 확인하고, 조건부 업데이트로 딱 한 번만 진행
++  async advance(body) {
++    const room = await getRoomById(body.room_id);
++    if (!room.phase_ends_at) return { advanced: false };
++    // 선택 단계는 마감 후 0.3초 여유(마감 직전 고른 카드가 반영되도록), 나머지는 0.15초 일찍 허용
++    const slackMs = room.phase === 'PICK' ? -300 : 150;
++    if (Date.now() < Date.parse(room.phase_ends_at) - slackMs) return { advanced: false, wait: true };
++
++    const guard = (q: any) => q.eq('id', room.id).eq('phase', room.phase).eq('round_no', room.round_no).select('id');
++
++    if (room.phase === 'COUNTDOWN' || room.phase === 'MEMORIZE') {
++      const { data: sec } = await db.from('poker_secrets').select('*').eq('room_id', room.id).eq('round_no', room.round_no).single();
++      const next = room.phase === 'COUNTDOWN'
++        ? { phase: 'MEMORIZE', grid: sec.grid, phase_ends_at: nowIso(room.memorize_sec) }
++        : { phase: 'PICK', community: sec.community, phase_ends_at: nowIso(room.pick_sec) };
++      const { data } = await guard(db.from('poker_rooms').update({ ...next, updated_at: nowIso() }));
++      return { advanced: !!data?.length };
++    }
++
++    if (room.phase === 'PICK') {
++      const players = await getPlayers(room.id);
++      const r = finishRound({ community: room.community, grid: room.grid, picks: room.picks, players });
++      const info = Object.fromEntries(players.map((p: any) => [p.id, p]));
++      const result = {
++        ...r,
++        ranking: r.ranking.map((x: any) => ({ ...x, nickname: info[x.id]?.nickname, seat: info[x.id]?.seat })),
++      };
++      const { data } = await guard(
++        db.from('poker_rooms').update({ phase: 'SHOWDOWN', phase_ends_at: null, picks: r.picks, result, updated_at: nowIso() }),
++      );
++      if (data?.length && !r.draw) {
++        const winner = info[r.winners[0]];
++        if (winner) await db.from('poker_players').update({ wins: winner.wins + 1 }).eq('id', winner.id);
++      }
++      return { advanced: !!data?.length };
++    }
++    return { advanced: false };
++  },
++};
++
++Deno.serve(async (req) => {
++  if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
++  let status = 200;
++  let payload: any;
++  try {
++    const body = await req.json();
++    const fn = actions[body?.action];
++    if (!fn) fail('unknown_action');
++    payload = { ok: true, ...(await fn(body)) };
++  } catch (e) {
++    status = e instanceof GameError ? 400 : 500;
++    payload = { ok: false, error: e instanceof GameError ? e.message : 'server_error' };
++    if (!(e instanceof GameError)) console.error(e);
++  }
++  payload.server_now = Date.now(); // 폰 시계 보정용
++  return new Response(JSON.stringify(payload), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
++});
