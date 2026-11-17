@@ -21,7 +21,9 @@ export const DRAMA_WEIGHTS = {
 };
 
 const MAX_TRIES = 400; // 목표 족보가 나오는 배분을 찾을 때 최대 시도 횟수
-const PICK_FROM = 6; // 조건에 맞는 배분을 이만큼 모은 뒤, 그 족보를 만드는 조합이 가장 많은 것을 고름
+// 조건에 맞는 배분을 이만큼 모은 뒤, 그 족보를 만드는 조합이 가장 많은 것을 고름
+// (그리드 16장 기준: 카드가 줄어 만들 수 있는 조합이 줄어든 만큼 후보를 6 → 10으로 늘려 보정)
+const PICK_FROM = 10;
 
 /** 그리드의 2장 조합(190가지)을 모두 따져, 최고 족보와 족보별 조합 수를 구함 */
 export function analyzeDeal(community, grid) {

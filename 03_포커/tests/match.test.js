@@ -17,21 +17,35 @@ describe('카드 고르기 규칙', () => {
     s = applyPick(s.picks, s.seq, 'A', 5);
     expect(s.picks).toEqual({});
   });
-  it('남의 카드는 못 가져감, 취소하면 가져갈 수 있음', () => {
+  it('같은 카드를 둘 다 고를 수 있음', () => {
     let s = applyPick({}, 0, 'A', 5);
-    const fail = applyPick(s.picks, s.seq, 'B', 5);
-    expect(fail.ok).toBe(false);
-    expect(fail.error).toBe('taken');
-    s = applyPick(s.picks, s.seq, 'A', 5); // A 취소
     s = applyPick(s.picks, s.seq, 'B', 5);
+    expect(s.ok).toBe(true);
+    expect(picksByPlayer(s.picks).A).toEqual([5]);
     expect(picksByPlayer(s.picks).B).toEqual([5]);
+    expect(s.picks['5'].map((o) => o.p)).toEqual(['A', 'B']);
+  });
+  it('한 명이 취소해도 다른 사람 선택은 남음', () => {
+    let s = applyPick({}, 0, 'A', 5);
+    s = applyPick(s.picks, s.seq, 'B', 5);
+    s = applyPick(s.picks, s.seq, 'A', 5); // A 취소
+    expect(picksByPlayer(s.picks).A).toBeUndefined();
+    expect(picksByPlayer(s.picks).B).toEqual([5]);
+    s = applyPick(s.picks, s.seq, 'B', 5); // B 도 취소 → 칸이 비워짐
+    expect(s.picks).toEqual({});
+  });
+  it('3장째 교체해도 같은 칸을 고른 다른 사람 선택은 유지', () => {
+    let s = applyPick({}, 0, 'B', 3);
+    for (const c of [3, 7, 9]) s = applyPick(s.picks, s.seq, 'A', c); // A: 3 → 교체되어 [7, 9]
+    expect(picksByPlayer(s.picks).A).toEqual([7, 9]);
+    expect(picksByPlayer(s.picks).B).toEqual([3]);
   });
 });
 
 describe('판 끝내기 (2~4명)', () => {
   const community = h('KS KH 4D');
-  //            0    1    2    3    4    5    6    7    8    9   10   11   12  13   14   15   16   17   18   19
-  const grid = h('KD 4C AS 2C 3D 9S 7H 5C JD 6H QS 8C 10D 2H 3S 5D 6C 7S 9D JC');
+  //            0    1    2    3    4    5    6    7    8    9   10   11   12  13   14   15
+  const grid = h('KD 4C AS 2C 3D 9S 7H 5C JD 6H QS 8C 10D 2H 3S 5D');
 
   it('순위가 족보대로, 1등 1명', () => {
     let s = { picks: {}, seq: 0 };
@@ -62,15 +76,14 @@ describe('판 끝내기 (2~4명)', () => {
       const d = dealRound();
       const players = [{ id: 'A', seat: 0 }, { id: 'B', seat: 1 }, { id: 'C', seat: 2 }, { id: 'D', seat: 3 }];
       const r = finishRound({ community: d.community, grid: d.grid, picks: {}, players });
-      const all = Object.keys(r.picks);
-      expect(all).toHaveLength(8); // 4명 × 2장, 칸 중복 없음
+      expect(Object.values(r.picks).flat()).toHaveLength(8); // 4명 × 2장 (같은 칸을 같이 골라도 됨)
       for (const p of r.ranking) {
         expect(p.cells).toHaveLength(2);
         expect(p.auto).toBe(2);
       }
-      // 첫 번째 사람(자리 0)은 남은 칸 중 가장 약한 조합
+      // 첫 번째 사람(자리 0)은 가장 약한 조합
       const a = r.ranking.find((x) => x.id === 'A');
-      for (let i = 0; i < 20; i++) for (let j = i + 1; j < 20; j++) {
+      for (let i = 0; i < 16; i++) for (let j = i + 1; j < 16; j++) {
         expect(compareHands(a.cards, [...d.community, d.grid[i], d.grid[j]])).toBeLessThanOrEqual(0);
       }
     }

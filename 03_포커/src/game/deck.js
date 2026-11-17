@@ -24,9 +24,9 @@ export function shuffle(cards, rng = Math.random) {
 }
 
 export const COMMUNITY_COUNT = 3;
-export const GRID_SIZE = 20; // 5열 × 4행
+export const GRID_SIZE = 16; // 4열 × 4행
 
-// 한 판에 필요한 카드 배분: 공개 3장 + 그리드 20장 (중복 없음)
+// 한 판에 필요한 카드 배분: 공개 3장 + 그리드 16장 (중복 없음)
 export function dealRound(rng = Math.random) {
   const deck = shuffle(createDeck(), rng);
   return {

@@ -82,7 +82,7 @@ const actions: Record<string, (body: any) => Promise<any>> = {
       const code = Array.from({ length: 4 }, () => CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]).join('');
       const { data } = await db
         .from('poker_rooms')
-        .insert({ code, memorize_sec: clampSec(body.memorize_sec, 30), pick_sec: clampSec(body.pick_sec, 15) })
+        .insert({ code, memorize_sec: clampSec(body.memorize_sec, 20), pick_sec: clampSec(body.pick_sec, 15) })
         .select()
         .single();
       room = data;

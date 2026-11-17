@@ -129,17 +129,19 @@ export const flipCommunity = (faceDown) => flipAll(el.community, faceDown);
 // ---------- 카드판 ----------
 /**
  * @param {object} v
- *  cards: 20장 (없으면 뒷면 자리만), faceDown, owners: { 칸: {seat, label, me} },
+ *  cards: 16장 (없으면 뒷면 자리만), faceDown, owners: { 칸: [{seat, label, me}] },
  *  clickable: (칸) => bool, onPick: (칸) => void, best: [칸, 칸]
  */
 export function drawGrid({ cards, faceDown = true, owners = {}, clickable = () => false, onPick = null, best = [] }) {
   const list = cards ?? Array(GRID_SIZE).fill(BLANK_CARD);
   const nodes = list.map((card, i) => {
     const node = cardEl(card, { faceDown: faceDown || !cards });
-    const o = owners[i];
-    if (o) {
-      node.classList.add(o.me ? 'mine' : 'taken', `seat-${o.seat}`);
-      node.insertAdjacentHTML('beforeend', `<span class="who-tag">${o.label}</span>`);
+    const list = owners[i] ?? [];
+    if (list.length) {
+      const first = list.find((o) => o.me) ?? list[0]; // 테두리 색은 내 것 우선
+      node.classList.add(first.me ? 'mine' : 'taken', `seat-${first.seat}`);
+      const tags = list.map((o) => `<span class="who-tag ${o.me ? 'me' : 'opp'} seat-${o.seat}">${o.label}</span>`).join('');
+      node.insertAdjacentHTML('beforeend', `<span class="who-tags">${tags}</span>`);
     }
     if (best.includes(i)) {
       node.classList.add('best');
@@ -307,12 +309,12 @@ export const hideResult = () => el.result.classList.add('hidden');
 
 /** 결과 창의 '이번 판 최고' 안내 문구 */
 export function bestNote(bestCells, myCells, owners, isMeBest) {
-  const pos = (i) => `${Math.floor(i / 5) + 1}행 ${(i % 5) + 1}열`;
+  const pos = (i) => `${Math.floor(i / 4) + 1}행 ${(i % 4) + 1}열`;
   if (isMeBest) return '<b>최고 족보를 완성했어요!</b>';
   return `골랐어야 할 카드 · ${bestCells
     .map((i) => {
-      const o = owners[i];
-      const who = o && !o.me ? ` (${escapeHtml(o.name)}님이 가져감)` : '';
+      const others = (owners[i] ?? []).filter((o) => !o.me).map((o) => `${escapeHtml(o.name)}님`);
+      const who = others.length ? ` (${others.join(', ')} 선택)` : '';
       return `<b>${pos(i)}</b>${who}`;
     })
     .join(', ')}`;

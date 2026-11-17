@@ -5,10 +5,10 @@ import { applyPick, picksByPlayer, finishRound, PICKS_PER_PLAYER } from '../game
 import { evaluateHand, compareHands } from '../game/handEvaluator.js';
 import * as B from '../ui/board.js';
 import { play } from '../ui/sound.js';
-import { ownersFrom, guideHighlights, resultView } from './common.js';
+import { ownersFrom, isMine, guideHighlights, resultView } from './common.js';
 
 const params = new URLSearchParams(location.search);
-const MEMORIZE_SECONDS = Number(params.get('m') || params.get('t')) || 30;
+const MEMORIZE_SECONDS = Number(params.get('m') || params.get('t')) || 20;
 const PICK_SECONDS = Number(params.get('p') || params.get('t')) || 15;
 const READY_SECONDS = 3;
 // 높은 족보가 더 자주 나오도록 보정한 배분. ?deal=fair 면 완전 무작위
@@ -76,7 +76,7 @@ function drawPickGrid() {
     cards: s.grid,
     faceDown: true,
     owners: ownersFrom(s.picks, ME, info()),
-    clickable: (i) => !s.picks[i] || s.picks[i].p === ME,
+    clickable: () => true, // 상대가 고른 카드도 고를 수 있음
     onPick: (i) => tryPick(ME, i),
   });
 }
@@ -164,7 +164,7 @@ function tryPick(who, cell) {
   s.picks = r.picks;
   s.seq = r.seq;
   if (who === ME) {
-    play(s.picks[cell]?.p === ME ? 'pick' : 'unpick');
+    play(isMine(s.picks, cell, ME) ? 'pick' : 'unpick');
     try { navigator.vibrate?.(15); } catch {}
   }
   drawPickGrid();
@@ -185,7 +185,7 @@ function botMove() {
   if (s.phase !== 'PICK') return;
   const held = picksByPlayer(s.picks)[BOT] ?? [];
   if (held.length >= PICKS_PER_PLAYER) return;
-  const free = s.grid.map((_, i) => i).filter((i) => !s.picks[i]);
+  const free = s.grid.map((_, i) => i).filter((i) => !held.includes(i));
   const known = free.filter((i) => s.botMemory?.has(i));
   const handOf = (cells) => evaluateHand([...s.community, ...cells.map((i) => s.grid[i])]);
   let choice = null;

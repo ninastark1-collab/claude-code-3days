@@ -6,7 +6,7 @@ import { play } from '../ui/sound.js';
 import * as B from '../ui/board.js';
 import { supabase, call, serverNow, errorText } from '../net/api.js';
 import { clearSession } from '../net/session.js';
-import { ownersFrom, guideHighlights, resultView, initial } from './common.js';
+import { ownersFrom, isMine, guideHighlights, resultView, initial } from './common.js';
 
 const $ = (id) => document.getElementById(id);
 const FLIP_MS = 650;
@@ -191,7 +191,7 @@ function drawPickGrid() {
     cards: r.grid,
     faceDown: true,
     owners: ownersFrom(r.picks, s.meId, info()),
-    clickable: (i) => !r.picks[i] || r.picks[i].p === s.meId,
+    clickable: () => true, // 상대가 고른 카드도 고를 수 있음
     onPick,
   });
   B.drawMyPicks(myCells().map((i) => r.grid[i]));
@@ -202,7 +202,7 @@ async function onPick(cell) {
   const r = s.room;
   const local = applyPick(r.picks, r.pick_seq ?? 0, s.meId, cell);
   if (!local.ok) return;
-  const picked = local.picks[cell]?.p === s.meId;
+  const picked = isMine(local.picks, cell, s.meId);
   play(picked ? 'pick' : 'unpick');
   try { navigator.vibrate?.(15); } catch {}
   s.room = { ...r, picks: local.picks, pick_seq: local.seq };

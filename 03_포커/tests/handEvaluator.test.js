@@ -60,12 +60,12 @@ describe('덱 배분', () => {
     const d = createDeck();
     expect(new Set(d.map((c) => c.rank + c.suit)).size).toBe(52);
   });
-  it('공개 3장 + 그리드 20장, 서로 중복 없음', () => {
+  it('공개 3장 + 그리드 16장, 서로 중복 없음', () => {
     const { community, grid } = dealRound();
     expect(community).toHaveLength(3);
-    expect(grid).toHaveLength(20);
+    expect(grid).toHaveLength(16);
     const all = [...community, ...grid].map((c) => c.rank + c.suit);
-    expect(new Set(all).size).toBe(23);
+    expect(new Set(all).size).toBe(19);
   });
 });
 

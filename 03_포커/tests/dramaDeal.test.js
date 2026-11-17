@@ -6,12 +6,12 @@ describe('극적인 배분', () => {
   const N = 300;
   const deals = Array.from({ length: N }, () => dealDramaticRound());
 
-  it('항상 공개 3장 + 그리드 20장, 52장 한 덱에서 중복 없음', () => {
+  it('항상 공개 3장 + 그리드 16장, 52장 한 덱에서 중복 없음', () => {
     for (const { community, grid } of deals) {
       expect(community).toHaveLength(3);
-      expect(grid).toHaveLength(20);
+      expect(grid).toHaveLength(16);
       const ids = [...community, ...grid].map((c) => `${c.rank}${c.suit}`);
-      expect(new Set(ids).size).toBe(23);
+      expect(new Set(ids).size).toBe(19);
       for (const c of [...community, ...grid]) {
         expect(c.rank).toBeGreaterThanOrEqual(2);
         expect(c.rank).toBeLessThanOrEqual(14);

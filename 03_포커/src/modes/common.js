@@ -4,15 +4,20 @@ import { bestNote } from '../ui/board.js';
 
 export const initial = (name) => [...(name ?? '?')][0];
 
-/** picks({칸:{p}}) → 카드판 이름표 { 칸: {seat, label, me, name} } */
+/** picks({칸:[{p}]}) → 카드판 이름표 { 칸: [{seat, label, me, name}] } (같은 칸을 여러 명이 고를 수 있음) */
 export function ownersFrom(picks, meId, infoById) {
   const out = {};
-  for (const [cell, { p }] of Object.entries(picks ?? {})) {
-    const info = infoById[p] ?? { nickname: '?', seat: 0 };
-    out[cell] = { seat: info.seat, me: p === meId, name: info.nickname, label: p === meId ? '나' : initial(info.nickname) };
+  for (const [cell, list] of Object.entries(picks ?? {})) {
+    out[cell] = list.map(({ p }) => {
+      const info = infoById[p] ?? { nickname: '?', seat: 0 };
+      return { seat: info.seat, me: p === meId, name: info.nickname, label: p === meId ? '나' : initial(info.nickname) };
+    });
   }
   return out;
 }
+
+/** 내가 이 칸을 골랐는지 */
+export const isMine = (picks, cell, meId) => (picks?.[cell] ?? []).some((o) => o.p === meId);
 
 /** 족보표에 표시할 이름표 */
 export function guideHighlights(result, meId) {
